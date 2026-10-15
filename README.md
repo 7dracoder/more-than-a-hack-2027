@@ -187,9 +187,8 @@ competition only, under the terms you accept at enrolment.
 ```bibtex
 @misc{mtah2027,
   title  = {More than a Hack 2027: Phase 1 - Ball Possession},
-  author = {<TBD>},
+  author = {Metrica Sports and FC Barcelona Innovation Hub},
   year   = {2027},
-  note   = {Metrica Sports and FC Barcelona Innovation Hub},
   url    = {https://github.com/metrica-sports/more-than-a-hack-2027}
 }
 ```
