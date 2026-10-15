@@ -48,36 +48,43 @@ the ball is dead the answer is `D`.
 
 ## Possession rules
 
-### The operational definition
+### Change of possession
 
-Possession is not a perfectly sharp concept, and some cases are open to interpretation. You do not
-have to guess how they are resolved: the **5 minutes of public ground truth** are your reference.
+#### Definition
 
-**Ball in play: the unambiguous part.** Whether the ball is in play is decided by the referee.
-While it is, one of the two teams is always in possession — there is no neutral state. In
-loose-ball phases (a 50/50, a ball running free after a tackle), the team that last had possession
-keeps it.
+A change of possession occurs when a player from the opposing team gains **controlled** possession
+of the ball. Since the ball is only in play when the referee allows it, there is always one team in
+possession while play is live, and a change of possession is the moment that possession passes to
+the other team.
 
-**Every restart has a clear owner.** Whenever play resumes after a stoppage — kickoff, throw-in,
-corner, goal kick, free kick — one team is clearly in possession. So the real challenge is not
-assigning possession frame by frame, but detecting **when it changes**.
+#### Key concepts
 
-**When possession changes.** Possession passes to the other team when one of its players has the
-ball **under control**. Deciding what counts as "control" is where the ambiguity lies: from the data
-alone, a controlled reception is not always easy to tell apart from a rebound.
+**Ball in play.** The referee determines when the ball is in play. While it is, one of the two
+teams is considered to have possession. In phases where the ball is contested or loose, possession
+stays with the last team that had it.
 
-These are **not** changes of possession:
+**Starting point.** Whenever play restarts after a stoppage, there is a clear possessor. The
+challenge is therefore detecting when possession changes hands afterwards.
 
-- a single touch of the ball without control
-- a pass that is deflected but not intercepted
-- an aerial duel that is won, but without the ball then being controlled
+**"Controlled" possession.** This is the ambiguous part. With the available tracking data, it is
+not always easy to tell a controlled pass or reception from a rebound. Possible proxies could
+include:
 
-Beyond these, we encourage you to explore and propose your own criteria for "control" and to
-measure how they differ. Your technical document is the place to explain the one you chose.
+- a player keeps the ball for a few seconds
+- a team completes more than two consecutive passes
 
-**The public ground truth is the reference.** It applies these rules frame by frame across 17
-possessions. If your reading of the data disagrees with it, the ground truth is right — and telling
-us about the disagreement is useful.
+#### What does not count as a change of possession
+
+- a simple touch of the ball without control
+- a deflection of a pass that does not intercept it
+- an aerial duel won without subsequent control of the ball by that team
+
+#### The reference is the ground truth
+
+This is not a technical specification of how the ground truth was produced. It describes what the
+challenge is asking for. The reference is the **5 minutes of public ground truth**, which shows
+frame by frame across 17 possessions how these cases are labelled. Use it to understand what is
+expected: if your reading of the definition disagrees with it, the ground truth is right.
 
 ### What is already settled
 
@@ -93,7 +100,7 @@ us about the disagreement is useful.
   Nothing is smoothed, interpolated or hand-adjusted afterwards.
 
   So the question that matters is not *how* the labels are computed, but what the corrected
-  tracking means by "dead" and by "owning" — which is what the definition above describes.
+  tracking means by "dead" and by "owning" — and the public ground truth is where you can see it.
 
 ---
 
