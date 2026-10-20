@@ -1,4 +1,49 @@
-# BlindSpot v0.1: runnable possession research system
+# BlindSpot: runnable possession research system
+
+## v0.3 candidate workflow
+
+```powershell
+pip install -r requirements-v3.txt
+python -m unittest discover -s tests -v
+python scripts/run_champion.py --resume --archive
+python evaluation/validate_submission.py data/experiments/blindspot-v3/candidate/CoreOrigin.csv
+```
+
+Optional local video demo:
+
+```powershell
+pip install -r requirements-v3-video.txt
+python scripts/build_candidate_review.py
+```
+
+The v0.3 suite tests three fixed approaches: a trajectory-feature reference, an unlabelled movement-regime model, and a small symmetric histogram gradient boosting classifier. Movement is derived from six-frame position displacement at 25 fps and known pitch dimensions; short windows containing missing positions or implausible slot jumps are excluded. The metadata says kph, but displacement comparisons show that raw speed values empirically resemble m/s. Blindly dividing by 3.6 was tested as a pilot and is **not** presented as a proven correction. That pilot and its source snapshot are retained under ignored `data/experiments/blindspot-v3-metadata-pilot/`.
+
+The classifier has 59 features, 80 boosting iterations, at most seven leaves per tree, L2 regularization, team-swap augmentation and exact probability symmetrization. It is tested across four contiguous folds of complete labelled runs. A 300-frame embargo removes whole neighbouring training runs; the maximum feature context radius is conservatively 130 frames. Decoding uses full unlabelled halves without clamping test boundaries to reference labels. Matching counts are pooled across folds rather than scoring a stitched prediction.
+
+Measured pooled development spell F1 is **0.4457**, compared with **0.3889** for the strongest reference on those same folds; macro F1 is 0.7484 and dead-ball F1 is 0.6619. The classifier improves three folds and is slightly worse on one. This is previously examined, single-match public development data, not independent validation. Full-public label-free motion-model spell F1 is 0.3610 versus smooth125's 0.4242. The separately exported provisional classifier fits all public labels; its training-window score is explicitly excluded from validation claims.
+
+The candidate file, model/input/source hashes, fold sensitivity, model-disagreement review risk, coverage audit, artificial-gap stress test and evidence dashboard are under ignored `data/experiments/blindspot-v3/`. `candidate/CoreOrigin.csv` is a provisional artifact name, not the confirmed registered team name. Source code has not been pushed and no competition form submitted. See [SUBMISSION_TECHNICAL.md](SUBMISSION_TECHNICAL.md) for the current technical draft.
+
+## v0.2 follow-up workflow
+
+The follow-up adds a whole-state-run development split, stoppage error analysis and a fixed temporal stoppage candidate, public-window query error-enrichment controls (including 30 seeded random runs), tracking/tag/video-container audits, and a synchronized local video/pitch review lab. It retains the original label-free candidate as the main prediction.
+
+```powershell
+python -m unittest discover -s tests -v
+python scripts/run_followup.py --resume --packets --review-video --archive
+```
+
+Open `data/experiments/blindspot-v2/index.html` for comparisons and `review/index.html` beneath that folder for synchronized video, 5 Hz pitch snapshots, model support and review notes. The twelve private clips are each up to 201 frames at 25 fps; their encoded frame counts are checked by decoding. Notes stay in browser storage and can be exported; no review note is ingested into a submission. This prepares a review experiment; it does not claim completed human annotations or measured time saved.
+
+Each stage writes an atomic completion marker only after producing artifacts. `--resume` checks source/config/input provenance plus SHA256 of each stage artifact. An interrupted or corrupted stage is recomputed; source or input changes invalidate prior results. Video and optional asset fingerprints include file size and modification time; tactical inference inputs also have content hashes. The packet audit checks all compressed packets, not all decoded pixels. Broadcast is not fused without verified cross-camera synchronization.
+
+`scripts/build_followup_colab.py` produces a separate source bundle and `notebooks/BlindSpot_v02_Colab.ipynb`, preserving the executed v0.1 snapshot. Default cloud execution downloads only four non-video tactical inputs. For durable Colab checkpoints, enable `PERSIST_TO_DRIVE` in the notebook's optional storage cell and authorize the mount; otherwise results are runtime-local and must be downloaded. The notebook never silently claims that runtime-local storage survives a reset.
+
+The complete H/A/D run containing the target split is excluded or assigned wholly to one side; the minimum 250-frame embargo is rounded outward. The public data has already been examined during earlier experiments, so all new comparisons are explicitly **development** results. A new independent review set and final submission freeze remain future work.
+
+Verified v0.2 Colab run: [BlindSpot_v02_Colab.ipynb](https://colab.research.google.com/drive/1jwU7f82AWzfRVmFEnpZ3-HgsdSOvayWo). All nine cells executed, including sixteen tests, the complete tracking-only follow-up, CSV validation, the rendered dashboard and result download. Both label-free CSV hashes match the local run; grouped scores agree. The cloud default omits video and broadcast. Archive-relative dashboard links are intended for the extracted result folder, not navigation inside Colab's inline HTML preview. The local results archive additionally contains twelve verified video clips. Direct browser automation of the local file was blocked by URL policy; local video interaction has not been browser-tested.
+
+The full local command was rerun after checkpoint hardening and then rerun with `--resume`: all five stages verified and reused. No Drive mount was performed; durable storage remains an optional user-authorized notebook setting. See [TECHNICAL_REPORT.md](TECHNICAL_REPORT.md) for the measured results and remaining submission work.
 
 This version implements an end-to-end experiment, not a claim of a winning competition entry.
 
@@ -81,3 +126,9 @@ All match-derived outputs default to ignored `data/experiments/blindspot-v1/`:
 ## Next research steps
 
 Focus on the dead-ball estimator and boundary timing, then measure whether better uncertainty/query selection earns its compute. Additional legitimate labels or compatible outside data are needed before making a large supervised model the central approach. Compare fixed budgets and retain failures in the work log. See RESEARCH.md for the frontier experiments.
+
+### CoreOrigin artifact organization
+
+The registered team name is CoreOrigin. The model/project remains BlindSpot. `CoreOrigin.md` is the team-named technical draft; `data/experiments/blindspot-v3/candidate/CoreOrigin.csv` is the full-match development candidate. A portable private handoff folder is `data/submissions/CoreOrigin-v03/`. The earlier filename is retained under the ignored experiment naming-history directory. Changing the filename did not change any prediction bytes.
+
+The immutable v0.3 source ZIP contains 58 source/public-benchmark files, SHA256 `8d73f162950880b8fae4e0270826d5ac15ec8386401f8e274e919751dd3231ec`. It contains no tactical assets, predictions, clips or fitted models. Later verification logs/documentation are maintained separately from that frozen snapshot. Current notebook: https://colab.research.google.com/drive/1U_fNZ-9AK-B-Bzq_-tx_HzurAMgThFNz .

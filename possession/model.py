@@ -89,11 +89,13 @@ def predict(arrays, config, use_tags=True, use_camera=True, switch_scale=1., sam
     return labels, posterior, histories, diagnostics
 
 
-def choose_queries(posterior, disagreement, arrays, config, policy="boundary"):
+def choose_queries(posterior, disagreement, arrays, config, policy="boundary", blocks=None, decoded_labels=None):
     """Fixed-budget local video queries; never uses GT or evaluation errors."""
     entropy = -(posterior * np.log(np.clip(posterior, 1e-8, 1.))).sum(1) / np.log(3.)
     missing = ~np.isfinite(arrays["ball"]).all(1)
-    labels = posterior.argmax(1)
+    labels = posterior.argmax(1) if decoded_labels is None else np.asarray(decoded_labels)
+    if len(labels) != len(posterior):
+        raise ValueError('Decoded labels and posterior must have the same length')
     boundary = np.r_[False, labels[1:] != labels[:-1]]
     vicinity = np.nan_to_num(rolling_mean(boundary.astype(float), 25)) * 50
     if policy == "boundary":
@@ -109,8 +111,9 @@ def choose_queries(posterior, disagreement, arrays, config, policy="boundary"):
     budget = config["query_budget"]
     spacing = int(config["query_spacing_seconds"] * 25)
     picked = []
-    for index, (half, start, stop) in enumerate(half_video_blocks(GAME)):
-        count = budget // 2 + (budget % 2 if index == 0 else 0)
+    blocks = half_video_blocks(GAME) if blocks is None else blocks
+    for index, (half, start, stop) in enumerate(blocks):
+        count = budget // len(blocks) + (1 if index < budget % len(blocks) else 0)
         candidates = np.arange(start + 25, stop - 25, config["step"])
         if policy == "uniform":
             order = np.linspace(0, len(candidates) - 1, max(1, count), dtype=int) if count else []

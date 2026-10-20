@@ -36,6 +36,8 @@ These instructions define how to maintain the log during work; this file is not 
 | Custom possession algorithm | First implementation complete locally | Label-free model, exact sequence inference, alternative state histories, evidence/query diagnostics; see IMPLEMENTATION.md |
 | New model training | Small calibration experiment executed | Early 120-second training block; later 170-second evaluation with 10-second buffer; candidate not promoted |
 | Final competition submission | Not selected or submitted | No hidden-match score or winning-performance claim |
+| v0.2 follow-up | Implemented and locally executed | Whole-run split, quality audit, query benchmark, resumable stages, twelve decoded review clips and technical-report draft |
+| v0.3 candidate | Locally trained and verified | Trajectory measurement audit, symmetric classifier, four purged development folds, provisional CSV and updated twelve-clip review |
 
 ## Completed work: October 20, 2026
 
@@ -240,11 +242,69 @@ Verified the Drive project-folder handoff: the source ZIP, source-only notebook 
 - Keep the official scorer and public reference labels unchanged.
 - Record permission scope and follow competition data-use terms; the user's sharing authorization is not a general license for unrelated redistribution.
 
+### 14. Implemented the v0.2 audit/evaluation/review workflow
+
+Added `possession/quality.py`, `validation.py`, `stoppage.py`, `review.py`, `scripts/run_followup.py`, eight additional tests, a separate Colab notebook builder and `TECHNICAL_REPORT.md`. The original v0.1 prediction remains byte-identical. Fixed query budgeting to distribute a budget over the actual number of eligible blocks, including a single public evaluation window.
+
+**Quality audit:** scanned all 199,319 tactical and 164,488 broadcast tracking rows and homography rows. No malformed/nonsequential raw rows or singular/nonfinite matrices flagged valid were found. Flagged 31 tactical and 623 broadcast slot discontinuities above 3 m per frame, and three tactical observed-ball jumps above 5 m. These are diagnostic flags, not verified tracking errors. Found 16,033 tactical frames with simultaneous opposing phase support, plus 36 tag instances without team attribution. No automatic track repairs were applied.
+
+Scanned all compressed video packets: tactical has 199,319 and broadcast 164,487, matching their advertised video counts. Broadcast therefore genuinely has one fewer timestamped packet than tracking rows; the cause/cross-camera mapping is still unresolved. Full pixel decoding was not performed and broadcast fusion remains disabled.
+
+**Leakage safeguards:** training/evaluation sets use entire H/A/D runs. The development split contains 2,600 training frames and 3,839 evaluation frames, separated by 1,061 excluded frames (at least the requested 250-frame embargo). This already-inspected public footage is development evidence, not an untouched test. Model fitting ignores all labels excluded by the training mask; tests verify this.
+
+| Grouped development comparison | Spell F1 | Dead-ball F1 |
+|---|---:|---:|
+| Original evidence v1 | 0.3200 | 0.0000 |
+| Fixed multisecond stoppage candidate | 0.3200 | 0.0000 |
+| Separate grouped calibration | 0.2750 | 0.3458 |
+| Organizer smooth25 | 0.3111 | 0.3307 |
+| Organizer smooth125 | 0.2667 | 0.1603 |
+
+The stoppage candidate changes full-match outputs but offers no public-window improvement; it is not promoted. The trained candidate improves dead-ball detection while reducing the ranking metric; it is not promoted either. Full-public evidence v1 remains 0.3351 versus smooth125's 0.4242. Scores and development scopes are shown together rather than reusing the earlier 170-second result as if it were the new grouped split.
+
+**Query benchmark:** twelve 51-frame clips per policy, 24.48 seconds total, selected without labels. Boundary/source ranking finds clips with 47.22% erroneous frames versus entropy 44.61%, uniform 18.79%, and 33.17% mean over 30 random seeds. Random 5th–95th percentile range is 16.13%–49.29%; superiority is not established. Boundary ranking covers 11.90% of public errors and 4/20 true transitions. This measures error discovery, not correction, improved predictions, independent generalization or human time saved.
+
+**Review demo:** generated twelve private eight-second tactical snippets, checked all 2,412 output frames by decoding, and paired them with 492 pitch snapshots at 5 Hz. `data/experiments/blindspot-v2/review/index.html` synchronizes playback, pitch slots, observed ball and model support. Browser-local notes can be exported; no notes feed back into predictions. Independent human review has not been completed. JavaScript syntax and payload/frame alignment checks pass. Direct browser navigation to the local file was blocked by the browser URL policy; no workaround was attempted. The cloud experiment dashboard rendered successfully in Colab; local video interaction remains unverified in the browser.
+
+**Recovery:** each stage gets a completion marker only after its artifacts are hashed. Resume verifies source/config/input provenance and artifact hashes, recomputing corrupt or incomplete stages. Tests include interrupted stages, corrupt artifacts, truncated markers, leftover partial markers and changed source. The final source also avoids using fresh download modification times for tactical non-video inputs, allowing identical content to resume across Colab runtime resets when results are persisted. Default notebook storage remains temporary; optional Drive mounting is explicit and has not been authorized/executed in this run.
+
+Sixteen tests pass locally and in the final [Colab notebook](https://colab.research.google.com/drive/1jwU7f82AWzfRVmFEnpZ3-HgsdSOvayWo). All nine cells completed: verified source/input downloads, tests, the tracking-only pipeline, CSV validation, grouped score/hash readback, dashboard rendering and archive download. Both label-free CSV hashes match local output exactly. The final local pipeline also completed, followed by a successful resume reusing all five verified stages. Source ZIP SHA256 is `bffffe793ec3b4a609fd0cc4c08ec6fafbeaa06b076e5dfdf14325125c636216`; the original v0.1 bundle remains unchanged. The final source ZIP contains 47 allowlisted source/public-reference files and no match inputs, videos or generated outputs.
+
+Saved cloud readback in ignored `colab-verification.json` and screenshot `colab-v02-proof.png`; packaged local artifacts in `data/experiments/BlindSpot_v02_results.zip`. Match-derived outputs and clips remain ignored under `data/`; only the allowlisted source/public-benchmark bundle and documentation are handed to the existing project folder. No GPU was purchased, private truth accessed, or final submission made. Archive-relative links in Colab's HTML preview are for the downloaded/extracted result folder; the default cloud package has no video. The original intermediate v0.2 notebook was retained, and the final URL above is the verified handoff.
+
+### 15. Built and evaluated the v0.3 submission candidate
+
+Added `possession/metric_features.py`, `possession/champion.py`, `configs/champion_v3.json`, `scripts/run_champion.py`, a separate v0.3 Colab builder, pinned CPU/video requirements and `scripts/build_candidate_review.py`. The current submission-oriented technical draft is `SUBMISSION_TECHNICAL.md`; earlier documents/results are retained. Official scoring and reference labels remain unchanged. No broad parameter search was performed.
+
+**Important correction to the initial speed interpretation:** metadata declares the speed channel as kph, so a pilot divided by 3.6 before filtering. That pilot improved the public score but the physical interpretation was wrong: displacement checks show that the values empirically resemble m/s. Three gameplay windows have median raw/displacement ratios about 0.995 with correlations 0.939–0.964. The final sampled audit uses 100,880 pairs: median ratio 0.99698, correlation 0.96253, median absolute error 0.113 m/s treating raw values as m/s versus 1.145 after the declared kph conversion. Do not repeat the earlier claim that v1 definitely confused kph and m/s. The confirmed issue is inconsistent metadata and the need to validate measurement semantics.
+
+The metadata-scaling pilot (including its source, predictions and scores) was preserved under ignored `data/experiments/blindspot-v3-metadata-pilot/`. Its pooled classifier score 0.4914 is **not** the trajectory-based result and is not used as the current headline. The final pipeline derives speed from six-frame position displacement, rejects missing/jumping slot windows, resets across halves and keeps physical units explicit. The conservative maximum feature context radius is 130 frames; training embargo is 300 frames. Increasing the earlier 250-frame guard to 300 changed none of the four training masks because whole neighbouring runs were already excluded.
+
+Also fixed an unreachable restart-ownership branch by using a separate new event parser: team restart ownership stays weak and separate from whether play is live. Added tests for unit conversion order, unknown units, trajectory continuity, restart ownership/N/A, complete-run purging, excluded-label isolation, probability team symmetry, hierarchical live/team decoding and conservative kickoff metadata. All 26 tests pass locally.
+
+**Fixed methods evaluated:** trajectory-feature legacy architecture; two-component unlabelled movement-regime inference; and an 80-iteration symmetric histogram gradient boosting classifier with factorized live/dead and team decoding. Four contiguous folds retain entire H/A/D runs and exclude neighbouring training runs. Models decode unlabelled halves without reference-label clamping at fold boundaries. Per-IoU match counts are pooled across folds; a stitched cross-fitted sequence is not scored.
+
+| Same four-fold development scope | Spell F1 | Macro F1 | Dead-ball F1 |
+|---|---:|---:|---:|
+| Cross-fitted symmetric classifier | 0.4457 | 0.7484 | 0.6619 |
+| Unlabelled movement-regime model | 0.3524 | 0.7343 | 0.6733 |
+| Historical v1 | 0.3200 | 0.4986 | 0.0000 |
+| Organizer smooth125 | 0.3889 | 0.5812 | 0.1464 |
+| Organizer smooth50 | 0.3043 | 0.6207 | 0.3225 |
+
+Classifier fold spell F1 is 0.4000, 1.0000, 0.2400 and 0.3556, versus smooth125's 0.3636, 0.8667, 0.1333 and 0.3600. Omitting any one evaluation block retains a positive pooled difference (+0.0377 to +0.0769). This is sensitivity analysis, not a statistical guarantee: the sample is tiny, previously inspected and from one match, and training sets overlap. Unsegmented full-public label-free motion spell F1 is 0.3610 versus smooth125 0.4242; trajectory-feature v1 alone remains 0.3351. Do not compare pooled fold scores with unsegmented sample scores as if they shared a scope.
+
+The provisional exported classifier fits **all public labels** after cross-fitting. Its training-window performance is stored separately as descriptive only. Candidate `data/experiments/blindspot-v3/candidate/CoreOrigin.csv` passes the official 199,319-row validator, SHA256 `17721e1c3c58f0d211cb46ed0e2893d7aaa589b452ac0da00df909e7f758d16d`. The user confirmed the registered team name **CoreOrigin**. BlindSpot remains the project/model name; the candidate CSV is CoreOrigin.csv. Candidate selection/final submission remains provisional; no private truth was accessed or competition form submitted.
+
+Added coverage audit, 1%–99% training-feature envelope flags, related-model disagreement, fixed artificial-gap stress test and leave-one-evaluation-block sensitivity. These are diagnostics, not calibrated confidence or natural-gap accuracy. A conservative public kickoff-anchor prior marks 2,908 second-half pre-kickoff frames dead, stopping one second short of the observed anchor. Independent video control/contact recognition is not claimed.
+
+Built an updated private review lab for the new candidate: twelve clips, 2,412 decoded/verified frames and 492 synchronized pitch snapshots. Queries use model disagreement/uncertainty rather than known error labels. The local candidate viewer has not been browser-interaction tested because the earlier file-URL policy block remains in force. The local pipeline rerun reused all five hash-verified stages. Final Colab verification and the source-package handoff are complete; see section 16. Source has not been committed/pushed by this run.
+
 ## Remaining work
 
 ### Next implementation steps
 
-- [ ] Extend the implemented gap/coverage audit with suspicious jumps, slot discontinuities, and tag conflicts.
+- [x] Extend the implemented gap/coverage audit with suspicious jumps, slot discontinuities, and tag conflicts.
 - [x] Implement initial competing H/A/D state histories and model-relative ambiguity; full physical ball-region histories remain planned.
 - [ ] Evaluate camera/visibility evidence on separated clips and naturally missing-ball intervals before treating it as useful to possession.
 - [x] Build a canonical cached frame representation with missing-value masks and metadata.
@@ -254,20 +314,33 @@ Verified the Drive project-folder handoff: the source ZIP, source-only notebook 
 - [ ] Compare hysteresis with a small temporal decoder and run ablations.
 - [x] Add transition/query plans and local scene-motion diagnostics; full video overlays/contact recognition remain planned.
 - [ ] Decide whether further annotations, learned models, or local video recovery are justified.
+- [x] Compare label-independent review queries against fixed-budget controls; retain uncertainty about significance.
+- [x] Build the synchronized local video/pitch review lab and exportable development-review notes.
+- [ ] Complete an independent reviewer study/additional permitted validation labels; measure correction or time saved only after actual reviews.
+- [x] Add a trajectory measurement consistency audit and symmetric supervised candidate with purged cross-fitting.
+- [x] Prepare a reproducible provisional candidate CSV, fold/coverage diagnostics and a current submission technical draft.
 
 ### Unresolved issues and optional verification
 
-- [ ] Investigate broadcast's one-frame count discrepancy before using broadcast fusion.
+- [ ] Explain broadcast's confirmed one-packet/row discrepancy and establish camera synchronization before fusion.
 - [ ] Full video decode/integrity scan, only if needed; sampled checks are the current evidence.
 - [x] Verify Colab source/input checksums and exact prediction CSV hash parity with the local run.
 - [ ] Decide whether the earlier partial Drive copy should be retained; no deletion has been requested.
 
-### Submission work, not started
+### Submission release work
 
 - [ ] Select and freeze a defensible algorithm/configuration.
-- [ ] Generate and validate the final 199,319-row team-named CSV.
+- [x] Generate and validate the 199,319-row CoreOrigin.csv development candidate; final release selection remains pending.
 - [x] Pin Colab dependencies and document one-command reproduction for v0.1; freeze the final submission configuration later.
-- [ ] Write the short technical submission document.
+- [x] Prepare a technical report draft; finalize it only after model selection and reproduction freeze.
 - [ ] Verify reproduction and final artifact hashes before submission.
 
 The repository lists November 17, 2026 as the deadline. Confirm the organizer's current submission instructions before final submission.
+
+### 16. CoreOrigin naming and clean-runtime verification
+
+Registered team name confirmed by the user: **CoreOrigin**. Updated the candidate export, review loader, notebook validator and reproduction commands to CoreOrigin.csv. The earlier filename is retained locally under naming-history; the prediction bytes are unchanged. The initial clean Colab test run exposed a test fixture that depended on an existing data/test-tmp directory. Tests now create their own temporary parent independently, and notebook subprocess cells print captured diagnostics before raising. All 26 local tests pass after the repair. The corrected source package was then run in a fresh Colab CPU session: all nine code cells completed, all 26 tests passed, and all 11 prediction/risk CSV hashes exactly match the local run. Source and all four tactical input checksums were verified. No GPU purchase or Drive mount was required.
+
+The verified notebook is https://colab.research.google.com/drive/1U_fNZ-9AK-B-Bzq_-tx_HzurAMgThFNz . The frozen 58-file source/public-benchmark ZIP has SHA256 `8d73f162950880b8fae4e0270826d5ac15ec8386401f8e274e919751dd3231ec`; later verification logs/documentation are updated separately, leaving that snapshot intact. The source package, notebook and current technical/reproduction documents were handed off in the existing Drive project folder under tanmaysahu392001@gmail.com. Restricted predictions, models and review clips remain local.
+
+Organized `data/submissions/CoreOrigin-v03/` with CoreOrigin.csv, CoreOrigin.md, the frozen source ZIP, notebook, handoff README and hash manifest. Refreshed the twelve-clipped candidate review; all clips decode to the expected 201 frames, totaling 2,412 verified frames and 492 pitch snapshots. Embedded viewer JavaScript passes Node syntax checking; browser interaction with local file URLs remains unverified because of the existing policy block. Checkpoint resume again reused all five stages after hash verification. Independent validation, final release selection, source publication and organizer submission remain unfinished.

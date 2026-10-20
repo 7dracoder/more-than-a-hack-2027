@@ -8,9 +8,29 @@ and verified progress/results in [WORK_DONE.md](WORK_DONE.md). The organizer's s
 official scorer below remain unchanged.
 
 ```bash
+pip install -r requirements-v3.txt
 python -m unittest discover -s tests -v
-python scripts/run_experiment.py --ablations --train-public
+python scripts/run_champion.py --resume --archive
 ```
+
+Registered team: **CoreOrigin**; project/model: **BlindSpot**. The team-named technical draft is
+[CoreOrigin.md](CoreOrigin.md), and the candidate is generated under the ignored local data directory.
+The current CPU notebook is [BlindSpot v0.3 on Colab](https://colab.research.google.com/drive/1U_fNZ-9AK-B-Bzq_-tx_HzurAMgThFNz).
+
+The current v0.3 candidate uses trajectory-based movement, symmetric CPU training,
+separate live/dead and team decoding, and purged development folds. See the current
+[submission technical draft](SUBMISSION_TECHNICAL.md). The public sample is too small
+to establish full-match ranking. Earlier experiment commands remain in IMPLEMENTATION.md.
+
+The v0.2 follow-up adds tracking/video audits, whole-possession development splits,
+query benchmarks, checkpoints and a synchronized private review lab:
+
+```bash
+python scripts/run_followup.py --resume --packets --review-video --archive
+```
+
+Video work needs the optional PyAV/OpenCV dependencies. Omit `--review-video --packets`
+for the tracking-only cloud workflow. [Technical report draft](TECHNICAL_REPORT.md).
 
 **Organised by [Metrica Sports](https://metrica-sports.com), [FC Barcelona](https://www.fcbarcelona.com)
 and the [Mobile World Capital Barcelona](https://www.mwcbarcelona.com)**, at the Talent Arena in Barcelona.

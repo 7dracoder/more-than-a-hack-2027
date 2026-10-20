@@ -1,0 +1,3 @@
+-r requirements-v3.txt
+# Optional local clip extraction/review only.
+av==17.0.0

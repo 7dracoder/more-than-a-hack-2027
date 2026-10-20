@@ -19,6 +19,18 @@ def sha256(path):
     return h.hexdigest()
 
 
+def load_cached_arrays(cache, metadata, fingerprint):
+    """A cache is disposable: corruption or changed code must cause a rebuild."""
+    try:
+        meta = json.loads(Path(metadata).read_text())
+        if meta.get('fingerprint') != fingerprint or meta.get('cache_sha256') != sha256(cache):
+            return None
+        with np.load(cache, allow_pickle=False) as stored:
+            return {key: stored[key] for key in stored.files}, meta
+    except (OSError, ValueError, EOFError):
+        return None
+
+
 def rolling_mean(values, width):
     """Centered finite-only mean; callers split halves before temporal inference."""
     values = np.asarray(values, dtype=float)
@@ -109,11 +121,11 @@ def extract(data_dir, cache_dir, rebuild=False):
     cache_dir.mkdir(parents=True, exist_ok=True)
     cache = cache_dir / "features-v1.npz"
     metadata = cache_dir / "features-v1.json"
-    if not rebuild and cache.exists() and metadata.exists():
-        old = json.loads(metadata.read_text())
-        if old.get("input_sha256") == fingerprints:
-            with np.load(cache) as z:
-                return {key: z[key] for key in z.files}, old
+    fingerprint = {'inputs': fingerprints, 'extractor_sha256': sha256(__file__),
+                   'game_constants_sha256': sha256(Path(__file__).resolve().parents[1] / 'games.py')}
+    cached = None if rebuild else load_cached_arrays(cache, metadata, fingerprint)
+    if cached is not None:
+        return cached
 
     n, fps = GAMES[GAME]["n_video_frames"], GAMES[GAME]["fps"]
     pitch = np.asarray(GAMES[GAME]["pitch"])
@@ -161,6 +173,7 @@ def extract(data_dir, cache_dir, rebuild=False):
     meta = {"input_sha256": fingerprints, "n_frames": n, "fps": fps, "track_slots": len(teams),
             "pitch_m": pitch.tolist(), "tagging": tag_meta, "feature_version": 1}
     np.savez_compressed(cache, **arrays)
+    meta.update(fingerprint=fingerprint, cache_sha256=sha256(cache))
     metadata.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
     return arrays, meta
 

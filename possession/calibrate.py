@@ -60,16 +60,20 @@ def fit_logistic(x, y, balanced=False, nonnegative=False, epochs=400):
     return weights
 
 
-def fit(arrays, config, labels, start, stop):
+def fit(arrays, config, labels, start, stop, train_mask=None):
     dead, team = design(arrays, config)
     indices = np.arange(start, stop)
+    if train_mask is not None:
+        indices = indices[np.asarray(train_mask, dtype=bool)[indices]]
+    if len(indices) == 0:
+        raise ValueError("No training frames")
     if not np.isin(labels[indices], ["H", "A", "D"]).all():
         raise ValueError("Cannot train on unlabeled/X frames")
     alive = np.isin(labels[indices], ["H", "A"])
     dead_weights = fit_logistic(dead[indices], (labels[indices] == "D").astype(float), balanced=True)
     team_weights = fit_logistic(team[indices][alive], (labels[indices][alive] == "H").astype(float), nonnegative=True)
     return {"kind": "regularized_logistic_two_head", "train_first_frame": start,
-            "train_stop_exclusive": stop, "n_train_frames": stop - start,
+            "train_stop_exclusive": stop, "n_train_frames": len(indices),
             "dead_feature_names": DEAD_NAMES, "team_feature_names": ["geometry", "tag"],
             "dead_weights": dead_weights.tolist(), "team_weights": team_weights.tolist(),
             "epochs": 400, "l2": .02, "class_balanced_dead": True,

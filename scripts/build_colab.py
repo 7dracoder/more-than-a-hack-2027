@@ -24,12 +24,13 @@ def digest(path):
 
 
 def bundle(target):
-    selected = [ROOT / name for name in ("games.py", "requirements.txt", "requirements-colab.txt",
+    selected = [ROOT / name for name in ("games.py", "requirements.txt", "requirements-colab.txt", "requirements-v3.txt", "requirements-v3-video.txt",
                                          "README.md", "RESEARCH.md", "WORK_DONE.md", "LICENSE",
-                                         "DATA.md", "EVALUATION.md", "CHALLENGE.md", "RULES.md", "IMPLEMENTATION.md")]
+                                         "DATA.md", "EVALUATION.md", "CHALLENGE.md", "RULES.md", "IMPLEMENTATION.md", "TECHNICAL_REPORT.md", "SUBMISSION_TECHNICAL.md", "CoreOrigin.md")]
     for folder in ("possession", "scripts", "tests", "starter", "evaluation"):
         selected.extend((ROOT / folder).glob("*.py"))
     selected.extend((ROOT / "configs").glob("*.json"))
+    selected.extend((ROOT / "tests").glob("*.js"))
     selected.extend((ROOT / "evaluation/gt").glob("*_public*"))
     selected.extend((ROOT / "evaluation/results").glob("baseline_*.csv"))
     with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED) as archive:
