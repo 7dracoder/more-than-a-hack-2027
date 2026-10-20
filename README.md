@@ -1,5 +1,17 @@
 # More than a Hack 2027 — Phase 1: Ball Possession
 
+## Our research implementation
+
+The custom **BlindSpot** pipeline, Colab notebook, tests, and evidence report are documented in
+[IMPLEMENTATION.md](IMPLEMENTATION.md). Research directions live in [RESEARCH.md](RESEARCH.md),
+and verified progress/results in [WORK_DONE.md](WORK_DONE.md). The organizer's starter code and
+official scorer below remain unchanged.
+
+```bash
+python -m unittest discover -s tests -v
+python scripts/run_experiment.py --ablations --train-public
+```
+
 **Organised by [Metrica Sports](https://metrica-sports.com), [FC Barcelona](https://www.fcbarcelona.com)
 and the [Mobile World Capital Barcelona](https://www.mwcbarcelona.com)**, at the Talent Arena in Barcelona.
 

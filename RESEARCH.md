@@ -2,7 +2,7 @@
 
 Last researched: October 20, 2026 (America/New_York).
 
-This document records what could be implemented, the evidence behind each direction, and the order in which to investigate it. **The proposed solution components below are not implemented yet.** Completed work and actual results belong in [WORK_DONE.md](WORK_DONE.md).
+This document records research directions, their evidence, and the order in which to investigate them. **A first implementation now runs locally and on Colab:** see [IMPLEMENTATION.md](IMPLEMENTATION.md) and [WORK_DONE.md](WORK_DONE.md). Roadmap items are proposals unless those implementation records explicitly mark them complete; the full physical-history/visual-contact system remains a research goal.
 
 ## 1. Recommendation
 
@@ -407,7 +407,7 @@ The candidate distinction is the joint treatment of label agreement, observation
 
 ## 12. Compute and training plan
 
-Added October 20, 2026 after the user expressed concern about local compute capacity. **Recommended starting environment: Google Colab, with Drive storage and ordinary Python/PyTorch execution.** No cloud runtime has been provisioned, no paid plan purchased, and no training notebook or trained possession model has been created yet.
+Added October 20, 2026 after the user expressed concern about local compute capacity. **Recommended starting environment: Google Colab, with Drive storage and ordinary Python execution.** This plan has now been exercised: the CPU-first notebook, small calibration training experiment, tests, and inference run succeeded in Colab. No paid plan was purchased or GPU requested. PyTorch is not required by the current version.
 
 [Google's Colab overview](https://developers.google.com/colab) confirms hosted notebooks, GPU access, and Drive integration. The user's PC can act as the browser client for cloud runs.
 
@@ -428,3 +428,13 @@ Proposed workflow: keep code/configuration versioned; mount the existing organiz
 The repository distinguishes ordinary model use from disclosing restricted assets to hosted LLMs. Run data processing/training as code, and do not place restricted video, tracking extracts, or confidential outputs into Colab's Gemini/chat features unless separately authorized. The user's sharing permission is recorded; its scope should not be silently expanded to unrelated services.
 
 [Kaggle Notebooks](https://www.kaggle.com/docs/notebooks) are a possible secondary environment with GPU access and resource quotas, but adding a second data copy is unnecessary at the start. Prefer Colab because the organized data is already in the user's Drive.
+
+## 13. First implementation findings
+
+The first pipeline and a temporally separated calibration experiment have run locally and in Colab. All prediction CSV hashes match between the two environments. Eight correctness/invariance tests pass in both. The cloud run completed in approximately 60 seconds without a GPU; four optional visual-motion queries were additionally measured locally.
+
+The current implementation retains sampled H/A/D state histories and exposes model-relative marginals, source sensitivity, 137 missing-ball gap records, boundary evidence, and budgeted query/control plans. It does not yet implement exhaustive physical ball-region reasoning or a trained visual control/contact recognizer. Its visual measurements are diagnostic rather than label corrections.
+
+Full public-window spellF1 is 0.3351 versus 0.3256 for organizer smooth50 and 0.4242 for organizer smooth125. In the later 170-second block, the label-free model scores 0.4000 versus 0.3579 for smooth125. The learned calibration candidate scores 0.3556 on that later block and remains a separate, unpromoted experiment. These are tiny, same-match comparisons; they do not establish hidden-match improvement.
+
+The initial public ablations do not demonstrate benefit from camera evidence or Smart Tagging. Keep them visible in the research record rather than presenting them as successful innovations. The immediate empirical priorities are dead-ball discrimination, boundary timing, and whether disagreement-driven video queries outperform equal-budget controls. See IMPLEMENTATION.md for actual commands, evaluation scopes, and artifact definitions.

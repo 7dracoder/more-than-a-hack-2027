@@ -31,9 +31,11 @@ These instructions define how to maintain the log during work; this file is not 
 | Drive upload to requested account | File-presence readback complete | Nine canonical asset names visible with expected rounded sizes; no cloud content-hash comparison |
 | Public folder sharing | Complete | Anyone with the link, Viewer; owner is requested account |
 | Initial research and roadmap | Complete | Primary-source findings and prioritized proposals in RESEARCH.md |
+| Colab execution | Verified complete | All eight cells executed; tests and inference succeeded; every prediction CSV hash matches local output |
 | Frontier research extension | Research brief and small probe complete | Competing-history possession proposal; camera-framing signal measured; full method not implemented |
-| Custom possession algorithm | Not implemented | Only the organizer's starter algorithms exist |
-| New model training / final submission | Not started | No claimed improvement over the organizer baseline |
+| Custom possession algorithm | First implementation complete locally | Label-free model, exact sequence inference, alternative state histories, evidence/query diagnostics; see IMPLEMENTATION.md |
+| New model training | Small calibration experiment executed | Early 120-second training block; later 170-second evaluation with 10-second buffer; candidate not promoted |
+| Final competition submission | Not selected or submitted | No hidden-match score or winning-performance claim |
 
 ## Completed work: October 20, 2026
 
@@ -189,6 +191,44 @@ Checked official Colab overview/FAQ and Kaggle notebook documentation after the 
 
 No paid service was purchased, cloud training job launched, or Colab notebook created. The approximately 16 GB GPU suggestion is a starting engineering target for a compact model, not a profiled requirement. The local baseline and research probe already run successfully without a GPU.
 
+### 11. Implemented the first complete research pipeline
+
+Added `possession/` with streamed, fingerprinted feature extraction; reviewed tag evidence; interpretable H/A/D potentials; independent per-half Viterbi and forward/backward inference; deterministic posterior history sampling; source ablations; gap-history records; boundary ambiguity records; and label-independent visual-query selection with control policies. Added `configs/evidence_v1.json` and `scripts/run_experiment.py` to reproduce the run.
+
+Added optional camera-compensated optical-flow scene-motion diagnostics in `possession/visual.py`. Four selected queries were measured successfully. These are not a trained ball/contact recognizer, do not establish team ownership, and are not injected into the final prediction.
+
+Added a small regularized logistic calibration experiment. It fits only frames 11185–14184; frames 14185–14434 form a buffer; frames 14435–18684 are the later same-match evaluation block. The label-free model is produced before ground-truth evaluation. A regression test confirms that changing labels outside the training interval cannot change the fitted model.
+
+Initial measured public spellF1: label-free 0.3351, without tags 0.3487, without camera 0.3351, lower switch cost 0.2927, higher switch cost 0.3086. These are fixed ablations, not a tuned winner search. Organizer smooth50 scores 0.3256 and smooth125 scores 0.4242 on the full public window.
+
+On the later 170-second block, label-free spellF1 is 0.4000, calibration 0.3556, organizer smooth50 0.2923, and organizer smooth125 0.3579. Calibration's five-minute score is 0.3097 and includes training frames; it is not held-out evidence. Kept calibration as a separate candidate, with the main CSV remaining label-free. Public-only differences are exploratory; no hidden-match performance claim is supported.
+
+Added eight mathematical/invariance tests. They pass locally, including exhaustive decoder/posterior comparison, repeated sampling, slot-order invariance, team symmetry, halftime reset, zero query budgets, missingness handling, and calibration training-label isolation. The first complete local run wrote validated full-length CSVs, metrics, model weights, query plans, visual measurements, and an interactive HTML report under ignored `data/experiments/blindspot-v1/`.
+
+Added IMPLEMENTATION.md with commands, component scope, actual results, limitations, and output descriptions. The physical ball-region hypothesis search, calibrated correctness guarantees, trained visual contact recognition, and a demonstrated query-efficiency advantage remain unimplemented research goals.
+
+### 12. Prepared Colab execution artifacts
+
+Inspected the user's open Colab page and confirmed the requested Google account. Created a dedicated notebook shell. The official Colab CLI documents Windows as unsupported, so used the supported browser workflow instead of installing it.
+
+Added `scripts/build_colab.py` and generated `notebooks/BlindSpot_Colab.ipynb` plus an ignored source/public-benchmark ZIP. The bundle excludes match inputs, private ground truth, credentials, and generated match predictions. The notebook verifies source and input hashes, downloads only four tactical non-video assets, runs tests and the experiment, validates the CSV, displays the report, and offers result archive download. Default execution is CPU; no paid GPU is requested.
+
+Colab execution verification was initially pending; the completion/readback below supersedes that state.
+
+### 13. Verified the implementation in Colab and the browser
+
+Uploaded the checksum-pinned source-only ZIP to the requested Drive account's `project/` folder and opened [BlindSpot_Colab.ipynb](https://colab.research.google.com/drive/1w6y-eYSDECPtd_Qe-aRMkNW_A6-_80oK). Ran all eight code cells on an ordinary CPU runtime. Source and all four tactical non-video asset checksums passed; the tests returned success; the full ablation/calibration run and CSV validator completed with return code zero; the interactive report rendered; and the result-archive download cell executed.
+
+The source bundle is a versioned execution snapshot at [project/](https://drive.google.com/drive/folders/1odV1-SQAg2OcbVBi6A0TS5G_zyG5IEtf), and contains code plus public benchmark files, not the raw match dataset or credentials. The running notebook is owned by the requested account; no notebook-publication action was performed. Its bootstrap uses existing public file access and does not mount or grant new access to unrelated Drive files.
+
+Read the cloud manifest from the rendered report and saved it locally as `data/experiments/blindspot-v1/colab-manifest.json`. The cloud run used Python 3.13.16, NumPy 2.2.6, and pandas 2.2.3 and took 59.568 seconds. The local run used Python 3.11.1, NumPy 2.4.3, and pandas 3.0.1. All seven prediction-output hashes, including the main CSV, match exactly across environments. Main CSV SHA-256: `0128b44306c2c4d51fd7afaafb943d82ed88159558da2552b21ef262e114605b`.
+
+Verified report navigation in a browser: Next ambiguous moment moved the timeline to the selected query interval, and the score tables and provenance rendered correctly. Saved `report-preview.png` and `colab-proof.png` with the local outputs. The localhost preview required sandbox-approved localhost network access; no public preview server was deployed. No purchase or GPU allocation was made.
+
+The optional trained calibration is a real, completed CPU training experiment; it did not improve the held-out interval score. The functioning infrastructure and reproducibility are verified. Exceeding the best five-minute baseline or winning the private evaluation remains unproven.
+
+Verified the Drive project-folder handoff: the source ZIP, source-only notebook copy, IMPLEMENTATION.md, RESEARCH.md, and WORK_DONE.md showed completed uploads. Packaged the local run, screenshots, and cloud-manifest evidence into ignored `data/experiments/BlindSpot_results_local.zip`. Stopped both temporary localhost preview servers after browser verification.
+
 ## Decisions and constraints to carry forward
 
 - Use tactical video frames as the reference throughout.
@@ -204,29 +244,29 @@ No paid service was purchased, cloud training job launched, or Colab notebook cr
 
 ### Next implementation steps
 
-- [ ] Produce a detailed quality audit: missing-ball gap distributions, suspicious jumps, slot discontinuities, and tag conflicts.
-- [ ] Prototype and compare competing possession histories, as specified in RESEARCH.md section 11, after establishing the interpretable reference.
+- [ ] Extend the implemented gap/coverage audit with suspicious jumps, slot discontinuities, and tag conflicts.
+- [x] Implement initial competing H/A/D state histories and model-relative ambiguity; full physical ball-region histories remain planned.
 - [ ] Evaluate camera/visibility evidence on separated clips and naturally missing-ball intervals before treating it as useful to possession.
-- [ ] Build a canonical cached frame representation with explicit masks and metadata.
-- [ ] Implement the first control-aware rule/state-machine baseline.
-- [ ] Add and compare separate live/dead evidence.
-- [ ] Review Smart Tagging code-to-possession mappings before using them.
+- [x] Build a canonical cached frame representation with missing-value masks and metadata.
+- [x] Implement the first interpretable geometry/control-evidence model with sequence decoding.
+- [x] Implement live/dead evidence and the separately trained calibration comparison; improvement remains needed.
+- [x] Map offensive/defensive/restart Smart Tagging codes explicitly and preserve N/A.
 - [ ] Compare hysteresis with a small temporal decoder and run ablations.
-- [ ] Add synchronized transition-focused video diagnostics.
+- [x] Add transition/query plans and local scene-motion diagnostics; full video overlays/contact recognition remain planned.
 - [ ] Decide whether further annotations, learned models, or local video recovery are justified.
 
 ### Unresolved issues and optional verification
 
 - [ ] Investigate broadcast's one-frame count discrepancy before using broadcast fusion.
 - [ ] Full video decode/integrity scan, only if needed; sampled checks are the current evidence.
-- [ ] Stronger cloud integrity verification if exact checksum parity is needed.
+- [x] Verify Colab source/input checksums and exact prediction CSV hash parity with the local run.
 - [ ] Decide whether the earlier partial Drive copy should be retained; no deletion has been requested.
 
 ### Submission work, not started
 
 - [ ] Select and freeze a defensible algorithm/configuration.
 - [ ] Generate and validate the final 199,319-row team-named CSV.
-- [ ] Pin dependencies and document one-command reproduction.
+- [x] Pin Colab dependencies and document one-command reproduction for v0.1; freeze the final submission configuration later.
 - [ ] Write the short technical submission document.
 - [ ] Verify reproduction and final artifact hashes before submission.
 
