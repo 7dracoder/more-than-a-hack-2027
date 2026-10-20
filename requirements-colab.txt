@@ -1,0 +1,5 @@
+# Tested baseline dependencies remain numpy/pandas. Optional local video queries:
+-r requirements.txt
+av==16.0.1
+opencv-python-headless==4.11.0.86
+gdown==5.2.0

@@ -1,0 +1,14 @@
+{
+  "name": "evidence_v1",
+  "step": 5,
+  "team_switch_cost": 6.0,
+  "stoppage_switch_cost": 4.0,
+  "tag_weight": 1.8,
+  "geometry_weight": 2.4,
+  "camera_weight": 0.12,
+  "history_samples": 8,
+  "seed": 2027,
+  "query_budget": 12,
+  "query_spacing_seconds": 8,
+  "visual_weight": 0.2
+}
