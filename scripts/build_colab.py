@@ -26,7 +26,7 @@ def digest(path):
 def bundle(target):
     selected = [ROOT / name for name in ("games.py", "requirements.txt", "requirements-colab.txt", "requirements-v3.txt", "requirements-v3-video.txt",
                                          "README.md", "RESEARCH.md", "WORK_DONE.md", "LICENSE",
-                                         "DATA.md", "EVALUATION.md", "CHALLENGE.md", "RULES.md", "IMPLEMENTATION.md", "TECHNICAL_REPORT.md", "SUBMISSION_TECHNICAL.md", "CoreOrigin.md")]
+                                         "DATA.md", "EVALUATION.md", "CHALLENGE.md", "RULES.md", "IMPLEMENTATION.md", "TECHNICAL_REPORT.md", "SUBMISSION_TECHNICAL.md", "CoreOrigin.md", "AUDIT.md")]
     for folder in ("possession", "scripts", "tests", "starter", "evaluation"):
         selected.extend((ROOT / folder).glob("*.py"))
     selected.extend((ROOT / "configs").glob("*.json"))

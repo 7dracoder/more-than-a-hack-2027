@@ -132,3 +132,12 @@ Focus on the dead-ball estimator and boundary timing, then measure whether bette
 The registered team name is CoreOrigin. The model/project remains BlindSpot. `CoreOrigin.md` is the team-named technical draft; `data/experiments/blindspot-v3/candidate/CoreOrigin.csv` is the full-match development candidate. A portable private handoff folder is `data/submissions/CoreOrigin-v03/`. The earlier filename is retained under the ignored experiment naming-history directory. Changing the filename did not change any prediction bytes.
 
 The immutable v0.3 source ZIP contains 58 source/public-benchmark files, SHA256 `8d73f162950880b8fae4e0270826d5ac15ec8386401f8e274e919751dd3231ec`. It contains no tactical assets, predictions, clips or fitted models. Later verification logs/documentation are maintained separately from that frozen snapshot. Current notebook: https://colab.research.google.com/drive/1U_fNZ-9AK-B-Bzq_-tx_HzurAMgThFNz .
+
+
+### Current audit revision: v0.3.1
+
+Read AUDIT.md for fixes, scope and two evaluation protocols. Run `python scripts/run_champion.py --config configs/champion_v031.json --out data/experiments/blindspot-v031 --resume`. Build the latest viewer with `python scripts/build_candidate_review.py --experiment data/experiments/blindspot-v031`. The experiment landing page is `data/experiments/index.html`.
+
+`python scripts/audit_revision.py` compares the frozen v3 outputs/models with the revised run and retrains both methods using fixed-time folds. It requires both experiment directories; the source bundle intentionally omits match-derived models and outputs. `python scripts/build_champion_colab.py --revision --bundle-id ID` creates a separate v031 source ZIP/notebook. Use `--reuse-bundle` when inserting an uploaded ZIP ID so the uploaded source checksum remains unchanged.
+
+The Python suite has 33 tests. The generated HTML is tested through a Node DOM test double when Node is installed; video files are independently decoded and counted. Real-browser interaction remains unverified because local browser file access is blocked.

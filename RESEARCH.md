@@ -466,3 +466,10 @@ The exported provisional model is refitted on all permitted public labels; its p
 ### v0.3 reproduction evidence
 
 CoreOrigin is the confirmed registered team. The trajectory-based v0.3 pipeline completed all nine cells on a fresh Colab CPU runtime, passed all 26 tests, and reproduced all 11 local prediction/risk CSV hashes exactly. Source and four asset checksums were verified. This establishes implementation reproduction across the local/Colab environments; it does not turn the previously inspected 17-possession public example into independent validation. The fixed four-fold classifier spell F1 remains 0.4457 versus same-fold smooth125 0.3889.
+
+
+## Audit revision and next evidence (21 October 2026)
+
+See AUDIT.md for the implemented audit fixes and fixed-protocol comparisons. Ownership resets and explicit observation features preserve the original whole-run spell F1 (0.4457), improve equal-duration fold spell F1 from 0.6100 to 0.6200, and slightly reduce dead-ball F1 (0.5974 to 0.5945). Four historical fold outputs reproduce exactly. These results use the same 7,500-frame public sample; changing the split does not create independent validation. The current development revision is v0.3.1, with the cloud-verified v0.3 snapshot retained as a reference.
+
+Prioritize an independent permitted validation set with fixed annotation rules and blinded scoring. Then assess boundary error and stoppage errors separately, and run a fixed-budget reviewer comparison to test whether queries save time without reducing review accuracy. Avoid another same-sample parameter search. The current review improvements are correctness/usability repairs, not a measured human-productivity gain. Video contact recognition and calibrated joint state uncertainty remain future work.

@@ -2,6 +2,8 @@
 
 ## Our research implementation
 
+**Current development revision: v0.3.1.** See [AUDIT.md](AUDIT.md) for repaired issues and both evaluation protocols. Local entry point: `data/experiments/index.html`; the v2 viewer is historical. The frozen v0.3 release remains available for comparison.
+
 The custom **BlindSpot** pipeline, Colab notebook, tests, and evidence report are documented in
 [IMPLEMENTATION.md](IMPLEMENTATION.md). Research directions live in [RESEARCH.md](RESEARCH.md),
 and verified progress/results in [WORK_DONE.md](WORK_DONE.md). The organizer's starter code and
@@ -10,14 +12,15 @@ official scorer below remain unchanged.
 ```bash
 pip install -r requirements-v3.txt
 python -m unittest discover -s tests -v
-python scripts/run_champion.py --resume --archive
+python scripts/run_champion.py --config configs/champion_v031.json --out data/experiments/blindspot-v031 --resume --archive
 ```
 
 Registered team: **CoreOrigin**; project/model: **BlindSpot**. The team-named technical draft is
 [CoreOrigin.md](CoreOrigin.md), and the candidate is generated under the ignored local data directory.
-The current CPU notebook is [BlindSpot v0.3 on Colab](https://colab.research.google.com/drive/1U_fNZ-9AK-B-Bzq_-tx_HzurAMgThFNz).
+The current revision notebook is [BlindSpot v0.3.1 on Colab](https://colab.research.google.com/drive/1wDWukgnGF0N7u7ElmLmnSP4dolMgRKks).
+The frozen v0.3 CPU notebook is [BlindSpot v0.3 on Colab](https://colab.research.google.com/drive/1U_fNZ-9AK-B-Bzq_-tx_HzurAMgThFNz).
 
-The current v0.3 candidate uses trajectory-based movement, symmetric CPU training,
+The frozen v0.3 candidate uses trajectory-based movement, symmetric CPU training,
 separate live/dead and team decoding, and purged development folds. See the current
 [submission technical draft](SUBMISSION_TECHNICAL.md). The public sample is too small
 to establish full-match ranking. Earlier experiment commands remain in IMPLEMENTATION.md.
