@@ -166,3 +166,10 @@ See EXPERIMENTS_v05.md. possession/structure.py adds a fixed observed out-of-pit
 Run the six-group command in EXPERIMENTS_v05.md with --out data/experiments/blindspot-v05, then scripts/report_v04_results.py --experiment data/experiments/blindspot-v05. This preserves previous runs. All 57 tests and 48 independent fold rescores pass; the 24 baseline/contact/team-only controls reproduce v0.4.1 exactly. The best unsnapped structural variant scores 0.5111 / 0.6341 spell F1 and stays experimental under the existing release rule.
 
 scripts/build_v04_colab.py --structural creates data/drive-transfer/BlindSpot_v05_project.zip and notebooks/BlindSpot_v05_Colab.ipynb with matching source checksum, separate paths, fixed six-group comparison and conservative export selection. CPU is sufficient. Local notebook syntax and package checks do not establish cloud execution; v0.5 has not been cloud-run. Match-derived result CSVs and logs remain in the separate local evidence/handoff archives. The numerical source's original label-independence wording is qualified by the pre-score public-label inspection documented in EXPERIMENTS_v05.md.
+
+
+### v0.6 fixed architecture comparison
+
+The runner now includes v06_gated, v06_liveteam, v06_bagged, v06_accel and v06_combo. Their implementation is possession/v06.py; tests/test_v06.py verifies classifier parity, gates, symmetry and held-out-label exclusion. Individual sampling-offset probabilities are cached and averaged. Acceleration and contacts together use 94 unique inputs across their separate heads. EXPERIMENTS_v06.md lists all commands and measured outcomes.
+
+Build the matching v06 Colab source/notebook with scripts/build_v04_colab.py --advanced. Validate saved fold evidence with scripts/verify_v06_results.py. scripts/prepare_blind_validation.py creates a prediction-blind six-minute annotation plan; it creates no labels. The acceleration candidate remains experimental because fixed-time spell F1 does not improve over baseline. Cloud execution and pretrained PathCRF transfer remain unperformed.

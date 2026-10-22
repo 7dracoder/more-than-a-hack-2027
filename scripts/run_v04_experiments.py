@@ -12,6 +12,7 @@ Results are appended to EXPERIMENTS_v04.md (aggregate scores only, no match data
 
 Groups: baseline, contacts, asym, gap_out, ballmotion, shape, all, contacts_team_only,
         baseline_outplay, team_only_outplay, team_only_outplay_snap   (v0.5, possession/structure.py)
+        v06_gated, v06_liveteam, v06_bagged, v06_accel, v06_combo   (v0.6, possession/v06.py)
 """
 
 import argparse
@@ -34,6 +35,7 @@ from possession.metric_features import extract_metric, design, swap_teams
 from possession.event_features import FEATURE_VERSION, build, swap
 from possession.team_fusion import decode_team_only, team_only_inputs
 from possession import structure
+from possession import v06
 from possession.champion import (classifier_probability, decode_factorized, fit_classifier,
                                  purged_folds, fixed_time_folds)
 from scripts.run_champion import evaluate, pooled
@@ -62,6 +64,16 @@ GROUPS['team_only_outplay'] = GROUPS['contacts']
 GROUPS['team_only_outplay_snap'] = GROUPS['contacts']
 STRUCTURAL = {'baseline_outplay': ('baseline', False), 'team_only_outplay': ('contacts', False),
               'team_only_outplay_snap': ('contacts', True)}
+# v0.6 variants (possession/v06.py), all on top of team_only_outplay. Constants fixed before scoring.
+V06 = {
+    'v06_gated':    {'gate': True,  'live_team': False, 'bag': False, 'accel': False},
+    'v06_liveteam': {'gate': False, 'live_team': True,  'bag': False, 'accel': False},
+    'v06_bagged':   {'gate': False, 'live_team': False, 'bag': True,  'accel': False},
+    'v06_accel':    {'gate': False, 'live_team': False, 'bag': False, 'accel': True},
+    'v06_combo':    {'gate': True,  'live_team': True,  'bag': True,  'accel': True},
+}
+for _name in V06:
+    GROUPS[_name] = GROUPS['contacts']
 
 
 def raw_tracking():
@@ -170,7 +182,72 @@ class Setup:
             self._structural = hard, soft, structure.contact_series(self.events, self.event_names)
         return self._structural
 
+    # ------------------------------------------------------------------ v0.6
+    def v06_probability(self, kind, train_mask, offsets):
+        """Averaged probabilities over sampling offsets; cached per (kind, mask, offsets)."""
+        key = ('v06', kind, v06.mask_digest(train_mask), tuple(offsets))
+        if key in self.probability_cache:
+            return self.probability_cache[key]
+        if len(offsets) > 1:
+            members = [self.v06_probability(kind, train_mask, (offset,)) for offset in offsets]
+            result = (np.mean([p for p, _ in members], axis=0), members[0][1])
+            self.probability_cache[key] = result
+            return result
+        if kind == 'dead_accel':
+            if not hasattr(self, '_accel'):
+                self._accel = v06.acceleration_features(self.arrays)
+            extra, extra_names = self._accel
+            k = len(self.base_names)
+            matrix = np.column_stack([self.base, extra])
+            names = self.base_names + extra_names
+            team_swap = lambda m, _n: np.column_stack([swap_teams(m[:, :k], self.base_names), m[:, k:]])
+        else:
+            matrix, names, team_swap = self.matrix('baseline' if kind == 'dead' else 'contacts')
+        total = 0.
+        for offset in offsets:
+            if kind == 'live_team':
+                model = v06.fit_live_team(matrix, names, self.truth, train_mask, self.config, team_swap, offset)
+                total = total + v06.live_team_probability(model, matrix, names, team_swap)
+            else:
+                model = v06.fit_three_class(matrix, names, self.truth, train_mask, self.config, team_swap, offset)
+                total = total + v06.three_class_probability(model, matrix, names, team_swap)
+        result = (total / len(offsets), len(names))
+        self.probability_cache[key] = result
+        return result
+
+    def v06_predict(self, group, train_mask):
+        spec = V06[group]
+        offsets = v06.BAG_OFFSETS if spec['bag'] else (0,)
+        hard, soft, contacts = self.structural()
+        dead_p, n_dead = self.v06_probability('dead_accel' if spec['accel'] else 'dead', train_mask, offsets)
+        if spec['live_team']:
+            team_p, n_team = self.v06_probability('live_team', train_mask, offsets)
+            team = np.log(team_p.clip(1e-6, 1.) / team_p.clip(1e-6, 1.).sum(1)[:, None])
+        else:
+            team_p, n_team = self.v06_probability('contacts', train_mask, offsets)
+            team = team_only_inputs(dead_p, team_p)[1]
+        dead = structure.apply_dead_prior(dead_p[:, 2], hard, soft)
+        config = dict(self.config, history_samples=0)
+        if not getattr(self, '_v06_checked', False):
+            # Guard: the v0.6 decoder without gates must equal the v0.5 decoder on real inputs.
+            reference = decode_factorized(self.arrays, config, dead, team)[0]
+            if not np.array_equal(v06.decode(self.arrays, config, dead, team), reference):
+                raise ValueError('v0.6 decoder does not reproduce the v0.5 decoder without gates')
+            self._v06_checked = True
+        labels = v06.decode(self.arrays, config, dead, team, contacts if spec['gate'] else None)
+        self.last_prediction_audit = {'kind': 'v06', 'spec': spec, 'offsets': list(offsets),
+            'dead_features': n_dead, 'team_features': n_team, 'train_mask_sha256': v06.mask_digest(train_mask),
+            'out_of_play_hard_frames': int(hard.sum()), 'out_of_play_soft_frames': int(soft.sum()),
+            'constants': {'GATE_LOW_COST': v06.GATE_LOW_COST, 'GATE_DILATE_BINS': v06.GATE_DILATE_BINS,
+                          'team_switch_cost': self.config['team_switch_cost'],
+                          'structure': {k: getattr(structure, k) for k in ('OUT_MARGIN_M', 'KICK_SPEED_MPS',
+                                        'HOLD_CAP_FRAMES', 'HOLD_LOG_ODDS', 'HARD_DEAD_PROBABILITY')}}}
+        # Acceleration adds 16 inputs to baseline; contacts adds 10 disjoint inputs.
+        return labels, n_team + (n_dead - len(self.base_names))
+
     def predict(self, group, train_mask):
+        if group in V06:
+            return self.v06_predict(group, train_mask)
         if group in STRUCTURAL:
             team_group, snap = STRUCTURAL[group]
             hard, soft, contacts = self.structural()

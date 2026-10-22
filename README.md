@@ -2,6 +2,8 @@
 
 ## Our research implementation
 
+The [v0.6 architecture comparison](EXPERIMENTS_v06.md) evaluates five further approaches. Collective acceleration reaches **0.5765 whole-run spell F1**, our highest measured whole-run score, while fixed-time remains **0.6200**. None clears the two-protocol release rule. All 65 tests pass; a six-minute blinded annotation plan is prepared. Local results: `data/experiments/blindspot-v06/index.html`.
+
 The [v0.5 structural changes](EXPERIMENTS_v05.md) have been rerun and checked: team-only contacts plus the out-of-play prior scores **0.5111 / 0.6341** spell F1, with about 20% fewer wrong frames than baseline on the inspected public sample. A crossing-boundary snapping bug is fixed; 57 tests and 48 independently rescored fold CSVs pass. The release margin is still unmet, so v0.3.1 remains selected. Local report: `data/experiments/blindspot-v05/index.html`. Build a separate Colab pair with `python scripts/build_v04_colab.py --structural`; v0.5 has not been cloud-run.
 
 The fixed [v0.4.1 team-only contact experiment](EXPERIMENTS_v041.md) scores **0.5000 / 0.6341** spell F1 under the two public development protocols. It preserves baseline stoppages exactly and reduces wrong-team frames, but does not meet the existing release margin; v0.3.1 remains selected. Local report: `data/experiments/blindspot-v041/index.html`.

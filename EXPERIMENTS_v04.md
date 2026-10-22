@@ -174,3 +174,46 @@ Independent rerun of user structural changes after correcting crossing boundary 
 | team_only_outplay_snap | 78 | 0.5111 | 0.6244 | 0.7993 | 0.7842 | 0.7066 | 0.6458 | 0.655, 1.000, 0.308, 0.711 |
 
 Exported candidate `team_only_outplay`: `data/experiments/blindspot-v05/team_only_outplay/candidate/CoreOrigin.csv`, valid=True, SHA256 `f1c6d022e84a6df92f514923b50e03f7f4065e72f4093650814cee28e4c5f9d2`, 252 possessions in file. Fitted on all public labels; its public score is training fit, not validation.
+
+### Run 2026-10-22 10:07
+
+Isolated ensemble retry after interrupted batch
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| v06_bagged | 78 | 0.4737 | 0.6400 | 0.7958 | 0.7821 | 0.7041 | 0.6433 | 0.680, 1.000, 0.338, 0.711 |
+
+### Run 2026-10-22 10:10
+
+Isolated acceleration comparison
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| v06_accel | 94 | 0.5765 | 0.6200 | 0.8158 | 0.7813 | 0.7231 | 0.6273 | 0.560, 1.000, 0.338, 0.756 |
+
+### Run 2026-10-22 10:19
+
+Isolated fixed combined model
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| v06_combo | 94 | 0.5231 | 0.6000 | 0.7433 | 0.7810 | 0.5319 | 0.6304 | 0.500, 1.000, 0.338, 0.756 |
+
+### Run 2026-10-22 10:19
+
+Final seven-group consolidation with verified checkpoints
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| team_only_outplay | 78 | 0.5111 | 0.6341 | 0.7985 | 0.7851 | 0.7066 | 0.6458 | 0.655, 1.000, 0.338, 0.711 |
+| v06_gated | 78 | 0.4947 | 0.6341 | 0.7963 | 0.7835 | 0.7066 | 0.6458 | 0.655, 1.000, 0.338, 0.711 |
+| v06_liveteam | 78 | 0.5100 | 0.6244 | 0.8034 | 0.7794 | 0.7066 | 0.6458 | 0.618, 1.000, 0.338, 0.711 |
+| v06_bagged | 78 | 0.4737 | 0.6400 | 0.7958 | 0.7821 | 0.7041 | 0.6433 | 0.680, 1.000, 0.338, 0.711 |
+| v06_accel | 94 | 0.5765 | 0.6200 | 0.8158 | 0.7813 | 0.7231 | 0.6273 | 0.560, 1.000, 0.338, 0.756 |
+| v06_combo | 94 | 0.5231 | 0.6000 | 0.7433 | 0.7810 | 0.5319 | 0.6304 | 0.500, 1.000, 0.338, 0.756 |
+
+Exported candidate `v06_accel`: `data/experiments/blindspot-v06/v06_accel/candidate/CoreOrigin.csv`, valid=True, SHA256 `198b2adb1e422db36abb4299cca8e38903e5626312a9303a92069e74313a2fa8`, 268 possessions in file. Fitted on all public labels; its public score is training fit, not validation.

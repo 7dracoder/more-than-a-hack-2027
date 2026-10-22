@@ -20,7 +20,7 @@ from build_colab import ASSETS, ROOT, digest  # noqa: E402
 ZIP_NAME = 'BlindSpot_v04_project.zip'
 DOCS = ('games.py', 'requirements.txt', 'requirements-v3.txt', 'README.md', 'LICENSE', 'DATA.md',
         'EVALUATION.md', 'CHALLENGE.md', 'RULES.md', 'CoreOrigin.md', 'AUDIT.md', 'EXPERIMENTS_v04.md',
-        'WORK_DONE.md', 'RESEARCH.md', 'IMPLEMENTATION.md', 'EXPERIMENTS_v041.md', 'EXPERIMENTS_v05.md')
+        'WORK_DONE.md', 'RESEARCH.md', 'IMPLEMENTATION.md', 'EXPERIMENTS_v041.md', 'EXPERIMENTS_v05.md', 'EXPERIMENTS_v06.md')
 
 
 def bundle(target):
@@ -40,7 +40,7 @@ def bundle(target):
     return digest(target)
 
 
-def notebook(bundle_hash, output, team_only=False, structural=False):
+def notebook(bundle_hash, output, team_only=False, structural=False, advanced=False):
     cells = []
 
     def md(text):
@@ -52,13 +52,13 @@ def notebook(bundle_hash, output, team_only=False, structural=False):
 
     md("""# BlindSpot v0.4: new possession features, held-out comparison
 
-Run the cells top to bottom (**Runtime → Run all** works). A normal **CPU** runtime is enough; no GPU needed.
+Run the cells top to bottom (**Runtime â†’ Run all** works). A normal **CPU** runtime is enough; no GPU needed.
 
 1. Installs pinned packages.
 2. Asks you to upload `BlindSpot_v04_project.zip` (built locally in `data/drive-transfer/`). Its SHA256 is checked.
 3. Downloads the four tactical tracking files (~220 MB, no video) from the shared Drive copy and checks their SHA256.
 4. Runs the unit tests.
-5. Runs every v0.4 experiment (about 15–25 min) and shows the results table.
+5. Runs every v0.4 experiment (about 15â€“25 min) and shows the results table.
 6. Exports a candidate `CoreOrigin.csv` for the group you choose and validates it.
 7. Downloads a ZIP with `EXPERIMENTS_v04.md` and the candidate. Send the results table back.
 
@@ -174,11 +174,13 @@ files.download(shutil.make_archive('/content/BlindSpot_v04_results', 'zip', bund
     obj = {'nbformat': 4, 'nbformat_minor': 5,
            'metadata': {'colab': {'name': output.name}, 'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'}},
            'cells': cells}
-    if team_only or structural:
-        tag = 'v05' if structural else 'v041'
-        version = 'v0.5' if structural else 'v0.4.1'
+    if team_only or structural or advanced:
+        tag = 'v06' if advanced else 'v05' if structural else 'v041'
+        version = 'v0.6' if advanced else 'v0.5' if structural else 'v0.4.1'
         folder = 'blindspot-'+tag
         selected_groups = "'baseline', 'contacts', 'contacts_team_only', 'baseline_outplay', 'team_only_outplay', 'team_only_outplay_snap'" if structural else "'baseline', 'contacts', 'contacts_team_only'"
+        if advanced:
+            selected_groups = "'baseline', 'team_only_outplay', 'v06_gated', 'v06_liveteam', 'v06_bagged', 'v06_accel', 'v06_combo'"
         for cell in cells:
             text = ''.join(cell['source']).replace('BlindSpot_v04', 'BlindSpot_'+tag).replace('blindspot-v04', folder).replace('v0.4', version)
             text = text.replace("stream([sys.executable, '-u', 'scripts/run_v04_experiments.py', '--note', 'Colab CPU run'])",
@@ -187,17 +189,22 @@ files.download(shutil.make_archive('/content/BlindSpot_v04_results', 'zip', bund
                                 f"stream([sys.executable, 'scripts/report_v04_results.py', '--experiment', str(PROJECT / 'data/experiments/{folder}')])")
             text = text.replace("'--candidate', GROUP])", f"'--candidate', GROUP, '--out', str(PROJECT / 'data/experiments/{folder}')])")
             if cell['cell_type'] == 'markdown':
-                text = text.replace('every v0.4.1 experiment (about 15–25 min)', 'the baseline, contacts and team-only contacts comparison')
+                text = text.replace('every v0.4.1 experiment (about 15â€“25 min)', 'the baseline, contacts and team-only contacts comparison')
                 text = text.replace('## 4. Run all experiments', '## 4. Run the single new experiment with its two controls')
                 text = text.replace('Prints one line per feature group as it finishes.', 'The new group uses baseline live/dead probabilities and contacts conditional ownership, with identical training masks. No new transition costs or thresholds are tuned. Prints fold progress.')
                 text = text.replace('7. Downloads a ZIP with `EXPERIMENTS_v04.md` and the candidate. Send the results table back.', '7. Downloads the experiment report, fold evidence, provenance and candidate in a private result ZIP.')
                 if structural:
-                    text = text.replace('every v0.5 experiment (about 15–25 min)', 'the six fixed v0.5 approaches with their controls')
+                    text = text.replace('every v0.5 experiment (about 15â€“25 min)', 'the six fixed v0.5 approaches with their controls')
                     text = text.replace('the single new experiment with its two controls', 'the fixed structural variants with their controls')
                     text = text.replace('The new group uses baseline live/dead probabilities and contacts conditional ownership, with identical training masks. No new transition costs or thresholds are tuned.', 'The structural groups apply the fixed out-of-play prior and optional contact snapping. Controls reuse baseline and contacts probabilities with identical training masks. No constants are searched.')
                     text = text.replace('Options: `baseline`, `contacts`, `asym`, `gap_out`, `ballmotion`, `shape`, `all`, `contacts_team_only`.', 'Options: `baseline`, `contacts`, `contacts_team_only`, `baseline_outplay`, `team_only_outplay`, `team_only_outplay_snap`.')
                     if text.startswith('# BlindSpot'):
                         text += '\nStructural v0.5: fixed out-of-play prior and contact snapping, with neighbouring-boundary crossing prevented. These rules were developed after inspecting public labels; results are same-sample development. No independent validation is implied.\n'
+            if advanced and cell['cell_type'] == 'markdown':
+                text = text.replace('every v0.6 experiment (about 15–25 min)', 'the seven fixed v0.6 approaches (ensembles take longer than previous runs)')
+                text = text.replace('the single new experiment with its two controls', 'the five fixed architecture variants and two controls')
+                text = text.replace('Options: `baseline`, `contacts`, `asym`, `gap_out`, `ballmotion`, `shape`, `all`, `contacts_team_only`.', 'Options: `baseline`, `team_only_outplay`, `v06_gated`, `v06_liveteam`, `v06_bagged`, `v06_accel`, `v06_combo`.')
+                text = text.replace('The new group uses baseline live/dead probabilities and contacts conditional ownership, with identical training masks. No new transition costs or thresholds are tuned.', 'Fixed variants test contact-dependent switch costs, live-only ownership training, five sampling offsets and collective acceleration features. Settings are fixed before scoring; selection reuses inspected public labels.')
             cell['source'] = text.splitlines(keepends=True)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(obj, indent=2) + '\n', encoding='utf-8')
@@ -208,13 +215,14 @@ if __name__ == '__main__':
     variant = parser.add_mutually_exclusive_group()
     variant.add_argument('--team-only', action='store_true', help='Build a separate v0.4.1 notebook and source ZIP for the fixed head-fusion experiment')
     variant.add_argument('--structural', action='store_true', help='Build a separate v0.5 notebook and source ZIP for structural-prior verification')
+    variant.add_argument('--advanced', action='store_true', help='Build separate v0.6 fixed architecture comparison notebook')
     args = parser.parse_args()
-    tag = 'v05' if args.structural else 'v041' if args.team_only else 'v04'
+    tag = 'v06' if args.advanced else 'v05' if args.structural else 'v041' if args.team_only else 'v04'
     target = ROOT / 'data/drive-transfer' / f'BlindSpot_{tag}_project.zip'
     target.parent.mkdir(parents=True, exist_ok=True)
     checksum = bundle(target)
     output = ROOT / f'notebooks/BlindSpot_{tag}_Colab.ipynb'
-    notebook(checksum, output, team_only=args.team_only, structural=args.structural)
+    notebook(checksum, output, team_only=args.team_only, structural=args.structural, advanced=args.advanced)
     with zipfile.ZipFile(target) as archive:
         count = len(archive.namelist())
     print(json.dumps({'bundle': str(target), 'files': count, 'sha256': checksum, 'notebook': str(output)}, indent=2))

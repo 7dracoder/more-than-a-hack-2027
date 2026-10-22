@@ -436,3 +436,17 @@ Team-only contacts plus the out-of-play prior scores 0.5111 / 0.6341 spell F1 an
 Exported the unsnapped experimental candidate separately, officially validated 199,319 rows and reproduced f1c6d022e84a6df92f514923b50e03f7f4065e72f4093650814cee28e4c5f9d2 exactly. EXPERIMENTS_v05.md records design, bug, scores, error counts, verification and commands. README, RESEARCH and IMPLEMENTATION now describe this result. Added a separate --structural Colab build mode, avoiding replacement of older ZIP/notebook pairs.
 
 Scope correction to the received section 20: the out-of-pitch rule is a strong probability prior rather than an unconditional decoded D constraint. Its design included checking 92 public outside-margin frames against labels before aggregate scoring. Results are therefore same-sample, diagnostic-informed development, not independent evidence. No private truth, new cloud execution or competition submission was used.
+
+
+### 22. Fixed v0.6 architecture study (22 October 2026)
+
+Reviewed the newly added possession/v06.py, runner groups and tests. Implemented individual-offset probability caching for ensemble reuse and corrected the acceleration/contact union to 94 unique features. Added two tests checking held-out label exclusion for both model families over all five offsets, and decoder parity plus D/X-mask invariance with gating. All 65 tests pass.
+
+Ran five fixed new variants and two controls: 56 fold predictions under the existing two protocols. Acceleration features improve whole-run spell F1 to 0.5765 (previous project high 0.5600), but fixed-time stays 0.6200. Contact gating scores 0.4947 / 0.6341; live-only ownership 0.5100 / 0.6244; bagging 0.4737 / 0.6400; combined 0.5231 / 0.6000. No release-rule switch is justified. The initial batch was interrupted after apparent stalled logging; its completed bagging checkpoint was recovered, and the remaining heavy groups ran separately before consolidation.
+
+Added scripts/verify_v06_results.py for independent official rescoring, control-byte parity, source/output hashes and dead-mask invariants. Added a separate --advanced Colab package mode and v06 report title. Added scripts/prepare_blind_validation.py and verified twelve disjoint 30-second windows outside public labels and embargo, selected without predictions. No annotations were generated; a blinded reviewer must supply them before validation is possible. Researched PathCRF's published pretrained models and external Metrica samples; documented the proposed transfer experiment in RESEARCH.md without claiming it was integrated or evaluated.
+
+See EXPERIMENTS_v06.md and the local verification.json for final results and artifact checks. No private-match labels, new cloud execution or competition submission were used.
+
+
+Final verification: all 56 fold CSVs independently pass format validation and reproduce official scores/confusion matrices; all 16 controls reproduce v0.5 byte-for-byte. Source/output hashes match. Gated and live-only ownership variants preserve full-match D/X masks. The acceleration full refit passes the official validator with 199,319 rows and SHA256 `198b2adb1e422db36abb4299cca8e38903e5626312a9303a92069e74313a2fa8`. Its public labels were used for fitting, so direct public scoring would be training fit. The selected v0.3.1 hash remains `c572620d15f0c60d9cf14df1b073131e91cb0153dd1c892ede0bd0fd5c8fc46e`.
