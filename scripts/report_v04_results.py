@@ -72,6 +72,8 @@ def main(OUT=OUT):
              '|---|---:|---:|---:|---:|---:|']
     if OUT.name == 'blindspot-v041':
         lines[0] = '# BlindSpot v0.4.1: team-only contacts results'
+    elif OUT.name == 'blindspot-v05':
+        lines[0] = '# BlindSpot v0.5: structural-prior verification'
     rows = ''
     for name, value in scores.items():
         w, f = value['whole_run'], value['fixed_time']
@@ -102,6 +104,8 @@ def main(OUT=OUT):
     page = page.replace('Seven fixed feature groups', str(len(scores))+' fixed approaches')
     if OUT.name == 'blindspot-v041':
         page = page.replace('v0.4', 'v0.4.1')
+    elif OUT.name == 'blindspot-v05':
+        page = page.replace('v0.4', 'v0.5')
     if head_note:
         page = page.replace('</main>', '<section><h2>Head isolation</h2><p>'+html.escape(head_note)+'</p><p><a href="head_invariants.json">Per-fold checks</a></p></section></main>')
     (OUT / 'index.html').write_text(page, encoding='utf-8')

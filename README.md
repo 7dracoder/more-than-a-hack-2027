@@ -2,6 +2,8 @@
 
 ## Our research implementation
 
+The [v0.5 structural changes](EXPERIMENTS_v05.md) have been rerun and checked: team-only contacts plus the out-of-play prior scores **0.5111 / 0.6341** spell F1, with about 20% fewer wrong frames than baseline on the inspected public sample. A crossing-boundary snapping bug is fixed; 57 tests and 48 independently rescored fold CSVs pass. The release margin is still unmet, so v0.3.1 remains selected. Local report: `data/experiments/blindspot-v05/index.html`. Build a separate Colab pair with `python scripts/build_v04_colab.py --structural`; v0.5 has not been cloud-run.
+
 The fixed [v0.4.1 team-only contact experiment](EXPERIMENTS_v041.md) scores **0.5000 / 0.6341** spell F1 under the two public development protocols. It preserves baseline stoppages exactly and reduces wrong-team frames, but does not meet the existing release margin; v0.3.1 remains selected. Local report: `data/experiments/blindspot-v041/index.html`.
 
 The user-added **v0.4 feature experiments have now been run**. See [EXPERIMENTS_v04.md](EXPERIMENTS_v04.md) for all seven groups and both score protocols. No group meets the documented two-protocol improvement margin, so the verified v0.3.1 baseline remains the provisional candidate. Local comparison: `data/experiments/blindspot-v04/index.html`. The new Colab package is prepared locally; v0.4 cloud execution is not yet verified.

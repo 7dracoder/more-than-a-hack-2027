@@ -404,3 +404,35 @@ Added seven tests (46 total passing): head-source isolation, invalid/tiny-mass p
 
 
 Final v0.4.1 verification: all 24 fold CSVs independently format-validated and rescored; all 16 baseline/contact control CSVs match v0.4 byte-for-byte. Each of the eight hybrid full-match D/X masks matches baseline and both head training masks match exactly. All 46 tests pass. The experimental full refit passes the official 199,319-row validator, reproduces SHA256 `97f8b81ee3977110236f53718b01b86ab186d5081bf57043d5d0292f31ee1141`, and preserves frozen v0.3.1 full-match D/X masks. The selected submission hash remains `c572620d15f0c60d9cf14df1b073131e91cb0153dd1c892ede0bd0fd5c8fc46e`. Separate v041 source/notebook and private handoff artifacts are prepared; local compilation/checksum verification is separate from cloud execution.
+
+
+### 20. v0.5 structural rules (22 October 2026)
+
+Reran the already-verified `contacts_team_only` fusion control (baseline P(D), contacts P(H/A | live)); its earlier run is recorded in section 19: 0.5000 whole-run / 0.6341 fixed-time spellF1, versus baseline 0.4457 / 0.6200. Wrong-team frames fall from 782/681 to 512/447; the dead-ball decision is unchanged by construction.
+
+Added `possession/structure.py` with two rules whose constants were fixed before scoring: an out-of-play stoppage prior (observed ball more than 1 m beyond a line is dead; a soft hold continues until the ball is next seen inside and kicked above 5 m/s, capped at 60 s; missing ball never starts a hold) and contact snapping of H/A changes (1 s window, never across a stoppage or another change). Added `tests/test_structure.py` (7 tests). Full suite passes. Basis: IFAB Law 9 and the possession-zone/contact rules of Vidal-Codina et al. 2022 (arXiv 2202.00804). The pre-scoring label check found 92 of 92 public frames more than 1 m out of the pitch are D.
+
+| Group | Whole-run spellF1 | Fixed-time spellF1 | Total wrong frames (W / F) |
+|---|---:|---:|---:|
+| baseline | 0.4457 | 0.6200 | 1,681 / 1,666 |
+| contacts_team_only | 0.5000 | 0.6341 | 1,411 / 1,432 |
+| baseline_outplay | 0.4571 | 0.6200 | 1,553 / 1,543 |
+| team_only_outplay | 0.5111 | 0.6341 | 1,320 / 1,341 |
+| team_only_outplay_snap | 0.5111 | 0.6244 | 1,314 / 1,349 |
+
+`team_only_outplay` is the best variant: about 20% fewer wrong frames under both protocols, transition matches within 1 s up from 4/7 to 5/9. It does not meet the 0.06-in-both-protocols spellF1 rule (+0.065 / +0.014), so the automatic selection keeps baseline. Snapping does not help. Exported and validated (not selected) `data/experiments/blindspot-v04/team_only_outplay/candidate/CoreOrigin.csv`, SHA256 `f1c6d022e84a6df92f514923b50e03f7f4065e72f4093650814cee28e4c5f9d2`, 252 possessions, 5,325 frames different from v0.3.1.
+
+Remaining public errors are short possessions under 3 s that are missed entirely and long in-pitch stoppages (fouls, a restart after the ball was carried back). These were seen while inspecting fold errors, so any rule written for them would be tuned on the public sample. Same-sample results only; no private truth or independent match was used. The Colab bundle was rebuilt for this source; it has not been run in Colab.
+
+
+### 21. Reviewed v0.5 rerun and structural regression fix (22 October 2026)
+
+Preserved the received changes under data/experiments/blindspot-v05/received-source before editing. Fixed adjacent contact-boundary moves crossing and deleting a short possession; the algorithm now respects already-moved neighbours and asserts ordered-spell and D/X-mask preservation. Numerical constants were unchanged. Added four structural regression/invariant tests; all 57 tests pass, including 1,000 randomized sequences and team-swap checks.
+
+Reran six approaches in the separate blindspot-v05 directory: 48 fold outputs across both protocols, with underlying model probabilities reused. All 48 CSVs independently pass the official format validator and reproduce their metrics/confusion matrices. All 24 control CSVs match frozen v0.4.1 byte-for-byte. All eight snapped folds preserve ordered spells and D/X masks. The fix changes five full-match frames in three snapped fold CSVs, without changing public headline scores.
+
+Team-only contacts plus the out-of-play prior scores 0.5111 / 0.6341 spell F1 and 0.7066 / 0.6458 dead F1. Total wrong frames fall from 1,681 / 1,666 to 1,320 / 1,341 (21.5% / 19.5%). Dead-called-live falls by 93 frames in each protocol; false-dead increases by two. Corrected snapping scores 0.5111 / 0.6244, so it remains unhelpful. No group clears the >0.06 spell gain in both protocols; selected v0.3.1 remains unchanged.
+
+Exported the unsnapped experimental candidate separately, officially validated 199,319 rows and reproduced f1c6d022e84a6df92f514923b50e03f7f4065e72f4093650814cee28e4c5f9d2 exactly. EXPERIMENTS_v05.md records design, bug, scores, error counts, verification and commands. README, RESEARCH and IMPLEMENTATION now describe this result. Added a separate --structural Colab build mode, avoiding replacement of older ZIP/notebook pairs.
+
+Scope correction to the received section 20: the out-of-pitch rule is a strong probability prior rather than an unconditional decoded D constraint. Its design included checking 92 public outside-margin frames against labels before aggregate scoring. Results are therefore same-sample, diagnostic-informed development, not independent evidence. No private truth, new cloud execution or competition submission was used.

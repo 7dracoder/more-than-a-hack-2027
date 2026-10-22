@@ -10,7 +10,8 @@ Results are appended to EXPERIMENTS_v04.md (aggregate scores only, no match data
     python scripts/run_v04_experiments.py contacts shape     # selected experiments
     python scripts/run_v04_experiments.py --candidate all    # export CoreOrigin.csv with a group set
 
-Groups: baseline, contacts, asym, gap_out, ballmotion, shape, all, contacts_team_only
+Groups: baseline, contacts, asym, gap_out, ballmotion, shape, all, contacts_team_only,
+        baseline_outplay, team_only_outplay, team_only_outplay_snap   (v0.5, possession/structure.py)
 """
 
 import argparse
@@ -31,7 +32,8 @@ from games import asset_paths
 from possession.data import sha256, slot_teams
 from possession.metric_features import extract_metric, design, swap_teams
 from possession.event_features import FEATURE_VERSION, build, swap
-from possession.team_fusion import decode_team_only
+from possession.team_fusion import decode_team_only, team_only_inputs
+from possession import structure
 from possession.champion import (classifier_probability, decode_factorized, fit_classifier,
                                  purged_folds, fixed_time_folds)
 from scripts.run_champion import evaluate, pooled
@@ -54,6 +56,12 @@ GROUPS = {
 }
 GROUPS['all'] = sorted({p for v in GROUPS.values() for p in v})
 GROUPS['contacts_team_only'] = GROUPS['contacts']
+# v0.5 structural groups (possession/structure.py). Predeclared before scoring; constants fixed.
+GROUPS['baseline_outplay'] = []
+GROUPS['team_only_outplay'] = GROUPS['contacts']
+GROUPS['team_only_outplay_snap'] = GROUPS['contacts']
+STRUCTURAL = {'baseline_outplay': ('baseline', False), 'team_only_outplay': ('contacts', False),
+              'team_only_outplay_snap': ('contacts', True)}
 
 
 def raw_tracking():
@@ -156,7 +164,31 @@ class Setup:
         self.probability_cache[key] = result
         return result
 
+    def structural(self):
+        if not hasattr(self, '_structural'):
+            hard, soft = structure.out_of_play_hold(self.arrays['ball'])
+            self._structural = hard, soft, structure.contact_series(self.events, self.event_names)
+        return self._structural
+
     def predict(self, group, train_mask):
+        if group in STRUCTURAL:
+            team_group, snap = STRUCTURAL[group]
+            hard, soft, contacts = self.structural()
+            baseline, n_base, base_audit = self.probability('baseline', train_mask)
+            team_source, n_team, team_audit = self.probability(team_group, train_mask)
+            dead, team = team_only_inputs(baseline, team_source)
+            dead = structure.apply_dead_prior(dead, hard, soft)
+            labels = decode_factorized(self.arrays, dict(self.config, history_samples=0), dead, team)[0]
+            moved = 0
+            if snap:
+                labels, moved = structure.snap_transitions(labels, contacts)
+            self.last_prediction_audit = {'kind': 'structural_v05', 'team_source': team_group, 'snap': snap,
+                'baseline_model': base_audit, 'team_model': team_audit,
+                'out_of_play_hard_frames': int(hard.sum()), 'out_of_play_soft_frames': int(soft.sum()),
+                'transitions_snapped': int(moved),
+                'constants': {k: getattr(structure, k) for k in ('OUT_MARGIN_M', 'KICK_SPEED_MPS', 'HOLD_CAP_FRAMES',
+                              'HOLD_LOG_ODDS', 'HARD_DEAD_PROBABILITY', 'SNAP_FRAMES')}}
+            return labels, n_team
         if group == 'contacts_team_only':
             baseline, n_base, base_audit = self.probability('baseline', train_mask)
             contacts, n_contact, contact_audit = self.probability('contacts', train_mask)

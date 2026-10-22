@@ -157,3 +157,12 @@ New group: `contacts_team_only`. Run `python scripts/run_v04_experiments.py base
 An experimental export uses `python scripts/run_v04_experiments.py --candidate contacts_team_only --out data/experiments/blindspot-v041`. It is not the selected submission: the measured gains do not meet the existing release heuristic. The frozen v0.3.1 file stays selected. Tests total 46. The relative-output logging error found during export is repaired and regression-tested.
 
 `python scripts/build_v04_colab.py --team-only` produces a separate BlindSpot_v041_project.zip and BlindSpot_v041_Colab.ipynb. Use that matching pair; no new v0.4.1 cloud execution is implied by local tests or packaging.
+
+
+### Structural-prior verification v0.5
+
+See EXPERIMENTS_v05.md. possession/structure.py adds a fixed observed out-of-pitch probability prior and optional 25-frame contact snapping. The experiment runner exposes baseline_outplay, team_only_outplay and team_only_outplay_snap alongside their controls. Corrected snapping tracks moved neighbouring boundaries and enforces ordered-spell/D/X invariants. No classifier parameters or structural constants were tuned during review.
+
+Run the six-group command in EXPERIMENTS_v05.md with --out data/experiments/blindspot-v05, then scripts/report_v04_results.py --experiment data/experiments/blindspot-v05. This preserves previous runs. All 57 tests and 48 independent fold rescores pass; the 24 baseline/contact/team-only controls reproduce v0.4.1 exactly. The best unsnapped structural variant scores 0.5111 / 0.6341 spell F1 and stays experimental under the existing release rule.
+
+scripts/build_v04_colab.py --structural creates data/drive-transfer/BlindSpot_v05_project.zip and notebooks/BlindSpot_v05_Colab.ipynb with matching source checksum, separate paths, fixed six-group comparison and conservative export selection. CPU is sufficient. Local notebook syntax and package checks do not establish cloud execution; v0.5 has not been cloud-run. Match-derived result CSVs and logs remain in the separate local evidence/handoff archives. The numerical source's original label-independence wording is qualified by the pre-score public-label inspection documented in EXPERIMENTS_v05.md.

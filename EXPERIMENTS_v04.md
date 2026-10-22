@@ -91,3 +91,86 @@ Final source verification after relative-path export logging repair; unchanged f
 | contacts_team_only | 78 | 0.5000 | 0.6341 | 0.7800 | 0.7643 | 0.6619 | 0.5945 | 0.655, 1.000, 0.338, 0.711 |
 
 Exported candidate `contacts_team_only`: `data/experiments/blindspot-v041/contacts_team_only/candidate/CoreOrigin.csv`, valid=True, SHA256 `97f8b81ee3977110236f53718b01b86ab186d5081bf57043d5d0292f31ee1141`, 247 possessions in file. Fitted on all public labels; its public score is training fit, not validation.
+
+### Run 2026-10-21 23:47
+
+Team-only fusion: baseline P(D), contacts P(H/A | live); contacts rerun for same-fingerprint reference
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| contacts_team_only | 78 | 0.5000 | 0.6341 | 0.7800 | 0.7643 | 0.6619 | 0.5945 | 0.655, 1.000, 0.338, 0.711 |
+| contacts | 78 | 0.5600 | 0.6244 | 0.7984 | 0.7588 | 0.6906 | 0.5850 | 0.655, 1.000, 0.338, 0.667 |
+
+### Run 2026-10-21 23:57
+
+v0.5 structural rules (possession/structure.py), constants fixed before scoring
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| contacts_team_only | 78 | 0.5000 | 0.6341 | 0.7800 | 0.7643 | 0.6619 | 0.5945 | 0.655, 1.000, 0.338, 0.711 |
+| baseline_outplay | 68 | 0.4571 | 0.6200 | 0.7712 | 0.7642 | 0.7066 | 0.6458 | 0.545, 1.000, 0.367, 0.711 |
+| team_only_outplay | 78 | 0.5111 | 0.6341 | 0.7985 | 0.7851 | 0.7066 | 0.6458 | 0.655, 1.000, 0.338, 0.711 |
+| team_only_outplay_snap | 78 | 0.5111 | 0.6244 | 0.7993 | 0.7842 | 0.7066 | 0.6458 | 0.655, 1.000, 0.308, 0.711 |
+
+Exported candidate `team_only_outplay`: `D:/more-than-a-hack-2027/data/experiments/blindspot-v04/team_only_outplay/candidate/CoreOrigin.csv`, valid=True, SHA256 `f1c6d022e84a6df92f514923b50e03f7f4065e72f4093650814cee28e4c5f9d2`, 252 possessions in file. Fitted on all public labels; its public score is training fit, not validation.
+
+## v0.5 structural experiments (22 October 2026)
+
+Three groups were declared and their constants fixed in `possession/structure.py` before scoring.
+None of them was tuned afterwards.
+
+| Group | What it does |
+|---|---|
+| `contacts_team_only` | Baseline model decides live/dead; contacts model decides H vs A |
+| `baseline_outplay` | Baseline plus an out-of-play rule: ball observed more than 1 m beyond a line is dead, and the stoppage holds (soft) until the ball is next seen inside and kicked at more than 5 m/s, capped at 60 s |
+| `team_only_outplay` | `contacts_team_only` plus the out-of-play rule |
+| `team_only_outplay_snap` | The above, plus each H/A change moved to the nearest new-team contact within 1 s |
+
+Research basis: IFAB Law 9 (ball out when it wholly crosses a line); the possession-zone and
+contact rules of [Vidal-Codina et al. 2022](https://arxiv.org/abs/2202.00804) (gain needs a change of
+ball direction or speed near the player). Before scoring, out-of-pitch frames were checked against
+the labels: 92 of 92 public frames more than 1 m outside are D. Content was rephrased for
+compliance with licensing restrictions.
+
+| Group | Whole-run spellF1 | Fixed-time spellF1 | Wrong-team frames (W / F) | Dead called live (W / F) | Live called dead (W / F) | Changes within 1 s (W / F) |
+|---|---:|---:|---:|---:|---:|---:|
+| baseline | 0.4457 | 0.6200 | 782 / 681 | 589 / 747 | 310 / 238 | 4 / 7 |
+| contacts_team_only | 0.5000 | 0.6341 | 512 / 447 | 589 / 747 | 310 / 238 | 4 / 8 |
+| baseline_outplay | 0.4571 | 0.6200 | 745 / 649 | 496 / 654 | 312 / 240 | 5 / 8 |
+| **team_only_outplay** | **0.5111** | **0.6341** | **512 / 447** | **496 / 654** | 312 / 240 | **5 / 9** |
+| team_only_outplay_snap | 0.5111 | 0.6244 | 506 / 455 | 496 / 654 | 312 / 240 | 5 / 8 |
+
+Reading:
+
+* `team_only_outplay` reduces wrong frames by about 20% under **both** protocols
+  (1,681 to 1,320 whole-run; 1,666 to 1,341 fixed-time), with no category getting worse beyond
+  2 frames. Its spellF1 gain is +0.065 whole-run but only +0.014 fixed-time, so it does **not**
+  pass the 0.06-in-both-protocols rule. The selection script therefore still picks `baseline`.
+* Contact snapping does not help; drop it.
+* The remaining spellF1 losses are mostly short possessions under 3 s that are missed entirely
+  (5 of 17 public possessions), and long stoppages with the ball inside the pitch (fouls, a
+  goal-kick restart where the ball was carried back into play). The out-of-play rule cannot see
+  those.
+
+Exported, validated but **not selected** candidate:
+`data/experiments/blindspot-v04/team_only_outplay/candidate/CoreOrigin.csv`, SHA256
+`f1c6d022e84a6df92f514923b50e03f7f4065e72f4093650814cee28e4c5f9d2`, 252 possessions in the file,
+5,325 frames different from v0.3.1. Choosing it over baseline is a team decision; see WORK_DONE.md
+section 19.
+
+### Run 2026-10-22 09:26
+
+Independent rerun of user structural changes after correcting crossing boundary moves; constants unchanged
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| contacts | 78 | 0.5600 | 0.6244 | 0.7984 | 0.7588 | 0.6906 | 0.5850 | 0.655, 1.000, 0.338, 0.667 |
+| contacts_team_only | 78 | 0.5000 | 0.6341 | 0.7800 | 0.7643 | 0.6619 | 0.5945 | 0.655, 1.000, 0.338, 0.711 |
+| baseline_outplay | 68 | 0.4571 | 0.6200 | 0.7712 | 0.7642 | 0.7066 | 0.6458 | 0.545, 1.000, 0.367, 0.711 |
+| team_only_outplay | 78 | 0.5111 | 0.6341 | 0.7985 | 0.7851 | 0.7066 | 0.6458 | 0.655, 1.000, 0.338, 0.711 |
+| team_only_outplay_snap | 78 | 0.5111 | 0.6244 | 0.7993 | 0.7842 | 0.7066 | 0.6458 | 0.655, 1.000, 0.308, 0.711 |
+
+Exported candidate `team_only_outplay`: `data/experiments/blindspot-v05/team_only_outplay/candidate/CoreOrigin.csv`, valid=True, SHA256 `f1c6d022e84a6df92f514923b50e03f7f4065e72f4093650814cee28e4c5f9d2`, 252 possessions in file. Fitted on all public labels; its public score is training fit, not validation.
