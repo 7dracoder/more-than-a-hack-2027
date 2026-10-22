@@ -2,6 +2,8 @@
 
 ## Our research implementation
 
+The user-added **v0.4 feature experiments have now been run**. See [EXPERIMENTS_v04.md](EXPERIMENTS_v04.md) for all seven groups and both score protocols. No group meets the documented two-protocol improvement margin, so the verified v0.3.1 baseline remains the provisional candidate. Local comparison: `data/experiments/blindspot-v04/index.html`. The new Colab package is prepared locally; v0.4 cloud execution is not yet verified.
+
 **Current development revision: v0.3.1.** See [AUDIT.md](AUDIT.md) for repaired issues and both evaluation protocols. Local entry point: `data/experiments/index.html`; the v2 viewer is historical. The frozen v0.3 release remains available for comparison.
 
 The custom **BlindSpot** pipeline, Colab notebook, tests, and evidence report are documented in

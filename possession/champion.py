@@ -199,12 +199,12 @@ def fixed_time_folds(valid, n_folds=4, embargo=300):
                             'embargo_frames': embargo, 'boundary_rule': 'Equal frame durations; no possession-state boundaries used'}
 
 
-def fit_classifier(matrix, names, labels, mask, config):
+def fit_classifier(matrix, names, labels, mask, config, swap=swap_teams):
     rows, weights = training_rows(labels, mask, config['classifier_training_stride'])
     y = np.array([{'H': 0, 'A': 1, 'D': 2}[v] for v in labels[rows]])
     if set(y) != {0, 1, 2}:
         raise ValueError('Each development training set needs H, A and D')
-    x = np.concatenate([matrix[rows], swap_teams(matrix[rows], names)])
+    x = np.concatenate([matrix[rows], swap(matrix[rows], names)])
     y = np.r_[y, np.array([1, 0, 2])[y]]
     weights = np.r_[weights, weights]
     model = HistGradientBoostingClassifier(max_iter=config['classifier_iterations'],
@@ -222,8 +222,8 @@ def fit_classifier(matrix, names, labels, mask, config):
     return model, audit
 
 
-def classifier_probability(model, matrix, names):
+def classifier_probability(model, matrix, names, swap=swap_teams):
     with threadpool_limits(limits=2):
         original = model.predict_proba(matrix)
-        swapped = model.predict_proba(swap_teams(matrix, names))[:, [1, 0, 2]]
+        swapped = model.predict_proba(swap(matrix, names))[:, [1, 0, 2]]
     return (original + swapped) / 2

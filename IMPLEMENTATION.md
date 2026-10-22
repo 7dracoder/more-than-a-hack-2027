@@ -141,3 +141,10 @@ Read AUDIT.md for fixes, scope and two evaluation protocols. Run `python scripts
 `python scripts/audit_revision.py` compares the frozen v3 outputs/models with the revised run and retrains both methods using fixed-time folds. It requires both experiment directories; the source bundle intentionally omits match-derived models and outputs. `python scripts/build_champion_colab.py --revision --bundle-id ID` creates a separate v031 source ZIP/notebook. Use `--reuse-bundle` when inserting an uploaded ZIP ID so the uploaded source checksum remains unchanged.
 
 The Python suite has 33 tests. The generated HTML is tested through a Node DOM test double when Node is installed; video files are independently decoded and counted. Real-browser interaction remains unverified because local browser file access is blocked.
+
+
+### v0.4 experiment reproduction
+
+Run `python scripts/run_v04_experiments.py` to evaluate all groups. Baseline is checked first and must reproduce 0.4457142857 / 0.6200. Each completed group saves hash-verified fold CSVs, detailed scores and a source/input fingerprint; matching completed groups can be reused. Generate the comparison/error report with `python scripts/report_v04_results.py`. Export the retained candidate with `python scripts/run_v04_experiments.py --candidate baseline`, then run the official validator.
+
+`python scripts/build_v04_colab.py` rebuilds the source/public-benchmark ZIP and matching notebook. Upload that notebook and ZIP together to Colab; source/input checksums are pinned. The notebook now selects a group by the documented margin rule instead of blindly exporting `all`, and downloads the fold evidence as well as the candidate. The 39-test local run and bundle syntax/checksum checks are verified; v0.4 has not been executed again in Colab.

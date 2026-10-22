@@ -358,3 +358,29 @@ v0.3.1 has its own experiment directory, source bundle and notebook; original v0
 The separate v0.3.1 source snapshot contains 64 source/public benchmark files, SHA256 `eba9fefb39422fa66b2a6e209ccdf6ebfc2982f9153a73b4c449a1a998ef49d0`. It was uploaded to the existing project folder under tanmaysahu392001@gmail.com. A fresh Colab CPU runtime completed all nine cells and all 33 tests; source and all four asset checksums passed, and all 11 prediction/risk CSV hashes exactly match local outputs. Verified notebook: https://colab.research.google.com/drive/1wDWukgnGF0N7u7ElmLmnSP4dolMgRKks . The additional fixed-time audit and video review were verified locally, not rerun in that notebook.
 
 All five local pipeline stages passed checkpoint reuse verification. The candidate has 199,319 rows and SHA256 `c572620d15f0c60d9cf14df1b073131e91cb0153dd1c892ede0bd0fd5c8fc46e`. The twelve new clips decode to 2,412 expected frames; 492 pitch snapshots and all per-frame model labels/support are packaged. Local report links and manifest source/output hashes were checked. A version landing page, detailed audit HTML and private CoreOrigin-v031 handoff were prepared. Updated notebook and documentation were uploaded; restricted derived outputs remain local. The source ZIP remains immutable; later verification records are maintained separately. Independent validation, final model selection, reviewed repository publication and organizer submission remain open.
+
+
+### 18. User-added v0.4 features: full experiment run (21 October 2026)
+
+Inspected the user changes: custom swap callbacks in the classifier, event_features.py, the seven-group experiment runner, and the Colab builder/notebook. Added six invariant tests (39 total passing), automatic baseline failure checks, metadata/pitch-aware feature cache checks, per-fold score/prediction/mask records, source/input fingerprints, verified completed-group reuse, and a score/error report. Fixed the notebook's unconditional `all` export; it now applies the documented conservative selection rule. The notebook result archive now includes fold evidence and provenance.
+
+Ran all seven groups with the existing fixed classifier parameters, both four-fold protocols and the 300-frame training-label embargo (56 fold fits). All eight baseline fold CSVs match the frozen v0.3.1 reference byte-for-byte.
+
+| Group | Features | Whole-run spell F1 | Fixed-time spell F1 |
+|---|---:|---:|---:|
+| baseline | 68 | 0.4457 | 0.6200 |
+| contacts | 78 | 0.5600 | 0.6244 |
+| asym | 80 | 0.4667 | 0.6564 |
+| gap_out | 77 | 0.4324 | 0.6462 |
+| ballmotion | 73 | 0.4324 | 0.6200 |
+| shape | 88 | 0.3172 | 0.5486 |
+| all | 124 | 0.3515 | 0.6286 |
+
+No group clears the pre-existing conservative rule of a gain greater than 0.06 in BOTH protocols; this rule is a heuristic, not statistical significance. The provisional export therefore retains baseline. Contacts improves whole-run spell F1 by 0.1143 but fixed-time spell F1 by only 0.0044. Past/future windows improve both slightly; shape and combining everything degrade whole-run performance. Failed groups are retained in the report.
+
+Regenerated and officially validated the 199,319-row baseline candidate at data/experiments/blindspot-v04/baseline/candidate/CoreOrigin.csv. Its SHA256 remains `c572620d15f0c60d9cf14df1b073131e91cb0153dd1c892ede0bd0fd5c8fc46e`. The official direct public scorer gives spell F1 0.9529 / macro F1 0.9827, explicitly recorded under training_fit_only: the exported classifier fits all public labels, so these are NOT validation results.
+
+The seven-group comparison reuses previously inspected public labels for feature-group selection. New offline features may share unlabelled raw context across folds or use entire-half statistics; the embargo excludes training labels, not all raw observations. No private truth or independent match was evaluated. Local report: data/experiments/blindspot-v04/index.html. All source and output hashes are recorded. The v0.4 source ZIP and matching Colab notebook are rebuilt and syntax/checksum verified locally; a new full Colab run has NOT been performed for v0.4. Prior v0.3.1 cloud verification remains specific to that release. Frozen v0.3/v0.3.1 candidate/source artifacts remain unchanged.
+
+
+Final v0.4 verification independently rescored and format-validated all 56 saved fold CSVs; every recorded score/confusion matrix and source/output hash matched. The 66-file source/public-benchmark ZIP has SHA256 `e048c2351a5ad6b2e51e4e2971ca9013db22f4388716f244bd4d74aeb58a87d5`, its CRC passed, and all eight notebook code cells compile. Prepared CRC-verified private evidence and CoreOrigin-v04-experiments handoff archives. This verification record follows the frozen source snapshot; the snapshot remains unchanged.
