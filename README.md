@@ -2,6 +2,8 @@
 
 ## Our research implementation
 
+The fixed [v0.4.1 team-only contact experiment](EXPERIMENTS_v041.md) scores **0.5000 / 0.6341** spell F1 under the two public development protocols. It preserves baseline stoppages exactly and reduces wrong-team frames, but does not meet the existing release margin; v0.3.1 remains selected. Local report: `data/experiments/blindspot-v041/index.html`.
+
 The user-added **v0.4 feature experiments have now been run**. See [EXPERIMENTS_v04.md](EXPERIMENTS_v04.md) for all seven groups and both score protocols. No group meets the documented two-protocol improvement margin, so the verified v0.3.1 baseline remains the provisional candidate. Local comparison: `data/experiments/blindspot-v04/index.html`. The new Colab package is prepared locally; v0.4 cloud execution is not yet verified.
 
 **Current development revision: v0.3.1.** See [AUDIT.md](AUDIT.md) for repaired issues and both evaluation protocols. Local entry point: `data/experiments/index.html`; the v2 viewer is historical. The frozen v0.3 release remains available for comparison.

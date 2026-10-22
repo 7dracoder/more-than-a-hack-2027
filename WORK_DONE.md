@@ -384,3 +384,23 @@ The seven-group comparison reuses previously inspected public labels for feature
 
 
 Final v0.4 verification independently rescored and format-validated all 56 saved fold CSVs; every recorded score/confusion matrix and source/output hash matched. The 66-file source/public-benchmark ZIP has SHA256 `e048c2351a5ad6b2e51e4e2971ca9013db22f4388716f244bd4d74aeb58a87d5`, its CRC passed, and all eight notebook code cells compile. Prepared CRC-verified private evidence and CoreOrigin-v04-experiments handoff archives. This verification record follows the frozen source snapshot; the snapshot remains unchanged.
+
+
+### 19. Fixed team-only contacts experiment v0.4.1 (21 October 2026)
+
+Committed the verified v0.4 code locally as `6ea1036` before implementation. Implemented `contacts_team_only` as a new runner group: the baseline classifier supplies P(D), the contacts classifier supplies conditional H/A scores, and both use identical training masks and unchanged classifier/decoder parameters. The input heads stay separate to avoid flattening team odds when baseline live mass is tiny. In-memory probability reuse ensures comparisons use the same underlying fitted probabilities.
+
+Evaluated baseline, contacts and the hybrid on both existing four-fold protocols under a separate data/experiments/blindspot-v041 directory. Baseline and contacts controls reproduce v0.4. Runtime checks require every hybrid full-match decoded D/X mask to match its baseline. A report records mask/model-training audits and error counts.
+
+| Method | Whole-run spell F1 | Fixed-time spell F1 | Whole-run dead F1 | Fixed-time dead F1 |
+|---|---:|---:|---:|---:|
+| baseline | 0.4457 | 0.6200 | 0.6619 | 0.5945 |
+| contacts | 0.5600 | 0.6244 | 0.6906 | 0.5850 |
+| contacts_team_only | 0.5000 | 0.6341 | 0.6619 | 0.5945 |
+
+The hybrid's 0.0543 / 0.0141 spell-F1 gains over baseline do not meet the existing >0.06 margin in both protocols. Wrong-team frames improve from 782 / 681 to 512 / 447 while the two dead-ball error counts remain identical to baseline. This is the intended role isolation, not improved stoppage detection. The verified v0.3.1 submission CSV remains unchanged and selected.
+
+Added seven tests (46 total passing): head-source isolation, invalid/tiny-mass probability handling, team swapping, decoded/posterior/sampled dead-state invariance, both-head held-out-label exclusion, and relative-path candidate export. During export the CSV passed validation before a logging path error; fixed that error, then reran the unchanged experiment to align source fingerprints. Saved a separate experimental candidate rather than replacing the frozen release. Updated the report CLI with --experiment and Colab builder with --team-only, preserving the v0.4 ZIP/notebook and creating separate v041 artifacts. No private labels, independent-match validation, dead-ball detector, boundary snapping or new cloud execution are claimed.
+
+
+Final v0.4.1 verification: all 24 fold CSVs independently format-validated and rescored; all 16 baseline/contact control CSVs match v0.4 byte-for-byte. Each of the eight hybrid full-match D/X masks matches baseline and both head training masks match exactly. All 46 tests pass. The experimental full refit passes the official 199,319-row validator, reproduces SHA256 `97f8b81ee3977110236f53718b01b86ab186d5081bf57043d5d0292f31ee1141`, and preserves frozen v0.3.1 full-match D/X masks. The selected submission hash remains `c572620d15f0c60d9cf14df1b073131e91cb0153dd1c892ede0bd0fd5c8fc46e`. Separate v041 source/notebook and private handoff artifacts are prepared; local compilation/checksum verification is separate from cloud execution.

@@ -148,3 +148,12 @@ The Python suite has 33 tests. The generated HTML is tested through a Node DOM t
 Run `python scripts/run_v04_experiments.py` to evaluate all groups. Baseline is checked first and must reproduce 0.4457142857 / 0.6200. Each completed group saves hash-verified fold CSVs, detailed scores and a source/input fingerprint; matching completed groups can be reused. Generate the comparison/error report with `python scripts/report_v04_results.py`. Export the retained candidate with `python scripts/run_v04_experiments.py --candidate baseline`, then run the official validator.
 
 `python scripts/build_v04_colab.py` rebuilds the source/public-benchmark ZIP and matching notebook. Upload that notebook and ZIP together to Colab; source/input checksums are pinned. The notebook now selects a group by the documented margin rule instead of blindly exporting `all`, and downloads the fold evidence as well as the candidate. The 39-test local run and bundle syntax/checksum checks are verified; v0.4 has not been executed again in Colab.
+
+
+### v0.4.1: team-only contact fusion
+
+New group: `contacts_team_only`. Run `python scripts/run_v04_experiments.py baseline contacts contacts_team_only --out data/experiments/blindspot-v041`, then `python scripts/report_v04_results.py --experiment data/experiments/blindspot-v041`. Both model heads fit the same training mask; the decoder receives baseline dead probability and normalized contact H/A scores separately. Runtime assertions and per-fold model audits enforce unchanged baseline dead/ungraded masks. There are two models (68 and 78 inputs), with 78 unique features.
+
+An experimental export uses `python scripts/run_v04_experiments.py --candidate contacts_team_only --out data/experiments/blindspot-v041`. It is not the selected submission: the measured gains do not meet the existing release heuristic. The frozen v0.3.1 file stays selected. Tests total 46. The relative-output logging error found during export is repaired and regression-tested.
+
+`python scripts/build_v04_colab.py --team-only` produces a separate BlindSpot_v041_project.zip and BlindSpot_v041_Colab.ipynb. Use that matching pair; no new v0.4.1 cloud execution is implied by local tests or packaging.

@@ -69,3 +69,25 @@ User changes verified locally; fixed seven-group exploratory comparison
 | all | 124 | 0.3515 | 0.6286 | 0.7592 | 0.7455 | 0.6423 | 0.5229 | 0.655, 0.950, 0.267, 0.686 |
 
 Exported candidate `baseline`: `data/experiments/blindspot-v04/baseline/candidate/CoreOrigin.csv`, valid=True, SHA256 `c572620d15f0c60d9cf14df1b073131e91cb0153dd1c892ede0bd0fd5c8fc46e`, 234 possessions in file. Fitted on all public labels; its public score is training fit, not validation.
+
+### Run 2026-10-21 23:24
+
+Predeclared team-only contacts: baseline P(D), contact conditional owner, unchanged masks/costs/folds
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| contacts | 78 | 0.5600 | 0.6244 | 0.7984 | 0.7588 | 0.6906 | 0.5850 | 0.655, 1.000, 0.338, 0.667 |
+| contacts_team_only | 78 | 0.5000 | 0.6341 | 0.7800 | 0.7643 | 0.6619 | 0.5945 | 0.655, 1.000, 0.338, 0.711 |
+
+### Run 2026-10-21 23:31
+
+Final source verification after relative-path export logging repair; unchanged fixed fusion design
+
+| Group | Features | Whole-run spellF1 | Fixed-time spellF1 | Whole-run macroF1 | Fixed-time macroF1 | Whole-run deadF1 | Fixed-time deadF1 | Fixed-time folds |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| baseline | 68 | 0.4457 | 0.6200 | 0.7484 | 0.7401 | 0.6619 | 0.5945 | 0.545, 1.000, 0.367, 0.711 |
+| contacts | 78 | 0.5600 | 0.6244 | 0.7984 | 0.7588 | 0.6906 | 0.5850 | 0.655, 1.000, 0.338, 0.667 |
+| contacts_team_only | 78 | 0.5000 | 0.6341 | 0.7800 | 0.7643 | 0.6619 | 0.5945 | 0.655, 1.000, 0.338, 0.711 |
+
+Exported candidate `contacts_team_only`: `data/experiments/blindspot-v041/contacts_team_only/candidate/CoreOrigin.csv`, valid=True, SHA256 `97f8b81ee3977110236f53718b01b86ab186d5081bf57043d5d0292f31ee1141`, 247 possessions in file. Fitted on all public labels; its public score is training fit, not validation.

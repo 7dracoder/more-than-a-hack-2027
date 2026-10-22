@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 import sys
 import zipfile
+import argparse
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_colab import ASSETS, ROOT, digest  # noqa: E402
@@ -19,7 +20,7 @@ from build_colab import ASSETS, ROOT, digest  # noqa: E402
 ZIP_NAME = 'BlindSpot_v04_project.zip'
 DOCS = ('games.py', 'requirements.txt', 'requirements-v3.txt', 'README.md', 'LICENSE', 'DATA.md',
         'EVALUATION.md', 'CHALLENGE.md', 'RULES.md', 'CoreOrigin.md', 'AUDIT.md', 'EXPERIMENTS_v04.md',
-        'WORK_DONE.md', 'RESEARCH.md', 'IMPLEMENTATION.md')
+        'WORK_DONE.md', 'RESEARCH.md', 'IMPLEMENTATION.md', 'EXPERIMENTS_v041.md')
 
 
 def bundle(target):
@@ -39,7 +40,7 @@ def bundle(target):
     return digest(target)
 
 
-def notebook(bundle_hash, output):
+def notebook(bundle_hash, output, team_only=False):
     cells = []
 
     def md(text):
@@ -141,7 +142,7 @@ display(Markdown(text[text.index('## Results'):]))
     md("""## 6. Export a candidate
 
 The conservative development rule below retains `baseline` unless a group improves spell F1 by more than 0.06 in **both** protocols. This is a selection heuristic, not a statistical significance threshold. Selection still reuses the public sample.
-Options: `baseline`, `contacts`, `asym`, `gap_out`, `ballmotion`, `shape`, `all`.
+Options: `baseline`, `contacts`, `asym`, `gap_out`, `ballmotion`, `shape`, `all`, `contacts_team_only`.
 """)
     code('''scores = json.loads((PROJECT / 'data/experiments/blindspot-v04/scores.json').read_text())
 baseline = scores['baseline']
@@ -173,16 +174,34 @@ files.download(shutil.make_archive('/content/BlindSpot_v04_results', 'zip', bund
     obj = {'nbformat': 4, 'nbformat_minor': 5,
            'metadata': {'colab': {'name': output.name}, 'kernelspec': {'display_name': 'Python 3', 'language': 'python', 'name': 'python3'}},
            'cells': cells}
+    if team_only:
+        for cell in cells:
+            text = ''.join(cell['source']).replace('BlindSpot_v04', 'BlindSpot_v041').replace('blindspot-v04', 'blindspot-v041').replace('v0.4', 'v0.4.1')
+            text = text.replace("stream([sys.executable, '-u', 'scripts/run_v04_experiments.py', '--note', 'Colab CPU run'])",
+                                "stream([sys.executable, '-u', 'scripts/run_v04_experiments.py', 'baseline', 'contacts', 'contacts_team_only', '--out', str(PROJECT / 'data/experiments/blindspot-v041'), '--note', 'Predeclared team-only contacts Colab run'])")
+            text = text.replace("stream([sys.executable, 'scripts/report_v04_results.py'])",
+                                "stream([sys.executable, 'scripts/report_v04_results.py', '--experiment', str(PROJECT / 'data/experiments/blindspot-v041')])")
+            text = text.replace("'--candidate', GROUP])", "'--candidate', GROUP, '--out', str(PROJECT / 'data/experiments/blindspot-v041')])")
+            if cell['cell_type'] == 'markdown':
+                text = text.replace('every v0.4.1 experiment (about 15–25 min)', 'the baseline, contacts and team-only contacts comparison')
+                text = text.replace('## 4. Run all experiments', '## 4. Run the single new experiment with its two controls')
+                text = text.replace('Prints one line per feature group as it finishes.', 'The new group uses baseline live/dead probabilities and contacts conditional ownership, with identical training masks. No new transition costs or thresholds are tuned. Prints fold progress.')
+                text = text.replace('7. Downloads a ZIP with `EXPERIMENTS_v04.md` and the candidate. Send the results table back.', '7. Downloads the experiment report, fold evidence, provenance and candidate in a private result ZIP.')
+            cell['source'] = text.splitlines(keepends=True)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(obj, indent=2) + '\n', encoding='utf-8')
 
 
 if __name__ == '__main__':
-    target = ROOT / 'data/drive-transfer' / ZIP_NAME
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--team-only', action='store_true', help='Build a separate v0.4.1 notebook and source ZIP for the fixed head-fusion experiment')
+    args = parser.parse_args()
+    tag = 'v041' if args.team_only else 'v04'
+    target = ROOT / 'data/drive-transfer' / f'BlindSpot_{tag}_project.zip'
     target.parent.mkdir(parents=True, exist_ok=True)
     checksum = bundle(target)
-    output = ROOT / 'notebooks/BlindSpot_v04_Colab.ipynb'
-    notebook(checksum, output)
+    output = ROOT / f'notebooks/BlindSpot_{tag}_Colab.ipynb'
+    notebook(checksum, output, team_only=args.team_only)
     with zipfile.ZipFile(target) as archive:
         count = len(archive.namelist())
     print(json.dumps({'bundle': str(target), 'files': count, 'sha256': checksum, 'notebook': str(output)}, indent=2))

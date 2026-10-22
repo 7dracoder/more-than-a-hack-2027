@@ -10,7 +10,7 @@ Results are appended to EXPERIMENTS_v04.md (aggregate scores only, no match data
     python scripts/run_v04_experiments.py contacts shape     # selected experiments
     python scripts/run_v04_experiments.py --candidate all    # export CoreOrigin.csv with a group set
 
-Groups: baseline, contacts, asym, gap_out, ballmotion, shape, all
+Groups: baseline, contacts, asym, gap_out, ballmotion, shape, all, contacts_team_only
 """
 
 import argparse
@@ -31,6 +31,7 @@ from games import asset_paths
 from possession.data import sha256, slot_teams
 from possession.metric_features import extract_metric, design, swap_teams
 from possession.event_features import FEATURE_VERSION, build, swap
+from possession.team_fusion import decode_team_only
 from possession.champion import (classifier_probability, decode_factorized, fit_classifier,
                                  purged_folds, fixed_time_folds)
 from scripts.run_champion import evaluate, pooled
@@ -52,6 +53,7 @@ GROUPS = {
     'shape': ['adv_', 'spread_', 'width_', 'ball_adv', 'fwd_vel', 'near_', 'press_'],
 }
 GROUPS['all'] = sorted({p for v in GROUPS.values() for p in v})
+GROUPS['contacts_team_only'] = GROUPS['contacts']
 
 
 def raw_tracking():
@@ -108,7 +110,10 @@ def event_matrix():
 
 
 class Setup:
-    def __init__(self):
+    def __init__(self, output=OUTPUT):
+        self.output = Path(output)
+        self.probability_cache = {}
+        self.last_prediction_audit = {}
         self.config = json.loads(CONFIG_PATH.read_text())
         self.arrays, feature_meta = extract_metric(ROOT / 'data', CACHE, self.config)
         self.base, self.base_names = design(self.arrays, self.config)
@@ -120,6 +125,7 @@ class Setup:
         self.provenance = {'source_sha256': {p.relative_to(ROOT).as_posix(): sha256(p) for p in sources},
                            'input_sha256': feature_meta['input_sha256'], 'public_truth_sha256': sha256(GT_PATH),
                            'config': self.config, 'groups': GROUPS,
+                           'team_only_plan': 'One fixed experiment: baseline P(D), contacts P(H/A | live), identical training masks; no new hyperparameter search.',
                            'scope': 'Same inspected public development sample; offline raw features can span whole halves. The 300-frame embargo excludes training labels, not all shared raw context. Feature-group selection reuses this sample.'}
         self.fingerprint = hashlib.sha256(json.dumps(self.provenance, sort_keys=True).encode()).hexdigest()
 
@@ -140,14 +146,39 @@ class Setup:
         return decode_factorized(self.arrays, dict(self.config, history_samples=0), p[:, 2],
                                  np.log(p[:, :2] / p[:, :2].sum(1)[:, None]))[0]
 
-    def predict(self, group, train_mask):
+    def probability(self, group, train_mask):
+        key = (group, hashlib.sha256(train_mask.tobytes()).hexdigest())
+        if key in self.probability_cache:
+            return self.probability_cache[key]
         matrix, names, team_swap = self.matrix(group)
-        model, _ = fit_classifier(matrix, names, self.truth, train_mask, self.config, swap=team_swap)
-        return self.decode(classifier_probability(model, matrix, names, swap=team_swap)), len(names)
+        model, audit = fit_classifier(matrix, names, self.truth, train_mask, self.config, swap=team_swap)
+        result = classifier_probability(model, matrix, names, swap=team_swap), len(names), audit
+        self.probability_cache[key] = result
+        return result
+
+    def predict(self, group, train_mask):
+        if group == 'contacts_team_only':
+            baseline, n_base, base_audit = self.probability('baseline', train_mask)
+            contacts, n_contact, contact_audit = self.probability('contacts', train_mask)
+            labels = decode_team_only(self.arrays, dict(self.config, history_samples=0), baseline, contacts)[0]
+            reference = self.decode(baseline)
+            if not np.array_equal(labels == 'D', reference == 'D') or not np.array_equal(labels == 'X', reference == 'X'):
+                raise ValueError('Team-only fusion changed baseline dead-ball or ungraded mask')
+            self.last_prediction_audit = {'kind': 'baseline_dead_contacts_team',
+                'baseline_features': n_base, 'contacts_features': n_contact, 'unique_features': n_contact,
+                'baseline_model': base_audit, 'contacts_model': contact_audit,
+                'identical_training_mask': base_audit['training_mask_sha256'] == contact_audit['training_mask_sha256'],
+                'baseline_dead_mask_unchanged': True, 'baseline_ungraded_mask_unchanged': True,
+                'dead_mask_sha256': hashlib.sha256((labels == 'D').tobytes()).hexdigest(),
+                'baseline_dead_probability_sha256': hashlib.sha256(baseline[:, 2].tobytes()).hexdigest()}
+            return labels, n_contact
+        probability, n_features, audit = self.probability(group, train_mask)
+        self.last_prediction_audit = {'kind': 'single_symmetric_classifier', 'model': audit}
+        return self.decode(probability), n_features
 
     def held_out(self, group):
         result = {}
-        out = OUTPUT / group
+        out = self.output / group
         out.mkdir(parents=True, exist_ok=True)
         for protocol in ('whole_run', 'fixed_time'):
             folds = (purged_folds(self.truth, 4, 300, 130) if protocol == 'whole_run'
@@ -166,7 +197,7 @@ class Setup:
                         raise ValueError(f'Baseline predictions differ from frozen reference: {protocol} fold {info["fold"]}')
                 audits.append(dict(info, train_mask_sha256=hashlib.sha256(train.tobytes()).hexdigest(),
                                    test_mask_sha256=hashlib.sha256(test.tobytes()).hexdigest(),
-                                   prediction_sha256=digest, score=scores[-1]))
+                                   prediction_sha256=digest, model_audit=self.last_prediction_audit, score=scores[-1]))
                 print(f"{group}: {protocol} fold {info['fold']} spellF1={scores[-1]['spell_f1_mean']:.4f}", flush=True)
             p = pooled(scores)
             result[protocol] = {'spell': p['spell_f1_mean'], 'macro': p['macro_f1'], 'dead': p['dead_f1'],
@@ -208,7 +239,7 @@ How to read this:
 
 def export_candidate(setup, group):
     labels, n_features = setup.predict(group, setup.valid)
-    out = ROOT / 'data/experiments/blindspot-v04' / group / 'candidate'
+    out = setup.output / group / 'candidate'
     out.mkdir(parents=True, exist_ok=True)
     digest = save_submission(out / 'CoreOrigin.csv', labels)
     table = pm.read_label_csv(out / 'CoreOrigin.csv')
@@ -217,6 +248,7 @@ def export_candidate(setup, group):
         raise ValueError('Invalid candidate: ' + reason)
     (out / 'manifest.json').write_text(json.dumps({'group': group, 'sha256': digest,
         'n_features': n_features, 'fingerprint': setup.fingerprint, 'provenance': setup.provenance,
+        'model_audit': setup.last_prediction_audit,
         'scope': 'Fitted on all public labels; public score is training fit, not validation.'}, indent=2), encoding='utf-8')
     codes = pm.label_codes(table)
     runs = pm.valid_runs(codes)
@@ -224,7 +256,7 @@ def export_candidate(setup, group):
     print(f'Candidate {out / "CoreOrigin.csv"}: valid={reason is None}, sha256={digest}, features={n_features}, '
           f'possessions in file={n_spells}')
     with open(RESULTS_MD, 'a', encoding='utf-8') as handle:
-        handle.write(f"\nExported candidate `{group}`: `data/experiments/blindspot-v04/{group}/candidate/CoreOrigin.csv`, "
+        handle.write(f"\nExported candidate `{group}`: `{out.as_posix()}/CoreOrigin.csv`, "
                      f"valid={reason is None}, SHA256 `{digest}`, {n_spells} possessions in file. "
                      "Fitted on all public labels; its public score is training fit, not validation.\n")
 
@@ -234,24 +266,25 @@ def main():
     parser.add_argument('groups', nargs='*', default=list(GROUPS), help='experiments to run')
     parser.add_argument('--candidate', help='export a full-public-trained CoreOrigin.csv using this group')
     parser.add_argument('--note', default='', help='free-text note written above the results table')
+    parser.add_argument('--out', type=Path, default=OUTPUT, help='experiment output directory')
     args = parser.parse_args()
     unknown = [g for g in args.groups + ([args.candidate] if args.candidate else []) if g not in GROUPS]
     if unknown:
         parser.error(f'unknown group(s) {unknown}; choose from {list(GROUPS)}')
-    setup = Setup()
+    setup = Setup(args.out)
     if args.candidate:
         export_candidate(setup, args.candidate)
         return
     rows = []
     groups = ['baseline'] + [g for g in args.groups if g != 'baseline']
-    OUTPUT.mkdir(parents=True, exist_ok=True)
-    (OUTPUT / 'run_provenance.json').write_text(json.dumps(setup.provenance, indent=2), encoding='utf-8')
+    setup.output.mkdir(parents=True, exist_ok=True)
+    (setup.output / 'run_provenance.json').write_text(json.dumps(setup.provenance, indent=2), encoding='utf-8')
     for group in groups:
         started = time.time()
-        checkpoint = OUTPUT / group / 'scores.json'
+        checkpoint = setup.output / group / 'scores.json'
         cached = json.loads(checkpoint.read_text()) if checkpoint.exists() else {}
         if cached.get('fingerprint') == setup.fingerprint and all(
-                (OUTPUT / group / name).exists() and sha256(OUTPUT / group / name) == digest
+                (setup.output / group / name).exists() and sha256(setup.output / group / name) == digest
                 for name, digest in cached.get('artifacts_sha256', {}).items()) and cached.get('artifacts_sha256'):
             r = cached['scores']
             print('Verified completed group; reused:', group, flush=True)
@@ -268,7 +301,7 @@ def main():
         print(f"{group:11s} features={r['n_features']:3d} whole-run={r['whole_run']['spell']:.4f} "
               f"fixed-time={r['fixed_time']['spell']:.4f} ({time.time()-started:.0f}s)", flush=True)
     append_markdown(rows, args.note)
-    (OUTPUT / 'scores.json').write_text(json.dumps(dict(rows), indent=2), encoding='utf-8')
+    (setup.output / 'scores.json').write_text(json.dumps(dict(rows), indent=2), encoding='utf-8')
     print(f'Results appended to {RESULTS_MD}')
 
 
