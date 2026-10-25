@@ -376,7 +376,13 @@ def main():
     parser.add_argument('--candidate', help='export a full-public-trained CoreOrigin.csv using this group')
     parser.add_argument('--note', default='', help='free-text note written above the results table')
     parser.add_argument('--out', type=Path, default=OUTPUT, help='experiment output directory')
+    parser.add_argument('--historical-reproduction', action='store_true', help='Audit past public-label experiments; not competition eligible')
     args = parser.parse_args()
+    from possession.policy import require_historical_opt_in
+    try:
+        require_historical_opt_in(args.historical_reproduction)
+    except ValueError as error:
+        parser.error(str(error))
     unknown = [g for g in args.groups + ([args.candidate] if args.candidate else []) if g not in GROUPS]
     if unknown:
         parser.error(f'unknown group(s) {unknown}; choose from {list(GROUPS)}')

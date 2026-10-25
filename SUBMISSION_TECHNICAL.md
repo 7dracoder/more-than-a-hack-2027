@@ -1,5 +1,7 @@
 # BlindSpot: possession reconstruction with auditable evidence
 
+**October 24 status:** this document retains historical public-label research. Those supervised candidates are not current competition candidates under the clarified rules. See [CoreOrigin.md](CoreOrigin.md) and [LOCAL_V07.md](LOCAL_V07.md) for the external-only local pipeline, actual independent results and remaining work.
+
 **Provisional v0.3.1 audit candidate — not a submitted entry.** Registered team: **CoreOrigin**. The project/model is named BlindSpot; the submission file is CoreOrigin.csv. No private-match ranking is known.
 
 ## Approach

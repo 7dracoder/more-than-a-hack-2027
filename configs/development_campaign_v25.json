@@ -1,0 +1,31 @@
+{
+  "scope": "Fixed external development only; no official or independent score",
+  "initial_best": "data/local-v08/run-48-correction-rate",
+  "initial_config": "data/local-v08/run-48-correction-rate/trajectory_parent_config.json",
+  "after_run": "data/local-v08/run-51-correction-equal-spells",
+  "after_config": "configs/local_v24_residual_equal_spells.json",
+  "wait_for_feature_config": "configs/local_v25_trajectories.json",
+  "target_spell_f1": 0.9,
+  "runs": [
+    {
+      "config": "configs/local_v25_trajectories.json",
+      "out": "data/local-v08/run-52-trajectories"
+    },
+    {
+      "config": "configs/local_v25_trajectories_native.json",
+      "out": "data/local-v08/run-53-trajectories-native"
+    },
+    {
+      "config": "configs/local_v25_trajectories_equal_spells.json",
+      "out": "data/local-v08/run-54-trajectories-equal-spells"
+    },
+    {
+      "config": "configs/local_v25_trajectories_sharp_edges.json",
+      "out": "data/local-v08/run-56-trajectories-sharp-edges"
+    },
+    {
+      "config": "configs/local_v25_trajectories_attention.json",
+      "out": "data/local-v08/run-57-trajectories-attention"
+    }
+  ]
+}

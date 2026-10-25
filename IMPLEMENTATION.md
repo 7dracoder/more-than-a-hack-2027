@@ -1,5 +1,7 @@
 # BlindSpot: runnable possession research system
 
+**October 24 status:** this document retains historical public-label research. Those supervised candidates are not current competition candidates under the clarified rules. See [CoreOrigin.md](CoreOrigin.md) and [LOCAL_V07.md](LOCAL_V07.md) for the external-only local pipeline, actual independent results and remaining work.
+
 ## v0.3 candidate workflow
 
 ```powershell

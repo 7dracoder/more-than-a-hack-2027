@@ -73,4 +73,11 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--reference',type=Path,default=ROOT/'data/experiments/blindspot-v3')
     parser.add_argument('--revision',type=Path,default=ROOT/'data/experiments/blindspot-v031')
-    args=parser.parse_args();run(args.reference,args.revision)
+    parser.add_argument('--historical-reproduction',action='store_true',help='Audit historical public-label research; not competition eligible')
+    args=parser.parse_args()
+    from possession.policy import require_historical_opt_in
+    try:
+        require_historical_opt_in(args.historical_reproduction)
+    except ValueError as error:
+        parser.error(str(error))
+    run(args.reference,args.revision)

@@ -1,0 +1,67 @@
+{
+  "version": "0.7-external-local",
+  "seed": 2027,
+  "train_matches": [
+    "J03WMX",
+    "J03WN1",
+    "J03WOH",
+    "J03WOY"
+  ],
+  "validation_matches": [
+    "J03WPY"
+  ],
+  "test_matches": [
+    "J03WQQ",
+    "J03WR9"
+  ],
+  "sample_step": 5,
+  "fps": 25,
+  "target_absolute_spell_gain": 0.15,
+  "target_reference": "Frozen external-trained v031-style classifier, evaluated on the same external test matches. Historical BAR-ATH scores are not comparable.",
+  "team_switch_cost": 6.0,
+  "stoppage_switch_cost": 4.0,
+  "classifier_iterations": 80,
+  "classifier_learning_rate": 0.05,
+  "classifier_max_leaf_nodes": 7,
+  "classifier_l2": 10.0,
+  "classifier_min_samples_leaf": 20,
+  "classifier_training_stride": 5,
+  "epochs": 100,
+  "batch_size": 24,
+  "sequence_length": 256,
+  "hidden_channels": 96,
+  "dilations": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "learning_rate": 0.0007,
+  "weight_decay": 0.001,
+  "development_decoder_costs": [
+    [
+      1.0,
+      2.0
+    ],
+    [
+      2.0,
+      3.0
+    ],
+    [
+      3.0,
+      3.0
+    ],
+    [
+      6.0,
+      4.0
+    ]
+  ],
+  "validation_interval_epochs": 5,
+  "label_policy": "External DFL BallStatus and BallPossession are targets only. No BAR-ATH truth is read, used for training, tuning, or model selection. Unknown external ownership is X, never invented.",
+  "test_policy": "Choose checkpoints and decoder using J03WPY only. Evaluate J03WQQ/J03WR9 once after selection; later inspection retires them as independent evidence.",
+  "dropout": 0.2,
+  "run_weight_power": 0.5,
+  "architecture": "bigru"
+}

@@ -1,0 +1,31 @@
+{
+  "scope": "Fixed external development only; no official or independent score",
+  "initial_best": "data/local-v08/run-33-short-finetune",
+  "initial_config": "configs/local_v18_short_finetune.json",
+  "after_run": "data/local-v08/run-40-paired-geometry",
+  "after_config": "configs/local_v20_paired_geometry.json",
+  "wait_for_feature_config": "configs/local_v22_wider_warm.json",
+  "target_spell_f1": 0.9,
+  "runs": [
+    {
+      "config": "configs/local_v22_wider_warm.json",
+      "out": "data/local-v08/run-41-wider-warm"
+    },
+    {
+      "config": "configs/local_v21_low_dropout.json",
+      "out": "data/local-v08/run-42-low-dropout"
+    },
+    {
+      "config": "configs/local_v21_focal.json",
+      "out": "data/local-v08/run-43-focal"
+    },
+    {
+      "config": "configs/local_v21_boundary_emphasis.json",
+      "out": "data/local-v08/run-44-boundary-emphasis"
+    },
+    {
+      "config": "configs/local_v21_native_emphasis.json",
+      "out": "data/local-v08/run-45-native-emphasis"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "approach": "One bounded transition-repair study authorized by the user: commence",
+  "parent_run": "data/local-v08/run-48-correction-rate",
+  "output": "data/local-v08/transition-repair-v1",
+  "training_matches": [
+    "J03WMX",
+    "J03WN1",
+    "J03WOH",
+    "J03WOY",
+    "J03WQQ",
+    "J03WR9"
+  ],
+  "excluded_pairs": [
+    [
+      "J03WMX",
+      "J03WN1"
+    ],
+    [
+      "J03WOH",
+      "J03WOY"
+    ],
+    [
+      "J03WQQ",
+      "J03WR9"
+    ]
+  ],
+  "development_matches": [
+    "J03WPY"
+  ],
+  "decoder_costs": [
+    0,
+    2,
+    1
+  ],
+  "reference": {
+    "architecture": "boundary_hybrid",
+    "hidden_channels": 128,
+    "dropout": 0.2,
+    "boundary_positive_weight": 20.0,
+    "seed": 2041,
+    "epochs": 30,
+    "batch_size": 8,
+    "sequence_length": 1024,
+    "learning_rate": 0.001,
+    "ema_decay": 0.995
+  },
+  "candidate": {
+    "max_shift_frames": 12,
+    "max_island_frames": 25,
+    "insert_lengths": [
+      3,
+      6,
+      12,
+      25
+    ],
+    "peak_separation": 8,
+    "minimum_alternative_probability": 0.15
+  },
+  "repair": {
+    "seed": 2042,
+    "hidden_channels": 64,
+    "epochs": 80,
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "weight_decay": 0.01,
+    "thresholds": [
+      0.0,
+      0.1,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "minimum_positive_folds": 4
+  },
+  "policy": "H/A edits only; D and X remain exact. Candidate proposals never use truth. Repair supervision uses permitted training matches only. Each cross-check teacher excludes the evaluated pair, with repair fit on one excluded match and checked on the other. Final threshold selected using six training-match cross-checks; J03WPY remains development, never independent. No additional model family or open-ended search."
+}

@@ -186,6 +186,7 @@ def parser():
     p.add_argument("--config", default=str(ROOT / "configs/evidence_v1.json"))
     p.add_argument("--ablations", action="store_true")
     p.add_argument("--train-public", action="store_true", help="Fit on first 120s only; evaluate later 170s with 10s buffer")
+    p.add_argument('--historical-reproduction', action='store_true', help='Required for historical --train-public; not competition eligible')
     p.add_argument("--rebuild-cache", action="store_true")
     p.add_argument("--query-policy", choices=("boundary", "random", "uniform", "entropy"), default="boundary")
     p.add_argument("--query-budget", type=int)
@@ -194,4 +195,12 @@ def parser():
 
 
 if __name__ == "__main__":
-    run(parser().parse_args())
+    p = parser()
+    args = p.parse_args()
+    if args.train_public:
+        from possession.policy import require_historical_opt_in
+        try:
+            require_historical_opt_in(args.historical_reproduction)
+        except ValueError as error:
+            p.error(str(error))
+    run(args)

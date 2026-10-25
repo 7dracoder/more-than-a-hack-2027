@@ -1,0 +1,27 @@
+{
+  "scope": "Fixed external development only; no official or independent score",
+  "initial_best": "data/local-v08/run-46-frozen-correction",
+  "initial_config": "configs/local_v23_residual.json",
+  "after_run": "data/local-v08/run-45-native-emphasis",
+  "after_config": "configs/local_v21_native_emphasis.json",
+  "wait_for_feature_config": "configs/local_v24_residual_fast.json",
+  "target_spell_f1": 0.9,
+  "runs": [
+    {
+      "config": "configs/local_v24_residual_fast.json",
+      "out": "data/local-v08/run-48-correction-rate"
+    },
+    {
+      "config": "configs/local_v24_residual_context.json",
+      "out": "data/local-v08/run-49-correction-context"
+    },
+    {
+      "config": "configs/local_v24_residual_native.json",
+      "out": "data/local-v08/run-50-correction-native"
+    },
+    {
+      "config": "configs/local_v24_residual_equal_spells.json",
+      "out": "data/local-v08/run-51-correction-equal-spells"
+    }
+  ]
+}

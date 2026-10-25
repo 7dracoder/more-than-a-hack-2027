@@ -1,0 +1,85 @@
+{
+  "version": "0.8-external-hybrid",
+  "seed": 2029,
+  "train_matches": [
+    "J03WMX",
+    "J03WN1",
+    "J03WOH",
+    "J03WOY"
+  ],
+  "validation_matches": [
+    "J03WPY"
+  ],
+  "test_matches": [
+    "J03WQQ",
+    "J03WR9"
+  ],
+  "feature_version": "v08",
+  "features_dir": "data/external/features-v08",
+  "sample_step": 2,
+  "fps": 25,
+  "target_spell_f1": 0.9,
+  "target_absolute_spell_gain": 0.15,
+  "team_switch_cost": 6.0,
+  "stoppage_switch_cost": 4.0,
+  "classifier_iterations": 80,
+  "classifier_learning_rate": 0.05,
+  "classifier_max_leaf_nodes": 7,
+  "classifier_l2": 10.0,
+  "classifier_min_samples_leaf": 20,
+  "baseline_training_stride": 3,
+  "epochs": 80,
+  "batch_size": 16,
+  "sequence_length": 512,
+  "hidden_channels": 128,
+  "dilations": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "learning_rate": 0.0005,
+  "weight_decay": 0.001,
+  "development_decoder_costs": [
+    [
+      1,
+      3
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      4,
+      6
+    ]
+  ],
+  "validation_interval_epochs": 5,
+  "dropout": 0.2,
+  "run_weight_power": 0.6,
+  "boundary_weight": 1.0,
+  "boundary_seconds": 0.4,
+  "architecture": "hybrid",
+  "label_policy": "Coordinate-only inputs; labels from four external training matches only. Fixed external development match used for selection. No BAR-ATH human labels.",
+  "test_policy": "Previously opened tests stay retired; a new model cannot create independent evidence by reopening them.",
+  "comparison": "Historical best fixed-development score 0.7867515923566878; v07 frozen reference 0.6210095497953615. The v08 feature-bank baseline is a separate diagnostic.",
+  "focal_gamma": 0.5,
+  "frozen_baseline_dir": "data/local-v08/run-01-contacts",
+  "baseline_train_matches": [
+    "J03WMX",
+    "J03WN1",
+    "J03WOH",
+    "J03WOY"
+  ],
+  "augmentation_features_dir": "data/external/features-v08-corrupt"
+}

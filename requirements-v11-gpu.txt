@@ -1,0 +1,4 @@
+-r requirements-v08-gpu.txt
+# Optional exact decoder acceleration, verified on Python 3.13 / NumPy 2.5.
+numba==0.67.0
+llvmlite==0.49.0

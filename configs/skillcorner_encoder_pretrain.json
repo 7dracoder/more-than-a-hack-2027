@@ -1,0 +1,59 @@
+{
+  "seed": 2031,
+  "label_kind": "provider_HA_weak",
+  "train_matches": [
+    "1874553",
+    "1886347",
+    "1899585",
+    "1925299",
+    "1927964",
+    "1953632",
+    "1959846",
+    "1986691",
+    "1996435",
+    "1996436",
+    "2006229",
+    "2006363",
+    "2007448",
+    "2007721",
+    "2010085",
+    "2011166",
+    "2013725",
+    "2015213"
+  ],
+  "validation_matches": [
+    "2016236",
+    "2017461"
+  ],
+  "selection_rule": "fixed_final_epoch",
+  "epochs": 30,
+  "batch_size": 8,
+  "sequence_length": 1024,
+  "learning_rate": 0.001,
+  "weight_decay": 0.001,
+  "residual_channels": 64,
+  "player_channels": 32,
+  "residual_dilations": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "residual_dropout": 0.1,
+  "player_pooling": "attention",
+  "physical_units": true,
+  "boundary_auxiliary_weight": 0.1,
+  "boundary_positive_weight": 20.0,
+  "run_weight_power": 0.5,
+  "policy": "Provider H/A weak labels only; null remains X. Only frames with a finite central trajectory candidate on the labelled team contribute. No BAR-ATH or J03WPY inputs or targets. Context inputs are zero. The fixed final-epoch encoder/TCN may initialize a new strong-data corrector; prediction heads are discarded. Weak validation metrics are not the development spell score.",
+  "mmap_features": true,
+  "carrier_loss_weight": 0.1,
+  "auxiliary_supervision": "Provider carrier rank among the three nearest candidates on the labelled team, excluding ties/unknown identities; labels only, never identity-code inputs.",
+  "carrier_rank_weights": [
+    1.0,
+    3.0,
+    6.0
+  ]
+}

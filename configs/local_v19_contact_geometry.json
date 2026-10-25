@@ -1,0 +1,108 @@
+{
+  "version": "0.19-external-contact-geometry",
+  "seed": 2029,
+  "train_matches": [
+    "J03WMX",
+    "J03WN1",
+    "J03WOH",
+    "J03WOY",
+    "J03WQQ",
+    "J03WR9"
+  ],
+  "validation_matches": [
+    "J03WPY"
+  ],
+  "test_matches": [],
+  "feature_version": "v19",
+  "features_dir": "data/external/features-v19",
+  "sample_step": 1,
+  "fps": 25,
+  "target_spell_f1": 0.9,
+  "target_absolute_spell_gain": 0.15,
+  "team_switch_cost": 6.0,
+  "stoppage_switch_cost": 4.0,
+  "classifier_iterations": 80,
+  "classifier_learning_rate": 0.05,
+  "classifier_max_leaf_nodes": 7,
+  "classifier_l2": 10.0,
+  "classifier_min_samples_leaf": 20,
+  "baseline_training_stride": 3,
+  "epochs": 40,
+  "batch_size": 8,
+  "sequence_length": 1024,
+  "hidden_channels": 128,
+  "dilations": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "learning_rate": 0.00015,
+  "weight_decay": 0.001,
+  "development_decoder_costs": [
+    [
+      8,
+      12,
+      0
+    ],
+    [
+      4,
+      6,
+      0
+    ],
+    [
+      0,
+      2,
+      0.5
+    ],
+    [
+      0,
+      2,
+      1
+    ],
+    [
+      2,
+      4,
+      0.5
+    ],
+    [
+      2,
+      4,
+      1
+    ]
+  ],
+  "validation_interval_epochs": 3,
+  "dropout": 0.2,
+  "run_weight_power": 0.5,
+  "boundary_weight": 1.0,
+  "boundary_seconds": 0.4,
+  "architecture": "boundary_hybrid",
+  "label_policy": "Coordinate-only inputs; six external training matches. Verified v13 warm parent with exact 780-feature prefix, parent training-only normalization, and zero initial coefficients for 56 new contact geometry features. J03WPY is development only; no BAR-ATH human labels.",
+  "test_policy": "Formerly opened test matches now explicitly join training. Only J03WPY stays held out for exploratory development. There is no independent test cohort.",
+  "comparison": "Historical best fixed-development score 0.7867515923566878; v07 frozen reference 0.6210095497953615. The v08 feature-bank baseline is a separate diagnostic.",
+  "focal_gamma": 0.0,
+  "augmentation_features_dir": "data/external/features-v19-corrupt",
+  "development_only": true,
+  "frozen_baseline_dir": "data/local-v08/run-01-contacts",
+  "baseline_train_matches": [
+    "J03WMX",
+    "J03WN1",
+    "J03WOH",
+    "J03WOY"
+  ],
+  "boundary_auxiliary_weight": 0.3,
+  "boundary_positive_weight": 20.0,
+  "full_rate": true,
+  "baseline_sample_step": 2,
+  "ema_decay": 0.995,
+  "weight_selection": "Compare raw and exponentially averaged weights on fixed development only",
+  "stop_when_target_met": true,
+  "learning_rate_schedule": "cosine",
+  "minimum_learning_rate": 1E-05,
+  "warm_start_run": "data/local-v08/run-33-short-finetune",
+  "short_spell_sampling_probability": 0.5,
+  "short_spell_max_seconds": 1.0,
+  "allow_feature_prefix_expansion": true
+}

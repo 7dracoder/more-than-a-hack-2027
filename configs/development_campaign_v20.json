@@ -1,0 +1,19 @@
+{
+  "scope": "Fixed external development only; no official or independent score",
+  "initial_best": "data/local-v08/run-33-short-finetune",
+  "initial_config": "configs/local_v18_short_finetune.json",
+  "after_run": "data/local-v08/run-36-contact-geometry",
+  "after_config": "configs/local_v19_contact_geometry.json",
+  "wait_for_feature_config": "configs/local_v20_paired_training.json",
+  "target_spell_f1": 0.9,
+  "runs": [
+    {
+      "config": "configs/local_v20_paired_training.json",
+      "out": "data/local-v08/run-39-paired-training"
+    },
+    {
+      "config": "configs/local_v20_paired_geometry.json",
+      "out": "data/local-v08/run-40-paired-geometry"
+    }
+  ]
+}

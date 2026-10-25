@@ -1,0 +1,2 @@
+-r requirements-local-gpu.txt
+xgboost==3.4.1

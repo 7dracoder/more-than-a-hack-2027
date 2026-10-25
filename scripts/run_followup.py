@@ -185,7 +185,13 @@ if __name__ == '__main__':
     p.add_argument('--review-video', action='store_true', help='Encode and verify local private video snippets')
     p.add_argument('--review-budget', type=int, default=12)
     p.add_argument('--archive', action='store_true')
+    p.add_argument('--historical-reproduction', action='store_true', help='Audit past public-label experiments; not competition eligible')
     args = p.parse_args()
+    from possession.policy import require_historical_opt_in
+    try:
+        require_historical_opt_in(args.historical_reproduction)
+    except ValueError as error:
+        p.error(str(error))
     if not 0 <= args.review_budget <= 12:
         p.error('review budget must be between 0 and 12')
     run(args)

@@ -1,0 +1,14 @@
+{
+  "target_spell_f1": 0.9,
+  "scope": "Fixed external development only; no official or independent score",
+  "after_run": "data/local-v08/run-20-height-aux",
+  "after_config": "configs/local_v11_height_aux.json",
+  "initial_best": "data/local-v08/run-17-fullrate-safe",
+  "wait_for_feature_config": "configs/local_v13_fine_motion.json",
+  "runs": [
+    {"config": "configs/local_v13_fine_motion.json", "out": "data/local-v08/run-22-fine-motion"},
+    {"config": "configs/local_v12_deeper.json", "out": "data/local-v08/run-23-deeper"},
+    {"config": "configs/local_v12_soft_boundary.json", "out": "data/local-v08/run-24-soft-boundary"},
+    {"config": "configs/local_v12_native.json", "out": "data/local-v08/run-25-native-context"}
+  ]
+}

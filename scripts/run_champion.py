@@ -284,4 +284,11 @@ if __name__ == '__main__':
     parser.add_argument('--config', default=str(ROOT / 'configs/champion_v3.json'))
     parser.add_argument('--resume', action='store_true')
     parser.add_argument('--archive', action='store_true')
-    run(parser.parse_args())
+    parser.add_argument('--historical-reproduction', action='store_true', help='Audit past public-label experiments; not competition eligible')
+    args = parser.parse_args()
+    from possession.policy import require_historical_opt_in
+    try:
+        require_historical_opt_in(args.historical_reproduction)
+    except ValueError as error:
+        parser.error(str(error))
+    run(args)

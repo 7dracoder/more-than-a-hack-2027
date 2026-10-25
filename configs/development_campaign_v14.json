@@ -1,0 +1,31 @@
+{
+  "after_config": "data/local-v08/run-26-feature-ensemble/config.json",
+  "after_run": "data/local-v08/run-26-feature-ensemble",
+  "runs": [
+    {
+      "config": "configs/local_v12_soft_boundary.json",
+      "out": "data/local-v08/run-24-soft-boundary"
+    },
+    {
+      "config": "configs/local_v12_native.json",
+      "out": "data/local-v08/run-25-native-context"
+    },
+    {
+      "config": "configs/local_v13_long_tcn.json",
+      "out": "data/local-v08/run-27-long-tcn"
+    },
+    {
+      "config": "configs/local_v14_cosine.json",
+      "out": "data/local-v08/run-28-cosine-refinement"
+    },
+    {
+      "config": "configs/local_v14_cosine_fine.json",
+      "out": "data/local-v08/run-29-cosine-fine"
+    }
+  ],
+  "target_spell_f1": 0.9,
+  "initial_best": "data/local-v08/run-17-fullrate-safe",
+  "wait_for_feature_config": "configs/local_v13_fine_motion.json",
+  "scope": "Fixed external development only; no official or independent score",
+  "initial_config": "configs/local_v10_fullrate.json"
+}

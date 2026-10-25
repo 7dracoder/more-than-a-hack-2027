@@ -1,0 +1,53 @@
+{
+  "parent": "data/local-v08/run-48-correction-rate",
+  "parent_score": 0.8570048309178743,
+  "output": "data/local-v08/metrica-expansion-v1",
+  "strong_training_matches": [
+    "J03WMX",
+    "J03WN1",
+    "J03WOH",
+    "J03WOY",
+    "J03WQQ",
+    "J03WR9"
+  ],
+  "additional_partial_label_training_matches": [
+    "METRICA1",
+    "METRICA2"
+  ],
+  "reserved_partial_label_evaluation_match": "METRICA3",
+  "extra_crop_probability": 0.2,
+  "decoder_costs": [
+    [
+      8,
+      12,
+      0
+    ],
+    [
+      4,
+      6,
+      0
+    ],
+    [
+      0,
+      2,
+      0.5
+    ],
+    [
+      0,
+      2,
+      1
+    ],
+    [
+      2,
+      4,
+      0.5
+    ],
+    [
+      2,
+      4,
+      1
+    ]
+  ],
+  "label_policy": "Conservative controlled-pass/carry and same-receiver bridges, explicit out to confirmed restart only; conflicts and two-frame boundary margins unknown. No event-derived feature inputs. No full-spell truth claim.",
+  "comparison": "Exactly two 40-epoch fits: identical frozen parent, new zero-initialized corrector, seed/schedule/update count; control uses strong data only, treatment replaces 20 percent of sampled crops with Metrica partial-label examples. Winner is frozen on existing development before opening Game 3 once. No selection based on held-out scores; no unlimited continuation."
+}

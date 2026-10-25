@@ -1,0 +1,23 @@
+{
+  "scope": "Fixed external development only; no official or independent score",
+  "initial_best": "data/local-v08/run-29-cosine-fine",
+  "wait_for_feature_config": "configs/local_v13_fine_motion.json",
+  "target_spell_f1": 0.9,
+  "runs": [
+    {
+      "config": "configs/local_v18_short_finetune.json",
+      "out": "data/local-v08/run-33-short-finetune"
+    },
+    {
+      "config": "configs/local_v18_structured_finetune.json",
+      "out": "data/local-v08/run-34-structured-finetune"
+    },
+    {
+      "config": "configs/local_v18_structured_short.json",
+      "out": "data/local-v08/run-35-structured-short"
+    }
+  ],
+  "after_config": "configs/local_v17_structured.json",
+  "initial_config": "configs/local_v14_cosine_fine.json",
+  "after_run": "data/local-v08/run-32-structured-chain"
+}

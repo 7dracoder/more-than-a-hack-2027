@@ -1,5 +1,7 @@
 # BlindSpot: technical report draft
 
+**October 24 status:** this document retains historical public-label research. Those supervised candidates are not current competition candidates under the clarified rules. See [CoreOrigin.md](CoreOrigin.md) and [LOCAL_V07.md](LOCAL_V07.md) for the external-only local pipeline, actual independent results and remaining work.
+
 The current v0.3 submission-oriented draft is [SUBMISSION_TECHNICAL.md](SUBMISSION_TECHNICAL.md). The v0.2 findings below are retained as the historical development record.
 
 Status: development prototype, October 20, 2026. No final submission or private-match result is claimed.

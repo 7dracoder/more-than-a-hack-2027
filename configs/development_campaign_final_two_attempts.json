@@ -1,0 +1,15 @@
+{
+  "scope": "Fixed development only; six strong training matches and eighteen provider weak pretraining matches. User limit: one final candidate after active run 57.",
+  "initial_best": "data/local-v08/run-48-correction-rate",
+  "initial_config": "data/local-v08/final_attempt_parent_config.json",
+  "after_run": "data/local-v08/run-57-trajectories-attention",
+  "after_config": "configs/local_v25_trajectories_attention.json",
+  "wait_for_feature_config": "configs/local_v26_pretrained_attention.json",
+  "target_spell_f1": 0.9,
+  "runs": [
+    {
+      "config": "configs/local_v26_pretrained_attention.json",
+      "out": "data/local-v08/run-58-pretrained-attention"
+    }
+  ]
+}

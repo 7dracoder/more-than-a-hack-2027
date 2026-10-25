@@ -16,6 +16,7 @@ from possession.data import sha256
 
 
 def main():
+    raise SystemExit('Disabled after the October 23 rule clarification: no hand labels on BAR-ATH for any purpose, including validation. Use labelled external matches; see RULES.md and LOCAL_V07.md. The code below is historical, not an active annotation plan.')
     source = ROOT / 'evaluation/gt/BAR-ATH_possession_gt_public.csv'
     known = pd.read_csv(source)['label'].to_numpy() != 'X'
     seed, length, embargo = 61022, 750, 300
