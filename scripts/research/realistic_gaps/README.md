@@ -69,6 +69,24 @@ Expected SHA256 values:
 
 These were verified with torch 2.15.0 CPU, numpy 2.4.6, scipy 1.17.1 and Python 3.11.
 
+### v11: v10 plus the out-of-bounds dead-ball rule
+
+v10 calls 1,917 graded frames possession while the tracked ball is more than 1 m outside the
+pitch for at least 0.5 s (34 runs). `possession/dead_ball_rules.py` marks those frames D; its
+constants were fixed on the six DFL training matches (`scripts/eval_oob_rule_dfl.py`, 99.4% of
+flagged frames dead). Smart Tagging corroborates it label-free: 24 of the 36 graded out-of-bounds
+runs have a SET PIECES tag starting 15 s before to 35 s after, and the untagged runs show the same
+smooth exit and player slowdown. `--require-set-piece` keeps only the tagged runs; v11 does not use it.
+
+```bash
+python scripts/apply_dead_ball_rules.py --candidate data/submissions/CoreOrigin-v10/CoreOrigin.csv \
+    --out data/submissions/CoreOrigin-v11/CoreOrigin.csv
+python evaluation/validate_submission.py data/submissions/CoreOrigin-v11/CoreOrigin.csv
+```
+
+Expected submission SHA256 `496b42abcb0aec5ec0d4dffa6a1d8ca3c5b386dd0ccb9e4c697e877dfa1e2c80`
+(389 -> 406 predicted possessions).
+
 To retrain (GPU; not bit-deterministic, which is why the weights are committed):
 
 ```bash
