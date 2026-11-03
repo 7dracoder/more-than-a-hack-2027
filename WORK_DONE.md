@@ -609,3 +609,129 @@ Metrica data expansion started (new user authorization, October 25): Public metr
 
 
 Metrica data expansion complete (October 25): Added two training matches with 94773 known source-supported partial labels (H 39689, A 33245, D 21839; X 191389). Game 3 remained excluded from normalization, training and checkpoint selection. All five coordinate-only caches passed source/frame/claim/finiteness checks, corrupted target equality, and held-out target-array absence. Nine focused parser/policy tests passed. The matched control and additional-data runs each completed 40 epochs with identical parent, seed, schedule and 210 updates per epoch. Treatment used 13456 Metrica crops at the predeclared 20 percent mixture. Both selected warm_initial epoch 0 at 0.8570048309178743; data gain versus control was zero. The original run 48 is preserved and remains selected, with no added-data-trained checkpoint promoted. After model selections froze, Game 3 event labels were opened once: 94729/143761 frames (65.893 percent) had supported partial labels, and the H/A macro-F1 agreement was 0.9635533291778218 for parent/control/treatment alike. This is a DIFFERENT partial-label frame metric, not the 0.90 spell target, dense ground truth, or an official score. Game 3 release/ball alignment median 0.10191 m, p95 0.74789 m passed the fixed checks. The holdout registry is completed and prevents claiming a later adaptive reuse as fresh. Fresh development scores and artificial-gap score 0.6640419947506562 reproduced exactly for both selected models. Each produced two complete format-valid, byte-identical 199319-row tactical exports matching the retained parent CSV (602b7f1beefc538eac04ed881028ec609de4dacb95f6db33b425b38a599aca19). Model SHA256: control 771ed0c69a64bbab335cfd5dad2697f46e79c314272a4ba3a106aca8e4c31750; treatment 61abda83f9abf5ac9659e1c2fb22b2bda4dcddf611e9674978fce43d0f331c12. Both source archives and unchanged official scorer verified. Study complete and stopped; no additional fits or test reuse are queued.
+
+
+### 28. Artifact recovery, exact reproduction and decoder-ceiling audit (29 October 2026)
+
+Recovered the working tree from the user's archived bundle `more-than-a-hack-2027.zip` (34,687,979,399 bytes) with HTTP range requests. Parsed the archive's central directory and fetched only the four tactical non-video assets and the run-58 artifacts, not the 19 GB of video. The archive's stored CRC fields do not match the decompressed bytes, so extraction was verified by exact uncompressed size and by byte agreement with the repository for tracked files. No match asset left this machine.
+
+Rebuilt a CPU-only macOS arm64 environment (`.venv` with system site-packages, torch 2.15.0) and ran the suite: **266 tests pass**. Decoding the saved run-58 development probabilities with the recorded costs [0, 2, 1] reproduces the recorded selection exactly (spell F1 0.8570048309178743, macro F1 0.9742746076990892, 421 true / 407 predicted spells). Nothing was retrained, and the user's earlier two-attempt training cap was not reopened.
+
+Added `scripts/audit_decoder_ceiling.py`, an evidence-only audit of the frozen development probabilities. It reproduces the recorded score, sweeps a declared 144-setting decoder grid (range 0.724145 to 0.858041; best gain 0.001), and substitutes two oracles. With ground-truth spell boundaries and the model's own team decisions the score is **0.900635**; with the model's boundaries and ground-truth teams it is 0.890076. Both halves of the problem must improve to pass 0.95, which rules out further decoder work.
+
+Diagnosed the remaining error: at IoU 0.5, 359/421 possessions match; 79/124 spells shorter than 2 s match; 113 of those 124 are brief changes inside the other team's possession. The retained run-58 history shows training loss falling 0.06361 to 0.04563 while development spell F1 falls 0.8570 to 0.8432, so frame-level fitting beyond the warm start is anti-correlated with the ranking metric.
+
+Found and fixed one certain submission defect: the exported candidate assigned possession to 1,609 home and 1,200 away frames inside the pre-second-half window that FAQ.md publishes as all dead ball. Added `possession/anchors.py`, `scripts/apply_published_anchors.py` and `tests/test_anchors.py` (5 tests). The correction rewrites frames 110808-113717 only, with a one-second guard before the published 113742 kickoff anchor; 2,784 frames change and predicted possessions fall 413 to 399, removing 14 possessions that cannot exist in the ground truth. No label and no tuning set is read. New candidate `data/submissions/CoreOrigin-v08/CoreOrigin.csv` (199,319 rows, official validator pass), SHA256 42b0a75bf954a887ea84615bdcd312c78ab0be315ff58d2c03d2f232b1e919d3; the public-window score is unchanged because the window is in the first half.
+
+Public-window pipeline check: 0.505263 spell F1 / 0.651007 macro F1. Two long in-pitch stoppages (20.4 s free-kick, 14.5 s goal-kick setup) inside that window are called alive, accounting for 1,198 of 1,469 dead frames. Smart Tagging brackets both, but adopting a set-piece-to-dead rule because the public window rewards it would be tuning on the labels the rules reserve for pipeline checking; it was not adopted and is recorded as an open question instead.
+
+**Verdict on the 0.95 request:** not reachable with the current 960-feature bank. The measured segmentation oracle is 0.900635, the decoder grid is saturated, and the training history is anti-correlated with the metric. The remaining routes require evidence the geometry bank does not hold: ball recovery from the tactical video on the 41% of graded frames where tracking loses it, frame-resolution contact detection, or substantially more labelled matches. No new independent or official score is claimed and no training was launched.
+
+### 0.95 push: rules re-check, short-spell oracle and out-of-bounds rule (29 October 2026, evening)
+
+**Rules re-checked against upstream** (metrica-sports/more-than-a-hack-2027 at f8f2629,
+identical to the local RULES/FAQ/EVALUATION/CHALLENGE) and its organiser answers:
+#2 a ball detector trained on the provided match's video with the provided tracking as
+automatic labels is *not allowed* (train detectors on other matches only); #10 no BAR-ATH
+labels for training, validation or choosing parameter values; #11 commit weights, CPU
+inference must regenerate the CSV byte for byte; #14 rules from watching are fine if not
+tied to specific frames; #15 future frames allowed; #16 IDSSE/Sportec DFL use confirmed,
+all thresholds must be chosen on other games. Hosted LLMs must not receive match assets.
+
+**Why 0.95 on J03WPY is blocked (new oracle, saved run-58 probabilities, no fitting).**
+421 true spells; 254 are shorter than 5 s, 124 shorter than 2 s, 59 shorter than 1 s.
+Replacing the model's frames with the truth for every true spell shorter than T:
+
+| T | spell F1 |
+|---|---:|
+| model | 0.857005 |
+| < 1 s perfect | 0.8971 |
+| < 2 s perfect | 0.9173 |
+| < 3 s perfect | 0.9324 |
+| < 5 s perfect | 0.9581 |
+| dead ball perfect | 0.8554 |
+
+0.95 needs near-perfect recovery of every possession under 5 s. Dead ball is already
+solved on DFL (alive/dead F1 0.9994), so set-piece / dead-ball work cannot move J03WPY.
+A deterministic proximity rule (switch to a team when its nearest player is within r of
+the ball below height z) replicates DFL BallPossession at only 0.684 spell F1 even with
+true dead ball (best of a 60-setting grid on the six training matches), so the label is
+not a simple function of the tracking that a rule could copy.
+
+**Implemented: out-of-bounds dead-ball rule** (`possession/dead_ball_rules.py`,
+`scripts/apply_dead_ball_rules.py`, `scripts/eval_oob_rule_dfl.py`,
+`tests/test_dead_ball_rules.py`, 4 tests pass). Ball more than 1.0 m outside the
+pitch for at least 13 frames -> D. Constants fixed on the six DFL training matches only:
+99.40 percent of 54,760 flagged frames are BallStatus 0, 78/80 runs at least 90 percent dead.
+J03WPY development: 0.857005 -> **0.858041** spell F1 (macro 0.974275 -> 0.974079,
+406 vs 407 predicted spells) -- within noise, as expected because DFL dead ball is solved.
+BAR-ATH (no labels read, public window not scored for selection): 1,993 graded frames in 32
+runs change H/A -> D; predicted possessions 399 -> 420. Candidate
+`data/submissions/CoreOrigin-v09-oob/CoreOrigin.csv`, SHA256
+014e26717a50b7ea72166437cede7dab9f613bfb0b0ee7954a9776abe6bde2a1, official validator OK
+(199,319 rows), receipt `dead_ball_rules.json`. Risk: BAR-ATH ball positions are automatic
+and may include off-pitch false detections (for example a spare ball); the DFL precision
+does not measure that. Not promoted automatically -- Tanmay decides v08 vs v09-oob.
+
+**Label-free Smart Tagging inspection** (aggregates only): set-piece intervals are fixed 35 s
+windows (kickoffs 5 s). For throw-ins the ball stays out of bounds until a median 6.3 s
+after the tag start, so a tag starts near the stoppage, not at the restart. A tag-gated
+throw-in bridge rule is possible but has no external labels to check it on (DFL/Metrica
+samples have no Smart Tagging), so it was not adopted.
+
+**Remaining routes to above 0.90** all need new evidence, not tuning: (1) a ball detector
+trained on other matches' video (issue #2) run on the 19 GB tactical video, which is not on
+this Mac, with a GPU host; (2) dense possession labels on more *other* matches, hand labels
+allowed there, targeted at sub-5 s spells; (3) frame-level contact detection from (1).
+
+
+### Touch-chain / dead-ball study toward 0.95 (29 October 2026, CPU-only)
+
+Rules re-checked against parent `metrica-sports/more-than-a-hack-2027` (latest commit f8f2629,
+23 Oct 2026): unchanged. Any algorithmic method is allowed; no hand labels or tuning on BAR-ATH;
+external human labels on other games are fine. All work below uses the six DFL training matches
+(leave-one-match-out) and J03WPY as development. No BAR-ATH file was read. Code:
+`scripts/research/touch_chain/` (README inside).
+
+**Where the J03WPY gap actually is (oracles on run 48, J03WPY):**
+
+| substitution | spell F1 |
+|---|---:|
+| run 48 as is | 0.857005 |
+| ground-truth dead-ball mask, run-48 teams | 0.858525 |
+| run-48 dead-ball mask, ground-truth teams | **0.994787** |
+
+Dead ball is effectively solved on DFL tracking; a set-piece/long dead-ball detector cannot move
+J03WPY by more than ~0.0015 (the earlier OOB rule gave +0.0010, 0.858041). The entire remaining gap
+is H/A switching inside live play. (On BAR-ATH the balance differs: dead-ball errors dominate the
+public window, so the set-piece work still matters there, but it cannot be measured on J03WPY.)
+
+**Touch-chain model.** Possession changes on DFL happen at a ball approach by the new team (new-team
+nearest-player distance median 0.6 m, p90 1.2 m, offset median 0 frames). Candidates = local minima
+(±2 frames) of each team's nearest-player distance under 2 m: 95% of all 2,027 training H<->A
+changes have a candidate within 5 frames. With perfect candidate labels the chain decoder reaches
+**0.9714** mean spell F1 on train (ceiling of the representation). A two-stage LightGBM
+(65 geometry + 27 ball-kinematics + 65 ±12-frame sequence features, then neighbour-candidate
+context), candidate-level 2-state Viterbi:
+
+| system (J03WPY unless noted) | spell F1 |
+|---|---:|
+| frame-level LightGBM (132 feats) + Viterbi, best of grid | 0.6895 |
+| touch chain, stage 2, λ=0.5 (chosen on train OOF 0.7745), truth dead mask | 0.8204 |
+| run 48 + chain posterior fusion (any weight tried) | 0.8385–0.8498 |
+| run 48 + chain short-spell insertion (thr 0.95 from train precision 0.771) | 0.8564 |
+| run 48 + OOB dead-ball rule (prior) | 0.8580 |
+
+The decisive sub-task is "an opponent comes within 2 m: did it win the ball?" (1,140 such cases on
+J03WPY, 25% positive). Best tracking-only classifier: AUC 0.931, accuracy 0.88 (train OOF 0.916 /
+0.851). Spell F1 > 0.95 needs roughly 98%+. Run 48 missed 62/421 J03WPY possessions at IoU 0.5;
+32 are under 1 s, 28 have <10% of their frames predicted for the right team, and the touching
+player was within 0.65 m (median) of the ball — the touch is in the tracking geometry but not
+separable from a near-miss with 25 fps centre-of-mass positions.
+
+**Verdict.** No allowed CPU-side change lifts J03WPY above 0.858; run 48 stays selected. >0.95 on
+J03WPY is not reachable with tracking-only evidence. Remaining routes (none runnable here): (1) much
+more labelled tracking (e.g. PFF FC World Cup 2022 open tracking+events, ~64 matches) to train the
+contact classifier; (2) video-based contact/touch detection — impossible on DFL (no video), so it
+cannot be validated on J03WPY at all; (3) ball height/foot-level pose. The Mac has no tactical video
+and no CUDA host is registered, so no video work was attempted. Nothing committed or pushed.
