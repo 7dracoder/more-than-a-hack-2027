@@ -1,0 +1,15 @@
+{
+  "files": {
+    "strong_0.npz": "c39098bcc4a9b266059b78a214f18755d0e44429cd44a98b3951646684d445ff",
+    "strong_1.npz": "201839a7db1d6c51363fc83fced68e5803bca834dd1bd993cff3ad74ae4f9377",
+    "strong_2.npz": "65daa9d72db2bc615aacf0f76c867d787bd23abbdc6b1b7dc1f91d774c4112c9",
+    "strong_3.npz": "a1240186da22d4ec20739b00a3977a7c90752b81f72bd929b75486ab3625bedb",
+    "strong_4.npz": "7210386017af8ef97beb5a575261104e739ba2ebab51c0fbe70abf14afba5c21",
+    "strong_5.npz": "95faa6cf82341ad1e8a73226bc837cef136bdc306569ff9373b5b97198f0b60f",
+    "weak_0.npz": "5d5c4fe4299254f6d57c84c5adf1148af17bb923d9d75cba63a4f6daa4e92fc6",
+    "weak_1.npz": "381c158a7e259882dda89b8d0ab9a89400097b34099049fff9be55cbe51eb263",
+    "weak_2.npz": "c9242bfb10ec479e4d0de7e9dbafb85311f22d0528fcd1b90e7b07311620693d",
+    "weak_3.npz": "10240ce55ee3e8a89a68a89c5eee2a8caba7f99184583a4d8c85baa4e9c7a873"
+  },
+  "model_sha256": "9793ed7e76bc4ebf455cc30ace0b7f7114a3bcc0e07abad31d9ebcaa7066c2b8"
+}

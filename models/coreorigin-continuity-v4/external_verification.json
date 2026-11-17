@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "all_declared_candidates_reproduced": true,
+  "frozen_probability_hashes_verified": true,
+  "external_target_hashes_verified": true,
+  "source_hashes_verified": true,
+  "weights_unchanged": true,
+  "candidates": [
+    {
+      "penalty": 0.0,
+      "objective": 0.6689756357082342
+    },
+    {
+      "penalty": 2.0,
+      "objective": 0.6727978928693288
+    },
+    {
+      "penalty": 4.0,
+      "objective": 0.6737666534168302
+    },
+    {
+      "penalty": 8.0,
+      "objective": 0.6781648771573808
+    }
+  ],
+  "selection_sha256": "79bca12d7f960f36aaff79450231e9fc2d35ecc0fd5c9a4d396d79982a2b6de8",
+  "provided_match_used": false,
+  "public_labels_used": false,
+  "unexpected_competition_access": [],
+  "independent_test": false,
+  "full_match_spell_f1": null,
+  "competition_target_verified": false
+}

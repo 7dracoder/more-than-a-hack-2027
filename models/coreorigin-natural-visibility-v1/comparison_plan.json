@@ -1,0 +1,21 @@
+{
+  "candidates": [
+    "incumbent_temporal_fusion",
+    "parent",
+    "natural_adaptation"
+  ],
+  "incumbent_selection_sha256": "f894f413e5c5eb4f2f8b06e1f51b1bbf81f8037accd5d833867c12b53a71ba61",
+  "training_plan_sha256": "44b4c4c317511c2d3f4432ecb2949669c7ba7565a82114c8979c3ff77990243d",
+  "source_sha256": "bf5bf437641d23d3fc929859fa4174cd628e7a8dcdfbe946d0544a625ecd86f0",
+  "views": [
+    "native",
+    "masked",
+    "mixed"
+  ],
+  "match": "J03WPY",
+  "decision": "Highest mean external spell F1, subject to parent native score minus 0.01; ties retain incumbent.",
+  "weights_or_parameters_tuned": false,
+  "provided_match_used": false,
+  "public_labels_used": false,
+  "limitation": "Same previously used external development fixture; not independent confirmation or BAR-ATH performance."
+}

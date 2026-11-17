@@ -1,5 +1,7 @@
 # BlindSpot: local development toward 0.90 spell F1
 
+**Scope correction, 3 November 2026:** this file records external development experiments, primarily on J03WPY. Its 0.85700 result and oracle substitutions are not BAR-ATH scores or bounds on BAR-ATH performance. The later frozen v11 pipeline has now been checked on BAR-ATH's public five minutes: **0.54054 spell F1 / 0.74187 macro F1**. Its complete 199,319-row CSV passes the official validator and matches the previously recorded v11 predictions. No training or tuning followed that check. The private full-match competition score remains unknown; see [current technical draft](CoreOrigin.md) for the frozen candidate and evidence paths.
+
 **Latest study completed, October 25:** Metrica sample Games 1/2 added 94773 partial labelled training frames; Game 3 was reserved from training and evaluated only after model selection froze. Both matched 40-epoch control/treatment runs retained their epoch-zero 0.8570048309178743 control. Run 48 remains selected; the 0.90 spell-F1 target is unmet. All checks and full exports passed, and no further jobs are queued. See data/local-v08/metrica-expansion-v1/status.json and metrica_data_audit.json.
 
 Latest verified result: **0.8570048309178743** in run 48. Its fresh audit agrees,
@@ -440,8 +442,8 @@ stoppage cost, boundary log-odds weight and boundary bias spans 0.724145 to
 **0.858041**; the best setting gains 0.001. `scripts/audit_decoder_ceiling.py`
 reproduces both numbers and writes `data/local-v08/decoder_ceiling.json`.
 
-**The ceiling is the evidence, not the decoding.** Two oracles bound the two
-halves of the problem:
+**Diagnostic substitutions on J03WPY.** Two oracles replace one part of the
+fixed predictions at a time; neither establishes a general performance ceiling:
 
 | substitution | spell F1 |
 |---|---:|
@@ -449,10 +451,11 @@ halves of the problem:
 | ground-truth spell boundaries, model's own team decisions | 0.900635 |
 | model's spell boundaries, ground-truth teams | 0.890076 |
 
-So even perfect segmentation leaves ~0.90, because the team call is wrong on
-about 76 of 421 possessions, and even perfect team calls leave ~0.89. Both are
-needed for anything above 0.95, which rules out further decoder or
-post-processing work as a route to the target.
+Under these particular substitutions, ground-truth boundaries with the fixed
+team decisions give ~0.90, and ground-truth teams with the fixed boundaries give
+~0.89. These diagnose errors in the saved J03WPY output. They do not rule out
+other decoders or improved models, and say nothing quantitative about a ceiling
+on BAR-ATH.
 
 **Where the error lives.** At IoU 0.5, 359/421 possessions match. 124 spells are
 shorter than 2 s and only 79 of those match; 113 of the 124 are *brief changes
@@ -486,14 +489,11 @@ ball visible and inside the pitch -- are called alive, which is 1,198 of the
 rule because the public window likes it would be tuning on the labels the rules
 reserve for checking the pipeline, so it was not adopted.
 
-**Verdict on 0.95.** It is not reachable with the current 960-feature bank: the
-measured oracle for segmentation is 0.900635, and the decoder grid plus the
-training history show the probabilities -- not the decision layer -- are the
-limit. The remaining routes all require evidence the geometry bank does not
-contain: recovering the ball on the 41% of graded frames where tracking loses it
-(the tactical video is the only source), detecting ball-player contact at frame
-resolution rather than through windows, or substantially more labelled matches.
-None of those is a tuning change, and no fit was launched here.
+**Corrected interpretation of the 0.95 target.** These J03WPY experiments did not
+demonstrate 0.95. They do not prove that the feature bank cannot reach it, or that
+BAR-ATH has a 0.90 ceiling. Ball recovery, contact detection and more permitted
+external labels remain research hypotheses rather than established requirements.
+No fit was launched in this audit.
 
 Reproduce on a CPU-only Mac: `python -m venv .venv --system-site-packages`,
 `.venv/bin/pip install torch` (2.15.0 here; the repository's pinned CUDA wheels
@@ -603,8 +603,9 @@ J03WPY, 25% positive). Best tracking-only classifier: AUC 0.931, accuracy 0.88 (
 player was within 0.65 m (median) of the ball — the touch is in the tracking geometry but not
 separable from a near-miss with 25 fps centre-of-mass positions.
 
-**Verdict.** No allowed CPU-side change lifts J03WPY above 0.858; run 48 stays selected. >0.95 on
-J03WPY is not reachable with tracking-only evidence. Remaining routes (none runnable here): (1) much
+**Verdict for these trials.** None of the tested CPU-side changes lifts J03WPY above 0.858;
+run 48 stayed selected in this study. These trials establish no general tracking-only ceiling
+and no BAR-ATH performance bound. Further hypotheses (none runnable in that environment): (1) much
 more labelled tracking (e.g. PFF FC World Cup 2022 open tracking+events, ~64 matches) to train the
 contact classifier; (2) video-based contact/touch detection — impossible on DFL (no video), so it
 cannot be validated on J03WPY at all; (3) ball height/foot-level pose. The Mac has no tactical video

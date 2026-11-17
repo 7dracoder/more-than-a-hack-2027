@@ -1,0 +1,81 @@
+{
+  "complete": true,
+  "selected_epoch": 30,
+  "fallback": false,
+  "all_input_checksums_verified": true,
+  "frozen_normalization_verified": true,
+  "selected_scores_reproduced": true,
+  "selected_model_sha256": "9793ed7e76bc4ebf455cc30ace0b7f7114a3bcc0e07abad31d9ebcaa7066c2b8",
+  "selection_sha256": "e0ce0bbca812cad89cf54fabbea6450e8e9be33f1099c1078eae44eb0553dcc2",
+  "strong_scores": {
+    "native": {
+      "spell_f1_mean": 0.8570048309178743,
+      "macro_f1": 0.9742746076990892,
+      "n_gt_spells": 421,
+      "n_pred_spells": 407
+    },
+    "masked": {
+      "spell_f1_mean": 0.5321052631578947,
+      "macro_f1": 0.8783832431120131,
+      "n_gt_spells": 421,
+      "n_pred_spells": 339
+    },
+    "mixed": {
+      "spell_f1_mean": 0.6178168130489335,
+      "macro_f1": 0.9037094201422432,
+      "n_gt_spells": 421,
+      "n_pred_spells": 376
+    }
+  },
+  "weak_scores": {
+    "all_known": {
+      "frames": 31013,
+      "weak_ha_accuracy": 0.8225905265533808,
+      "conditional_ha_accuracy": 0.8207848321671557,
+      "conditional_ha_macro_f1": 0.8200037212612039,
+      "conditional_ha_nll": 0.3973227245836739,
+      "dead_prediction_rate_on_weak_ha": 0.00048366813916744594,
+      "conditional_ha_confusion": [
+        [
+          13749,
+          2807
+        ],
+        [
+          2751,
+          11706
+        ]
+      ]
+    },
+    "ball_missing": {
+      "frames": 2693,
+      "weak_ha_accuracy": 0.7983661344225771,
+      "conditional_ha_accuracy": 0.7979948013367991,
+      "conditional_ha_macro_f1": 0.7972520233389799,
+      "conditional_ha_nll": 0.49303963179045646,
+      "dead_prediction_rate_on_weak_ha": 0.0033419977720014855,
+      "conditional_ha_confusion": [
+        [
+          1156,
+          308
+        ],
+        [
+          236,
+          993
+        ]
+      ]
+    }
+  },
+  "joint_objective": 0.744489678484719,
+  "computed_guards": {
+    "native": true,
+    "strong_mean": true,
+    "weak_ha": true,
+    "weak_missing_ha": true
+  },
+  "fallback_exception": false,
+  "provided_match_used": false,
+  "public_labels_used": false,
+  "unexpected_competition_access": [],
+  "competition_target_achieved": false,
+  "independent_test": false
+}

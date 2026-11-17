@@ -1,0 +1,395 @@
+{
+  "complete": true,
+  "selected": {
+    "kind": "uncertain_observation_loss",
+    "strength": 1.0,
+    "penalty": 8.0,
+    "scores": {
+      "native": {
+        "spell_f1_mean": 0.8570048309178743,
+        "macro_f1": 0.9742746076990892,
+        "n_gt_spells": 421,
+        "n_pred_spells": 407
+      },
+      "masked": {
+        "spell_f1_mean": 0.544551724137931,
+        "macro_f1": 0.8786821842562437,
+        "n_gt_spells": 421,
+        "n_pred_spells": 304
+      },
+      "mixed": {
+        "spell_f1_mean": 0.6329380764163373,
+        "macro_f1": 0.9048947929062265,
+        "n_gt_spells": 421,
+        "n_pred_spells": 338
+      }
+    },
+    "weak_scores": {
+      "all_known": {
+        "frames": 31013,
+        "weak_ha_accuracy": 0.8258149808144971,
+        "conditional_ha_accuracy": 0.8207848321671557,
+        "conditional_ha_macro_f1": 0.8200037212612039,
+        "conditional_ha_nll": 0.3973227245836739,
+        "dead_prediction_rate_on_weak_ha": 0.00045142359655628284,
+        "conditional_ha_confusion": [
+          [
+            13749,
+            2807
+          ],
+          [
+            2751,
+            11706
+          ]
+        ]
+      },
+      "ball_missing": {
+        "frames": 2693,
+        "weak_ha_accuracy": 0.7998514667656889,
+        "conditional_ha_accuracy": 0.7979948013367991,
+        "conditional_ha_macro_f1": 0.7972520233389799,
+        "conditional_ha_nll": 0.49303963179045646,
+        "dead_prediction_rate_on_weak_ha": 0.0033419977720014855,
+        "conditional_ha_confusion": [
+          [
+            1156,
+            308
+          ],
+          [
+            236,
+            993
+          ]
+        ]
+      }
+    },
+    "objective": 0.6781648771573808,
+    "guards": {
+      "native": true,
+      "weak_ha": true,
+      "weak_missing": true
+    },
+    "eligible": true
+  },
+  "candidates": [
+    {
+      "kind": "uncertain_observation_loss",
+      "strength": 1.0,
+      "penalty": 0.0,
+      "scores": {
+        "native": {
+          "spell_f1_mean": 0.8570048309178743,
+          "macro_f1": 0.9742746076990892,
+          "n_gt_spells": 421,
+          "n_pred_spells": 407
+        },
+        "masked": {
+          "spell_f1_mean": 0.5321052631578947,
+          "macro_f1": 0.8783832431120131,
+          "n_gt_spells": 421,
+          "n_pred_spells": 339
+        },
+        "mixed": {
+          "spell_f1_mean": 0.6178168130489335,
+          "macro_f1": 0.9037094201422432,
+          "n_gt_spells": 421,
+          "n_pred_spells": 376
+        }
+      },
+      "weak_scores": {
+        "all_known": {
+          "frames": 31013,
+          "weak_ha_accuracy": 0.8225905265533808,
+          "conditional_ha_accuracy": 0.8207848321671557,
+          "conditional_ha_macro_f1": 0.8200037212612039,
+          "conditional_ha_nll": 0.3973227245836739,
+          "dead_prediction_rate_on_weak_ha": 0.00048366813916744594,
+          "conditional_ha_confusion": [
+            [
+              13749,
+              2807
+            ],
+            [
+              2751,
+              11706
+            ]
+          ]
+        },
+        "ball_missing": {
+          "frames": 2693,
+          "weak_ha_accuracy": 0.7983661344225771,
+          "conditional_ha_accuracy": 0.7979948013367991,
+          "conditional_ha_macro_f1": 0.7972520233389799,
+          "conditional_ha_nll": 0.49303963179045646,
+          "dead_prediction_rate_on_weak_ha": 0.0033419977720014855,
+          "conditional_ha_confusion": [
+            [
+              1156,
+              308
+            ],
+            [
+              236,
+              993
+            ]
+          ]
+        }
+      },
+      "objective": 0.6689756357082342,
+      "guards": {
+        "native": true,
+        "weak_ha": true,
+        "weak_missing": true
+      },
+      "eligible": true
+    },
+    {
+      "kind": "uncertain_observation_loss",
+      "strength": 1.0,
+      "penalty": 2.0,
+      "scores": {
+        "native": {
+          "spell_f1_mean": 0.8570048309178743,
+          "macro_f1": 0.9742746076990892,
+          "n_gt_spells": 421,
+          "n_pred_spells": 407
+        },
+        "masked": {
+          "spell_f1_mean": 0.5354581673306773,
+          "macro_f1": 0.8787152131910503,
+          "n_gt_spells": 421,
+          "n_pred_spells": 332
+        },
+        "mixed": {
+          "spell_f1_mean": 0.6259306803594351,
+          "macro_f1": 0.9040872045819999,
+          "n_gt_spells": 421,
+          "n_pred_spells": 358
+        }
+      },
+      "weak_scores": {
+        "all_known": {
+          "frames": 31013,
+          "weak_ha_accuracy": 0.8223325702124915,
+          "conditional_ha_accuracy": 0.8207848321671557,
+          "conditional_ha_macro_f1": 0.8200037212612039,
+          "conditional_ha_nll": 0.3973227245836739,
+          "dead_prediction_rate_on_weak_ha": 0.0005159126817786089,
+          "conditional_ha_confusion": [
+            [
+              13749,
+              2807
+            ],
+            [
+              2751,
+              11706
+            ]
+          ]
+        },
+        "ball_missing": {
+          "frames": 2693,
+          "weak_ha_accuracy": 0.7976234682510212,
+          "conditional_ha_accuracy": 0.7979948013367991,
+          "conditional_ha_macro_f1": 0.7972520233389799,
+          "conditional_ha_nll": 0.49303963179045646,
+          "dead_prediction_rate_on_weak_ha": 0.003713330857779428,
+          "conditional_ha_confusion": [
+            [
+              1156,
+              308
+            ],
+            [
+              236,
+              993
+            ]
+          ]
+        }
+      },
+      "objective": 0.6727978928693288,
+      "guards": {
+        "native": true,
+        "weak_ha": true,
+        "weak_missing": true
+      },
+      "eligible": true
+    },
+    {
+      "kind": "uncertain_observation_loss",
+      "strength": 1.0,
+      "penalty": 4.0,
+      "scores": {
+        "native": {
+          "spell_f1_mean": 0.8570048309178743,
+          "macro_f1": 0.9742746076990892,
+          "n_gt_spells": 421,
+          "n_pred_spells": 407
+        },
+        "masked": {
+          "spell_f1_mean": 0.5355013550135501,
+          "macro_f1": 0.8783298375106297,
+          "n_gt_spells": 421,
+          "n_pred_spells": 317
+        },
+        "mixed": {
+          "spell_f1_mean": 0.6287937743190661,
+          "macro_f1": 0.9039793260444187,
+          "n_gt_spells": 421,
+          "n_pred_spells": 350
+        }
+      },
+      "weak_scores": {
+        "all_known": {
+          "frames": 31013,
+          "weak_ha_accuracy": 0.8242672427691613,
+          "conditional_ha_accuracy": 0.8207848321671557,
+          "conditional_ha_macro_f1": 0.8200037212612039,
+          "conditional_ha_nll": 0.3973227245836739,
+          "dead_prediction_rate_on_weak_ha": 0.00045142359655628284,
+          "conditional_ha_confusion": [
+            [
+              13749,
+              2807
+            ],
+            [
+              2751,
+              11706
+            ]
+          ]
+        },
+        "ball_missing": {
+          "frames": 2693,
+          "weak_ha_accuracy": 0.7976234682510212,
+          "conditional_ha_accuracy": 0.7979948013367991,
+          "conditional_ha_macro_f1": 0.7972520233389799,
+          "conditional_ha_nll": 0.49303963179045646,
+          "dead_prediction_rate_on_weak_ha": 0.0033419977720014855,
+          "conditional_ha_confusion": [
+            [
+              1156,
+              308
+            ],
+            [
+              236,
+              993
+            ]
+          ]
+        }
+      },
+      "objective": 0.6737666534168302,
+      "guards": {
+        "native": true,
+        "weak_ha": true,
+        "weak_missing": true
+      },
+      "eligible": true
+    },
+    {
+      "kind": "uncertain_observation_loss",
+      "strength": 1.0,
+      "penalty": 8.0,
+      "scores": {
+        "native": {
+          "spell_f1_mean": 0.8570048309178743,
+          "macro_f1": 0.9742746076990892,
+          "n_gt_spells": 421,
+          "n_pred_spells": 407
+        },
+        "masked": {
+          "spell_f1_mean": 0.544551724137931,
+          "macro_f1": 0.8786821842562437,
+          "n_gt_spells": 421,
+          "n_pred_spells": 304
+        },
+        "mixed": {
+          "spell_f1_mean": 0.6329380764163373,
+          "macro_f1": 0.9048947929062265,
+          "n_gt_spells": 421,
+          "n_pred_spells": 338
+        }
+      },
+      "weak_scores": {
+        "all_known": {
+          "frames": 31013,
+          "weak_ha_accuracy": 0.8258149808144971,
+          "conditional_ha_accuracy": 0.8207848321671557,
+          "conditional_ha_macro_f1": 0.8200037212612039,
+          "conditional_ha_nll": 0.3973227245836739,
+          "dead_prediction_rate_on_weak_ha": 0.00045142359655628284,
+          "conditional_ha_confusion": [
+            [
+              13749,
+              2807
+            ],
+            [
+              2751,
+              11706
+            ]
+          ]
+        },
+        "ball_missing": {
+          "frames": 2693,
+          "weak_ha_accuracy": 0.7998514667656889,
+          "conditional_ha_accuracy": 0.7979948013367991,
+          "conditional_ha_macro_f1": 0.7972520233389799,
+          "conditional_ha_nll": 0.49303963179045646,
+          "dead_prediction_rate_on_weak_ha": 0.0033419977720014855,
+          "conditional_ha_confusion": [
+            [
+              1156,
+              308
+            ],
+            [
+              236,
+              993
+            ]
+          ]
+        }
+      },
+      "objective": 0.6781648771573808,
+      "guards": {
+        "native": true,
+        "weak_ha": true,
+        "weak_missing": true
+      },
+      "eligible": true
+    }
+  ],
+  "plan": {
+    "protocol": {
+      "penalties": [
+        0.0,
+        2.0,
+        4.0,
+        8.0
+      ],
+      "gate": "Existing binary observation-loss gate on the expert input clock.",
+      "uncertainty": "1.5*(1-max(H,A,D)), clipped to [0,1].",
+      "extra_cost": "penalty*gate*uncertainty subtracted from each off-diagonal transition log-score.",
+      "objective": "Maximum mean native/masked/mixed strong development spell F1; ties keep penalty zero.",
+      "native_max_decline": 0.0,
+      "weak_ha_max_decline": 0.005,
+      "missing_weak_ha_max_decline": 0.01,
+      "models_retrained": false,
+      "provided_match_used": false,
+      "public_labels_used": false,
+      "limitation": "Exploratory calibration on already opened external development fixtures; not independent or competition performance."
+    },
+    "sources": {
+      "scripts/research/spatial_memory/select_uncertain_decode.py": "38f1e0f22476efe33b9d34f89943d399bfc1206800b85c8e150fcf2ba856d17f",
+      "possession/uncertain_decode.py": "7ec9a53ce18484597dfa74b741d083acf7b2db1b4ca01f9a10ebd9a357ff6b63",
+      "possession/observation_gate.py": "0a59be316216d2dfe10bd4f34d13a179d83a5940f9fc2c130345b699efb1dd93",
+      "scripts/research/spatial_memory/external_guard.py": "7d3ecdd9b2def30b98efbf4c44e535e468e3a05e6f4b5c02ed34781b4e7ac88c",
+      "scripts/research/spatial_memory/train_real_broadcast_memory.py": "eda40b4292c82974180b8a70917cb782f60e170d8e23eb8c0ed6c67f248e708a"
+    },
+    "model_sha256": "9793ed7e76bc4ebf455cc30ace0b7f7114a3bcc0e07abad31d9ebcaa7066c2b8",
+    "model_protocol_sha256": "92c6d94f32071c91e552f019207f41aeb7b73c8a77195bce870f16e865b4ec29",
+    "preceding_selection_sha256": "e0ce0bbca812cad89cf54fabbea6450e8e9be33f1099c1078eae44eb0553dcc2"
+  },
+  "selected_model_sha256": "9793ed7e76bc4ebf455cc30ace0b7f7114a3bcc0e07abad31d9ebcaa7066c2b8",
+  "parent_sha256": "07b86f226a5898c0db1f681176d7e3d3d4a4dddb07ab827b47bbfe213ef1e2fa",
+  "parent_protocol_sha256": "a26b967c2bd6022c2f977cb4eaca5d654baad60fe69dc9e24de519a16129fe5c",
+  "model_weights_changed": false,
+  "zero_penalty_control_reproduced": true,
+  "provided_match_used": false,
+  "public_labels_used": false,
+  "unexpected_competition_access": [],
+  "competition_target_achieved": false
+}

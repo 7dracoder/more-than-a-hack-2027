@@ -1,0 +1,42 @@
+{
+  "seed": 20351117,
+  "initial_model": "models/coreorigin-real-broadcast-v3",
+  "continuity_model": "models/coreorigin-continuity-v4",
+  "split_config": "configs/real_broadcast_memory_adaptation.json",
+  "feature_count": 803,
+  "added_features": "11 passer-marginalized receiver context inputs; no true actor/event labels at inference.",
+  "initialization": "Retain all 792 inherited projection columns and their normalization by occurrence; append 11 zero-weight context columns and fit only their normalization to strong TRAIN views.",
+  "normalization_group_weights": [
+    0.5,
+    0.25,
+    0.25
+  ],
+  "normalization_groups": [
+    "strong_native",
+    "strong_masked",
+    "strong_mixed"
+  ],
+  "weak_batch_fraction": 0.0,
+  "strong_native_view_probability": 0.5,
+  "epochs": 30,
+  "batches_per_epoch": 80,
+  "batch_size": 16,
+  "sequence_length": 512,
+  "learning_rate": 0.0001,
+  "weight_decay": 0.001,
+  "weak_loss_weight": 0.0,
+  "strong_boundary_auxiliary_weight": 0.1,
+  "validation_interval_epochs": 5,
+  "decoder_penalty": 8.0,
+  "dead_offset": 0.0,
+  "selection": "Maximize strong native/masked/mixed development mean spell F1 at fixed v4 decoder. Native must be unchanged; weak decoded H/A decline <=0.005 overall and <=0.01 with ball missing versus v4. Ties keep zero-extended initial fallback. Development membership unchanged from v3. No Metrica diagnostics enter selection.",
+  "provided_match_used": false,
+  "public_labels_used": false,
+  "independent_test_matches": [],
+  "policy": "Fixed 30-epoch external strong-only adaptation. Existing weak data are inherited warm-start training, not replayed. Weak development remains an eligibility guard. No BAR-ATH fitting or scoring.",
+  "augmentation": "Occurrence-preserving team permutation applied to raw features before normalization, matching symmetric inference. Same initialization, seed, schedule and external data as the prior expanded-geometry control.",
+  "adaptation": "Freeze inherited 792-input model; learn only 128 x 11 appended input-projection coefficients. New normalization fitted to six strong TRAIN fixtures only.",
+  "trainable_coefficients": 1408,
+  "optimizer": "AdamW on gradient-masked project.weight with optimizer weight_decay=0; explicit decoupled decay applies to added columns only before each optimizer update.",
+  "feature_preparation": "data/research/receiver-context-20261114/run-03"
+}

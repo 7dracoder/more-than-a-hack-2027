@@ -1,0 +1,51 @@
+{
+  "kind": "External-only detector confidence evidence",
+  "provided_match_data_used": false,
+  "detector_inference_protocol": {
+    "weights_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+    "manifest_sha256": "25d74e943aa2ce7ec265b47c743dee1c45d4d54a80f65fe172121b6ba731545b",
+    "source_sha256": "a94116b180e329f2d73170dff090393d8ee42d8f61bea74ec937275fecfd01ae",
+    "device": "cpu",
+    "imgsz": 1920,
+    "conf": 0.05,
+    "class_id": 32,
+    "training_detector": false,
+    "versions": {
+      "torch": "2.11.0+cu128",
+      "ultralytics": "8.4.202",
+      "numpy": "2.5.3",
+      "sklearn": "1.9.1"
+    }
+  },
+  "fitted": {
+    "slope": 1.3942901012387874,
+    "intercept": 0.3175884673487822,
+    "transform": "slope * logit(clamp(confidence,1e-6,1-1e-6)) + intercept",
+    "interpretation": "Class-balanced log-odds evidence; not deployment probability"
+  },
+  "development": {
+    "images": 112,
+    "detections": 28,
+    "true_detections": 24,
+    "false_detections": 4
+  },
+  "validation": {
+    "images": 28,
+    "detections": 17,
+    "true_detections": 8,
+    "false_detections": 9,
+    "ranking_auc": 0.9027777777777779
+  },
+  "target_definition": "Unique external COCO sports-ball box match at IoU 0.5",
+  "parameters_fixed_before_inference": {
+    "C": 1.0,
+    "class_weight": "balanced",
+    "solver": "lbfgs"
+  },
+  "possession_score": null,
+  "limitations": [
+    "External COCO image calibration is not video-domain validation.",
+    "Class-balanced evidence must not be interpreted as a BAR-ATH posterior.",
+    "No possession metric or candidate selection is established."
+  ]
+}

@@ -1,0 +1,15 @@
+# Add to the existing CUDA environment; retain its Torch/NumPy versions.
+torchlibrosa==0.1.0
+librosa==0.11.0
+soundfile==0.13.1
+audioread==3.1.0
+decorator==5.3.1
+lazy-loader==0.6
+msgpack==1.2.4
+pooch==1.9.0
+soxr==1.1.0
+# Python 3.13 compatibility dependencies selected by audioread.
+standard-aifc==3.13.0; python_version >= '3.13'
+audioop-lts==0.2.2; python_version >= '3.13'
+standard-chunk==3.13.0; python_version >= '3.13'
+standard-sunau==3.13.0; python_version >= '3.13'

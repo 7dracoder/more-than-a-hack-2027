@@ -1,0 +1,18 @@
+{
+  "initial_model": "models/coreorigin-real-broadcast-v3",
+  "fallback": "models/coreorigin-continuity-v4",
+  "feature": "Frozen whole-half representation immediately before the boundary MLP; both original and team-exchanged inference inputs.",
+  "train_views": {"native": 0.5, "masked": 0.25, "mixed": 0.25},
+  "negative_stride": 4,
+  "classifier": "LogisticRegression",
+  "C": 0.01,
+  "max_iter": 300,
+  "seed": 20351126,
+  "balance": "Use inverse-prevalence sample weights on externally labelled TRAIN transitions; remove the known class-weight odds shift at inference.",
+  "boundary_strengths": [0.0, 0.5, 1.0],
+  "continuity_penalty": 8.0,
+  "selection": "Maximum mean native/masked/mixed spell F1, native unchanged, weak H/A decline <=0.005 overall and <=0.01 ball missing. Ties keep v4. Verify and audit paired uncertainty before any promotion.",
+  "provided_match_used": false,
+  "public_labels_used": false,
+  "independent_test": false
+}

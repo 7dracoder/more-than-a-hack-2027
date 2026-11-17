@@ -1,0 +1,129 @@
+{
+  "config": {
+    "version": "0.9-external-physical-boundary",
+    "seed": 2029,
+    "train_matches": [
+      "J03WMX",
+      "J03WN1",
+      "J03WOH",
+      "J03WOY",
+      "J03WQQ",
+      "J03WR9"
+    ],
+    "validation_matches": [
+      "J03WPY"
+    ],
+    "test_matches": [],
+    "feature_version": "v09",
+    "features_dir": "data/external/features-v09",
+    "sample_step": 2,
+    "fps": 25,
+    "target_spell_f1": 0.9,
+    "target_absolute_spell_gain": 0.15,
+    "team_switch_cost": 6.0,
+    "stoppage_switch_cost": 4.0,
+    "classifier_iterations": 80,
+    "classifier_learning_rate": 0.05,
+    "classifier_max_leaf_nodes": 7,
+    "classifier_l2": 10.0,
+    "classifier_min_samples_leaf": 20,
+    "baseline_training_stride": 3,
+    "epochs": 100,
+    "batch_size": 16,
+    "sequence_length": 512,
+    "hidden_channels": 128,
+    "dilations": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "learning_rate": 0.0005,
+    "weight_decay": 0.001,
+    "development_decoder_costs": [
+      [
+        4,
+        6,
+        0
+      ],
+      [
+        2,
+        3,
+        0
+      ],
+      [
+        0,
+        1,
+        0.5
+      ],
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        2,
+        0.5
+      ],
+      [
+        1,
+        2,
+        1
+      ]
+    ],
+    "validation_interval_epochs": 5,
+    "dropout": 0.2,
+    "run_weight_power": 0.5,
+    "boundary_weight": 1.0,
+    "boundary_seconds": 0.4,
+    "architecture": "boundary_hybrid",
+    "label_policy": "Coordinate-only inputs; labels from four external training matches only. Fixed external development match used for selection. No BAR-ATH human labels.",
+    "test_policy": "Formerly opened test matches now explicitly join training. Only J03WPY stays held out for exploratory development. There is no independent test cohort.",
+    "comparison": "Historical best fixed-development score 0.7867515923566878; v07 frozen reference 0.6210095497953615. The v08 feature-bank baseline is a separate diagnostic.",
+    "focal_gamma": 0.0,
+    "augmentation_features_dir": "data/external/features-v09-corrupt",
+    "development_only": true,
+    "frozen_baseline_dir": "data/local-v08/run-01-contacts",
+    "baseline_train_matches": [
+      "J03WMX",
+      "J03WN1",
+      "J03WOH",
+      "J03WOY"
+    ],
+    "boundary_auxiliary_weight": 0.3,
+    "boundary_positive_weight": 10.0
+  },
+  "external_caches": {
+    "J03WMX": "23dc478592373a11a14d2c0a77bce58b7c69431f12e85b16e25cc45c4c976ecc",
+    "J03WN1": "690d94a240064544242ad0eeb18cdc9a8af17455568463cf465eeda5a1f1c38a",
+    "J03WOH": "283443393ff8ed48ebd4f040a38c95d16628a525ae2b10d37dd83a2a701bd690",
+    "J03WOY": "540713c008b44a88a885bfec06e340b03fddfb481df9885fc71216ac11145c10",
+    "J03WQQ": "ca6f458d732eca74b7bef68c006ab99d8bdffcbfbf6780817136da80647011fa",
+    "J03WR9": "dda2f9fa12e282f445a88efcd438005399254e75336e673b75828585fda8418f",
+    "J03WPY": "949d5ce2514a0dce152cfee27284f72d3a0d5ee9e94bb2bc83769f588a554d0d"
+  },
+  "sources": {
+    "possession/external.py": "08a0c9a68955ea477daf3a60cad1edf7f32d6951a9644d0023806aca109f100a",
+    "possession/temporal.py": "96905314164cd06acd1eb69c8d2f1d07603d9bfb6948f6a8a87776b09c5284b0",
+    "scripts/run_local.py": "2f8b76512df2b45b60e7e55d9b39ee7b040b53f7555c67ee0fd606d7a2a52c85",
+    "evaluation/possession_metrics.py": "32c878630c74fb52a90c301485d6dff806509d8e933b1177b6035ee8e8f42b80",
+    "possession/features_v08.py": "c196193b49611712c05b178c8fdb5e1ecf0225dd575eb4db20fb93d03f5bf884",
+    "scripts/prepare_external_v08.py": "da09a37259eede11d536267e7a9f91a0a6af0efe0f44a345d353c3a9f66e91a5",
+    "possession/features_v09.py": "f18bd83118481820553f88b94cdcb2ce7f773d0425fc132a0dcbea93519c2aa7",
+    "scripts/prepare_external_v09.py": "8b0d0dcf1c9c88cb6fa64c07ea8fe0615089d7dd79d8a31dd8d95b989ab10cef",
+    "possession/boundary.py": "de51b22d7dc6ff2aeddad24a7f09ca1d45b6868940b323732b29ea54a1783475"
+  },
+  "frozen_baseline_sha256": "744e70e3aad95b119f1aec726df88361ad7a58dacd0a7f5c4220a03e8bf20769",
+  "augmentation_caches": {
+    "J03WMX": "25e10f5f999c8be193853657afd524bb5df624e11db69ec02ff1f260765de38e",
+    "J03WN1": "2025dafb5237369e0dac4e0e7934ebe3e904b8a18e7e75d798502726835fb8d0",
+    "J03WOH": "33122f29ca794dd9b52ade31ef55555253d05d575114f36976b2be4da0abfe07",
+    "J03WOY": "ea9c9dff93b3b5871002a9d6491c62a7f8f056afd49049cfab52b9a8ffda8acb",
+    "J03WQQ": "f73bf243d44c2df5d37e1a27df92097ff1a9b4cc69efd20909e8e3b1a16bec98",
+    "J03WR9": "1573de462b1167768e56b4da172baf5891a3d9a030f3a0685647a3b31b28c7c5"
+  },
+  "fingerprint": "e9de72117b4c1b43dfb32ac4683e41bf94cf41e0070f0fc19c20b4177523115f"
+}

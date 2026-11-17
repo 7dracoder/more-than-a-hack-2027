@@ -1,0 +1,38 @@
+{
+  "complete": true,
+  "best": {
+    "epoch": 20,
+    "strength": 0.25,
+    "scores": {
+      "native": {
+        "spell_f1_mean": 0.8473429951690822,
+        "macro_f1": 0.9726910276685974,
+        "n_gt_spells": 421,
+        "n_pred_spells": 407
+      },
+      "masked": {
+        "spell_f1_mean": 0.41597869507323565,
+        "macro_f1": 0.7921633793822499,
+        "n_gt_spells": 421,
+        "n_pred_spells": 330
+      },
+      "mixed": {
+        "spell_f1_mean": 0.44359281437125747,
+        "macro_f1": 0.780092709101296,
+        "n_gt_spells": 421,
+        "n_pred_spells": 414
+      }
+    },
+    "eligible": true,
+    "objective": 0.5689715015378585
+  },
+  "comparison_objective": 0.5456925262052106,
+  "absolute_external_gain": 0.02327897533264789,
+  "selected_sha256": "546e18a390f714e699c5803172df5c982453a618488db98eab823c45186d03bf",
+  "protocol_sha256": "27240f7531c4ff7840dd15ea2d484d762a1331f5c7f0d92ae86fc8a2d1e417e0",
+  "unexpected_competition_access": [],
+  "provided_match_used": false,
+  "public_labels_used": false,
+  "competition_target_achieved": false,
+  "limitation": "Repeated external development match; synthetic views are not natural held-out match truth or competition performance."
+}

@@ -1,0 +1,27 @@
+{
+  "source": "Open Images official TEST split, V5 boxes/human labels and 2018_04 image metadata.",
+  "football_class": "/m/01226z",
+  "ball_classes": [
+    "/m/018xm",
+    "/m/01226z",
+    "/m/02ctlc",
+    "/m/0wdt60w",
+    "/m/05ctyq",
+    "/m/02rgn06",
+    "/m/044r5d"
+  ],
+  "license": "https://creativecommons.org/licenses/by/2.0/",
+  "negative_ratio": 3,
+  "selection": "All eligible football-positive images plus three deterministic verified Ball(Object)-negative images per positive. Exclude any positive ball label from the negative pool.",
+  "overlap_exclusion": "Exclude Flickr photo IDs in all COCO 2017 train and validation image records; reject unknown photo identities. This does not certify absence from every backbone pretraining dataset.",
+  "qualification": "Require explicit per-image CC BY 2.0, known zero rotation and author identity. Exclude ball group/depiction images and ambiguous overlapping parent/subclass boxes. Merge exact identical boxes only. Also exclude prior pilot authors/photos and exact JPEG duplicates against the pilot or within this cohort before inference.",
+  "split": "All eligible records are external_test; exclude every prior pilot author and photo identity.",
+  "models": [
+    "existing_yolo11m",
+    "Roboflow/rf-detr-large"
+  ],
+  "inference": "No training or threshold tuning. YOLO11m keeps its existing 1920 input protocol; RF-DETR uses its published processor size. Both float32, confidence >=0.05, at most 300 detections; retain only sports ball by class name.",
+  "selection_metric": "No selection on this corpus; validate the previously frozen development-selected tiny-ball method and frozen controls once.",
+  "provided_match_used": false,
+  "minimum_positive_images": 20
+}

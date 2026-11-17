@@ -1,0 +1,42 @@
+{
+  "seed": 20351117,
+  "initial_model": "models/coreorigin-real-broadcast-v3",
+  "continuity_model": "models/coreorigin-continuity-v4",
+  "split_config": "configs/real_broadcast_memory_adaptation.json",
+  "feature_count": 1088,
+  "added_features": "116 fine-motion and 180 centre-player trajectory features already used by the full parent; coordinate-only, no pose or gaze claims.",
+  "initialization": "Map all existing 792 projection columns and their normalization by exact feature name; zero-initialize the 296 added columns. Fit only added-column normalization using external TRAIN inputs, symmetrized under team exchange.",
+  "normalization_group_weights": [
+    0.25,
+    0.125,
+    0.125,
+    0.5
+  ],
+  "normalization_groups": [
+    "strong_native",
+    "strong_masked",
+    "strong_mixed",
+    "weak_detected"
+  ],
+  "weak_batch_fraction": 0.5,
+  "strong_native_view_probability": 0.5,
+  "epochs": 30,
+  "batches_per_epoch": 80,
+  "batch_size": 16,
+  "sequence_length": 512,
+  "learning_rate": 0.0001,
+  "weight_decay": 0.001,
+  "weak_loss_weight": 0.25,
+  "strong_boundary_auxiliary_weight": 0.1,
+  "validation_interval_epochs": 5,
+  "decoder_penalty": 8.0,
+  "dead_offset": 0.0,
+  "selection": "Maximize strong native/masked/mixed development mean spell F1 at fixed v4 decoder. Native must be unchanged; weak decoded H/A decline <=0.005 overall and <=0.01 with ball missing versus v4. Ties keep zero-extended initial fallback. Development membership unchanged from v3. No Metrica diagnostics enter selection.",
+  "provided_match_used": false,
+  "public_labels_used": false,
+  "independent_test_matches": [],
+  "policy": "Fixed 30-epoch exploratory external study. Change only strong TRAIN run weighting from inverse square root to inverse duration, with a five-frame floor. Same seed, inputs, initialization and weak loss as occurrence-safe control. No supplied-match tuning or independent improvement claim.",
+  "feature_preparation_config": "configs/full_geometry_memory_adaptation.json",
+  "augmentation": "Unchanged occurrence-preserving raw team permutation.",
+  "strong_run_weight_power": 1.0
+}

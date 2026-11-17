@@ -1,0 +1,15 @@
+{
+  "source": "Open Images V7 download page's V5 validation boxes and human image labels",
+  "football_class": "/m/01226z",
+  "ball_classes": ["/m/018xm", "/m/01226z", "/m/02ctlc", "/m/0wdt60w", "/m/05ctyq", "/m/02rgn06", "/m/044r5d"],
+  "license": "https://creativecommons.org/licenses/by/2.0/",
+  "negative_ratio": 3,
+  "selection": "All eligible football-positive images plus three deterministic verified Ball(Object)-negative images per positive. Exclude any positive ball label from the negative pool.",
+  "overlap_exclusion": "Exclude Flickr photo IDs in all COCO 2017 train and validation image records; reject unknown photo identities. This does not certify absence from every backbone pretraining dataset.",
+  "qualification": "Require explicit per-image CC BY 2.0, known zero rotation and author identity. Exclude ball group/depiction images and ambiguous overlapping parent/subclass boxes. Merge exact identical boxes only.",
+  "split": "SHA256 coreorigin-openimages-football-v1: plus normalized author profile URL; first eight hex digits modulo five equal zero is final_test, others development.",
+  "models": ["existing_yolo11m", "Roboflow/rf-detr-large"],
+  "inference": "No training or threshold tuning. YOLO11m keeps its existing 1920 input protocol; RF-DETR uses its published processor size. Both float32, confidence >=0.05, at most 300 detections; retain only sports ball by class name.",
+  "selection_metric": "Development AP50, with no decline in precision or recall at confidence 0.05. Ties retain existing detector. Freeze choice before final-test metrics; no possession promotion from this component result alone.",
+  "provided_match_used": false
+}

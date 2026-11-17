@@ -617,7 +617,7 @@ Recovered the working tree from the user's archived bundle `more-than-a-hack-202
 
 Rebuilt a CPU-only macOS arm64 environment (`.venv` with system site-packages, torch 2.15.0) and ran the suite: **266 tests pass**. Decoding the saved run-58 development probabilities with the recorded costs [0, 2, 1] reproduces the recorded selection exactly (spell F1 0.8570048309178743, macro F1 0.9742746076990892, 421 true / 407 predicted spells). Nothing was retrained, and the user's earlier two-attempt training cap was not reopened.
 
-Added `scripts/audit_decoder_ceiling.py`, an evidence-only audit of the frozen development probabilities. It reproduces the recorded score, sweeps a declared 144-setting decoder grid (range 0.724145 to 0.858041; best gain 0.001), and substitutes two oracles. With ground-truth spell boundaries and the model's own team decisions the score is **0.900635**; with the model's boundaries and ground-truth teams it is 0.890076. Both halves of the problem must improve to pass 0.95, which rules out further decoder work.
+Added `scripts/audit_decoder_ceiling.py`, an evidence-only audit of the frozen development probabilities. It reproduces the recorded score, sweeps a declared 144-setting decoder grid (range 0.724145 to 0.858041; best gain 0.001), and substitutes two oracles. With ground-truth spell boundaries and the model's own team decisions the score is **0.900635**; with the model's boundaries and ground-truth teams it is 0.890076. These fixed-model substitutions diagnose J03WPY errors; they do not rule out other decoders or establish a BAR-ATH ceiling.
 
 Diagnosed the remaining error: at IoU 0.5, 359/421 possessions match; 79/124 spells shorter than 2 s match; 113 of those 124 are brief changes inside the other team's possession. The retained run-58 history shows training loss falling 0.06361 to 0.04563 while development spell F1 falls 0.8570 to 0.8432, so frame-level fitting beyond the warm start is anti-correlated with the ranking metric.
 
@@ -625,7 +625,7 @@ Found and fixed one certain submission defect: the exported candidate assigned p
 
 Public-window pipeline check: 0.505263 spell F1 / 0.651007 macro F1. Two long in-pitch stoppages (20.4 s free-kick, 14.5 s goal-kick setup) inside that window are called alive, accounting for 1,198 of 1,469 dead frames. Smart Tagging brackets both, but adopting a set-piece-to-dead rule because the public window rewards it would be tuning on the labels the rules reserve for pipeline checking; it was not adopted and is recorded as an open question instead.
 
-**Verdict on the 0.95 request:** not reachable with the current 960-feature bank. The measured segmentation oracle is 0.900635, the decoder grid is saturated, and the training history is anti-correlated with the metric. The remaining routes require evidence the geometry bank does not hold: ball recovery from the tactical video on the 41% of graded frames where tracking loses it, frame-resolution contact detection, or substantially more labelled matches. No new independent or official score is claimed and no training was launched.
+**Corrected interpretation of the 0.95 request (3 November):** these fixed-model J03WPY experiments did not demonstrate 0.95. The 0.900635 segmentation substitution and tested decoder grid do not prove a feature-bank ceiling or any BAR-ATH performance limit. Ball recovery, contact detection and more permitted external labels are research hypotheses. No new independent or official score was established by that audit, and no training was launched.
 
 ### 0.95 push: rules re-check, short-spell oracle and out-of-bounds rule (29 October 2026, evening)
 
@@ -729,9 +729,280 @@ J03WPY, 25% positive). Best tracking-only classifier: AUC 0.931, accuracy 0.88 (
 player was within 0.65 m (median) of the ball — the touch is in the tracking geometry but not
 separable from a near-miss with 25 fps centre-of-mass positions.
 
-**Verdict.** No allowed CPU-side change lifts J03WPY above 0.858; run 48 stays selected. >0.95 on
-J03WPY is not reachable with tracking-only evidence. Remaining routes (none runnable here): (1) much
+**Verdict for these trials.** None of the tested CPU-side changes lifts J03WPY above 0.858;
+run 48 stayed selected in this study. These trials establish no general tracking-only ceiling
+and no BAR-ATH performance bound. Further hypotheses (none runnable in that environment): (1) much
 more labelled tracking (e.g. PFF FC World Cup 2022 open tracking+events, ~64 matches) to train the
 contact classifier; (2) video-based contact/touch detection — impossible on DFL (no video), so it
 cannot be validated on J03WPY at all; (3) ball height/foot-level pose. The Mac has no tactical video
 and no CUDA host is registered, so no video work was attempted. Nothing committed or pushed.
+
+### BAR-ATH frozen-pipeline check and score-scope correction (3 November 2026)
+
+The competition target is BAR-ATH. The earlier 0.8570048309178743 result belongs to external development match J03WPY. Neither that score nor the fixed-model oracle substitutions establishes BAR-ATH performance or a ceiling on its attainable score. The README, current technical draft and external experiment record now make that distinction explicit.
+
+Regenerated the previously committed v11 pipeline before opening the public labels: committed v10 checkpoint, existing published-anchor correction, then existing out-of-bounds dead-ball rule. The checkpoint SHA256 is `d2449c5a47534c702a17853a093dee8fc60a5e90ef571e848bd9bd70d4bcfd20`. CPU output matches the previously recorded model predictions. Standardizing CRLF to LF makes the final CSV byte-identical to the recorded v11 SHA256 `496b42abcb0aec5ec0d4dffa6a1d8ca3c5b386dd0ccb9e4c697e877dfa1e2c80`. The official validator accepts all 199,319 rows. This was reproduction and evaluation only: no training, threshold changes, decoder search or candidate selection used BAR-ATH labels.
+
+The unchanged official scorer, with 1,000 bootstrap draws, reports **spell F1 0.5405405405405406**, **macro F1 0.7418651496956216**, and spell-F1 5th-95th percentile interval **0.38919-0.68162** on the public five minutes (7,500 graded frames, 17 true / 20 predicted possessions). This is a public-window correctness check, not the private full-match competition score. That score remains unknown. The small sample must not become a tuning or selection set.
+
+Ignored local evidence: `data/bar-ath-check-20261103/frozen_check.json`, frozen `submission/CoreOrigin.csv`, official `official/scoreboard.csv` and `official/reports/CoreOrigin.json`, plus inference and correction receipts. At the user's request, stop after this documentation rewrite; no further experiments, model changes or automatic continuation are authorized by this check.
+
+### BAR-ATH 0.80 objective: audit and video recovery preparation (4 November 2026)
+
+New user authorization supersedes the preceding stop: work toward 0.80 spell F1 on BAR-ATH without requiring another match. The target remains unachieved and unverified. No public possession labels were opened for training, tuning or selection; no additional match was downloaded or evaluated.
+
+Re-read the organizer responses to issues 2/10/11/14/16. Training a detector on BAR-ATH using its tracking as labels is disallowed; externally pretrained inference is permitted. Responses are saved under ignored data/research/target080/rules/.
+
+Added a label-free input audit and strict one-based-video ATD reader. All four supplied inputs match their pinned size/SHA256 manifest; homography rows follow the video timeline. The two tracking-half windows have 64,643 missing-ball frames and 147 gaps bracketed within a half. Median missing runs are 11.56 s / 9.80 s. In a fixed known-ball masking diagnostic, ten-second linear interpolation has median error 9.11 m and 18.72% of positions within 3 m of the automatic coordinates. This is not natural-gap accuracy or possession accuracy. No tracking correction was promoted.
+
+Searched accessible local user/project folders, OneDrive, common download/video folders, named machine-level locations and earlier project chats. No tactical video or full archive was located. Earlier Windows records explicitly say only four non-video tactical files were downloaded. Google Drive was suggested to search for the shared archive; no connection is confirmed.
+
+Repaired the pretrained detector runner: removed Mac-only paths/MPS defaults; selected missing frames from supplied tracking; prevented clips crossing half/holdout boundaries; guarded invalid geometry and incorrect video counts; added hashed resumable outputs including zero-detection frames. Automatic library downloads, telemetry and integrations are disabled during inference. Installed pinned video libraries in the project environment while preserving torch 2.11.0+cu128. Synthetic blank-image inference succeeded on CPU and RTX 5070 Ti, processing no match video and establishing no accuracy. All 15 focused timeline, geometry, resume, dead-ball and anchor checks pass. pip check reports three conflicts among inherited system packages (requests/langchain-community, websockets/langsmith, python-dotenv/pydantic-settings); those packages were not changed.
+
+Frozen v11 still passes the official 199,319-row validator. SHA256 remains 496b42abcb0aec5ec0d4dffa6a1d8ca3c5b386dd0ccb9e4c697e877dfa1e2c80. No new possession CSV or score is claimed. The supplied tactical video or original download/archive location is required for the next video experiment. Reproduction commands: scripts/research/video_ball/README.md. The 0.80 objective is not complete.
+
+BAR-ATH 0.80 continuation (4 November 2026): completed a label-free phase-tag audit. Deduplicating identical offense/opponent-defense interval cues gives 169 canonical intervals from 309 mapped descriptions (140 duplicates). Unambiguous tags cover 12,266 of the 64,643 missing-ball frames (18.97%). Model-live/tagged overlap is 4,896 frames with 1,270 team disagreements; nearest-player geometry supports the tagged side in only 41.18% of observed-ball disagreements. These are automatic-source comparisons, not accuracy. Only two fully ball-missing predicted possession runs are entirely covered by an opposite phase side. No tag override or new candidate was selected. Four focused tag-parsing/deduplication checks pass.
+
+Completed a fresh end-to-end CPU inference with the committed v10 weights, then the unchanged anchor and out-of-bounds corrections. The final LF-normalized 199,319-row CSV passes the official validator and is byte-identical to frozen v11 (496b42abcb0aec5ec0d4dffa6a1d8ca3c5b386dd0ccb9e4c697e877dfa1e2c80). Intermediate artifacts and reproduction.json are under ignored data/research/target080/reproduction/. No public scoring or model selection occurred. The supplied video remains unlocated and no Drive connection is available. Full-match score evidence remains unavailable; 0.80 has not been demonstrated.
+
+Asset-source search after user resumed (4 November 2026): Drive is installed, but no connected file-search tool is exposed. Browser Drive access succeeded. The user correctly identified more-than-a-hack-2027.zip as a codebase backup. HTTP range reads fetched only a 65,536-byte tail and 3,511,638-byte central directory; all 21,524 entries were parsed. There are no video/container files, and only the same four non-video tactical inputs. No member was extracted, no code was executed from the archive, and the 34,687,979,399-byte backup was not downloaded in full.
+
+At the user's request, checked current upstream/fork README and data instructions, download code/notebook, public releases and organizer issues 3/4. No original video URL was found; official documentation directs enrolled participants to a separately supplied download link. A Drive filename search for BAR-ATH returned no matching files in the available account. Evidence: ignored data/research/target080/asset_access_audit.json plus archive directory and GitHub audit records. Automatic approval review rejected reading Gmail results because the authorization covered repository/Drive rather than private mail. Asked explicit approval for competition-registration/data-download emails only; matching mail remains unread pending that reply. No possession model, CSV or score changed; 0.80 remains unverified.
+
+User-approved competition-email search (4 November 2026): searched the available Gmail account only to locate competition registration/data-download messages. Restricted organizer + competition-subject + data/download searches returned no matching message. The competition-subject/data search returned only the existing GitHub repository invitation; no data-access message was opened or saved. Automatic approval review rejected a sender-only query as too broad, so narrower topic queries were used. A broad all-folder variant unexpectedly surfaced unrelated headers; no unrelated message was opened, and that variant was abandoned. Metadata-only inspection of the already-supplied public tracking file confirmed accessibility but exposed no parent-folder navigation. Its tracking contents were not read through the browser. No dataset/video link was found. Updated ignored asset_access_audit.json records the limited search outcomes without raw email contents. Required next input is the original participant dataset/video download link or a forwarded data-access message from the registered team member. The frozen candidate and all scores remain unchanged; 0.80 is unverified.
+
+### Original-video recovery and external-only inference protocol (4 November 2026)
+
+The user supplied the official participant data folder and a controlling rules clarification. Recorded the clarification in RULES_CLARIFICATION.md: no visual checking of predictions against video, no match-data uploads to AI services, and no training/fitting/calibration/tuning on the provided truth/video. Historical v10/v11 synthetic-gap calibration used BAR-ATH tracking aggregates and now requires eligibility review; its exact frozen record remains preserved, with no new eligibility certification.
+
+Retrieved the original tactical MP4 through normal authenticated browser download, without cloud copying, quota workarounds, preview extraction, or video preview. Local file size is 5,222,307,334 bytes; SHA256 ff249f072aa7cd89a4a7f603a08f399aa0d34bd429982c847cd4a9373f645f14. Automatic checks confirm 199,319 frames, 25 fps, 1920x1080, and 17 successful sampled decodes. No frames or match inputs were sent to an AI service. The source folder/file provenance remains in ignored data/tactical/video_download_manifest.json.
+
+The fixed local COCO-trained YOLO11m pilot processed 2,000 frames and produced 14,418 raw candidates, with no invalid pitch projections. This is not recovered-ball truth or a possession score; no detector setting was chosen from the pilot. The same weights/settings are processing all 64,643 originally missing-ball frames. At the last receipt, 46,000 frames were checkpointed and the original session remained live. Do not restart this job on an observation timeout.
+
+Prepared a frozen external-only confidence fit using 140 COCO 2017 still images, restricted to explicit CC BY / CC BY-SA image licenses. COCO annotations are CC BY 4.0; image references/licenses are retained. The image-level split has 112 development and 28 validation images. Only external data enter the fixed class-balanced scalar fit; it is not a BAR-ATH posterior and the small pool is not football-video validation. Fitted a 99.9th-percentile live-ball speed bound (32.149306 m/s) on the six existing external training matches only, with publisher-verified file hashes and CC BY 4.0 attribution. No new match was downloaded and no external possession score is substituted for the target.
+
+Implemented conservative coordinate hypotheses: preserve all originally observed positions exactly, require one externally confident candidate, enforce reachability from supplied observations and adjacent motion support, and leave ambiguities missing. The CPU exporter uses the existing external run-58 parent and the externally chosen OOB rule on original observations. A generic pre-kickoff rule consumes automatic kickoff-start tags instead of manually chosen video-frame anchors. No video or target truth enters fitting or tuning.
+
+The first raw control differed from the historical GPU parent CSV on two isolated boundary frames. A fresh unchanged CPU exporter agrees with the new raw CPU exporter on every frame; no manual corrections were made. Explicit reference validation now checks CPU device, checkpoint hash, input hashes and CSV bytes. The public model bundle control is verified, valid for 199,319 rows, and its generic-tag/OOB CSV SHA256 is 079fe591475a7444363223986fcbae151f44845874d454f9446a991f2564dbcc. This is an unscored control, not a selected replacement.
+
+All 32 focused tests pass. models/coreorigin-video-v1 contains only external weights/calibration/provenance, with no supplied-match data. The frozen v11 submission remains byte-identical (496b42abcb0aec5ec0d4dffa6a1d8ca3c5b386dd0ccb9e4c697e877dfa1e2c80). Private execution_receipts.json lists live handles, source snapshots and the exact remaining fusion/export/reproduction steps. No new possession score has been measured; 0.80 remains unverified.
+
+## 4 November 2026: isolated external model bundle verified
+
+`verify_model_bundle.py` successfully loaded the packaged parent and performed a
+128-frame synthetic CPU forward pass while denying all checkout `data/` access.
+The guard was itself checked, and inference attempted no forbidden data reads.
+This establishes independence from older private experiment folders, not match
+accuracy. Reproduction instructions now show how to create the unchanged CPU
+reference from packaged weights while retaining match outputs under ignored data/.
+The frozen v11 CSV still matches its recorded SHA256. The ongoing detector pass
+has not been restarted; fusion and candidate export await its complete receipt.
+
+## 4 November 2026: complete video-input candidate exported, still unscored
+
+The existing full detector pass exited successfully: 64,643/64,643 selected
+frames, 372,758 raw detections, complete/hash-valid receipt. Fixed external
+confidence/motion rules retained 18,168 coordinate hypotheses without changing
+any original observed ball coordinate. The CPU possession export passed the
+official 199,319-row validator. A second export from the same verified coordinate
+artifact and feature cache produced byte-identical raw and final CSVs. Final
+SHA256: 63d8e7412f9b29937183b3883df9639bed598d76e77482de9919985126f0a635.
+This is experimental and unscored; no candidate-selection or accuracy claim.
+
+A repeat of the fixed 2,000-frame GPU pilot matched every array and its exact
+NPZ hash. A full missing-frame detector repeat is now running as session 18363
+under data/research/target080/ball_missing_gpu_repeat.*. Do not restart it on an
+observation timeout. Once terminal success and complete/hash-valid output are
+confirmed, compare all arrays/protocols, fuse the repeated detections and export
+from the repeated coordinate artifact to check the complete chain. The 0.80
+spell-F1 target remains unverified. No public possession labels were read or
+used for tuning, no provided video/output comparison was performed, and all
+match-derived artifacts remain local under ignored data/. Frozen v11 is intact.
+
+## 4 November 2026: full reproduction verification queued, score access checked
+
+The full detector repeat remains live as session 18363. An ignored, local
+verification helper (session 96552, finish_full_reproduction.py/log) waits for
+that existing job's complete receipt; it never launches or restarts a detector.
+It will compare protocols and every array, fuse the repeated detections, export
+and officially validate a complete candidate, compare exact raw/final CSV bytes,
+and recheck frozen v11. Its receipt explicitly retains the need to confirm the
+detector's terminal exit through session 18363. No scoring, fitting, parameter
+change or upload is performed by the helper.
+
+models/coreorigin-video-v1/TECHNICAL.md now documents this experimental pipeline,
+including all declared strong/weak training sources and the warm_initial epoch-0
+checkpoint, supplied asset usage, generic rules, reproduction scope and limits.
+The current official upstream SUBMISSION.md was checked online: there is no live
+leaderboard or pre-deadline scoring feedback. The public five-minute pipeline
+check cannot establish the private full-match target. No full-match score access
+exists here, and 0.80 remains unverified. Execution receipts record both live
+handles and the current next steps. No public BAR-ATH labels were opened.
+
+## 4 November 2026: frozen video-input candidate public pipeline check
+
+After the final candidate and behavior sources were frozen, the unchanged
+official scorer checked exactly one final CSV in an isolated submission folder.
+Raw and control alternatives were excluded. The official result is 0.5200 spell
+F1 and 0.630699 macro F1 on 7,500 public-window frames, 17 ground-truth possessions.
+The 1,000-draw spell-F1 bootstrap 5th-95th interval is 0.38-0.66. This does not
+reach 0.80 on the public window; private full-match F1 remains unknown. Source
+and CSV hashes remain unchanged after scoring. No tuning, candidate selection,
+manual labels or per-transition/video review followed the check. Freeze and
+score evidence: data/research/target080/public_pipeline_check/. No private GT
+was sought or used. Public labels were opened only by the official scorer.
+
+The complete detector repeat continues unchanged as session 18363; the queued
+verification helper remains session 96552. A prefix check at 11,000 repeated
+frames matched every original detector array, but full repetition is incomplete.
+Frozen v11 remains unchanged. Current readmes and the experimental technical
+draft distinguish this public result from the separate earlier v11 check and
+from unknown full-match performance. No new candidate has been selected.
+
+## 4 November 2026: full detector, fusion and export reproduction completed
+
+The existing full-repeat detector session 18363 exited 0 after all 64,643 selected
+frames. Its complete NPZ matches every array and the exact original hash:
+8a9444c1b219a5fbdc8e25812618093c8885d3d1d930f728d2d84a4489c1b984.
+The queued verification helper (session 96552) also exited 0. It ran the complete
+geometry check, fused repeated detections into a byte-identical coordinate
+artifact, exported from those repeated inputs, passed the official validator,
+and verified identical raw/final CSV bytes. The CPU repeats reuse the verified
+feature cache; a separate cold-cache feature recomputation is not claimed.
+
+All three final CSVs have 199,319 rows and SHA256
+63d8e7412f9b29937183b3883df9639bed598d76e77482de9919985126f0a635.
+The final receipt now includes confirmed successful terminal exits for both jobs.
+Frozen v11 still has its original recorded hash. No algorithm parameter, model,
+training input or candidate selection changed following the one frozen public
+check, which remains 0.5200 spell F1. No private full-match score is available;
+the requested 0.80 full-match outcome remains unsupported. Documentation now
+records completed repetition and the remaining score-evidence limitation.
+
+
+## 14 November 2026: external real-broadcast adaptation and continuity
+
+The user's clarified target is BAR-ATH spell F1 above 0.740, developed externally.
+No new BAR-ATH public possession scoring was used. Six Sportec strong fixtures
+and eighteen SkillCorner weak fixtures train a mixed-domain expert with frozen
+input normalization. Conditional H/A loss excludes the D logit and unknown
+labels; dense HAD/boundary supervision comes from strong data. The fixed
+40-epoch run selects epoch 30 under its predeclared external guards. A separate
+execution verifies all input hashes, normalization and selected metrics.
+
+The v3 strong development mean spell F1 is 0.668976. Its joint criterion of
+0.744490 is not spell F1 or a BAR-ATH result. A separate four-value continuity
+grid keeps the same weights and reaches 0.678165 mean strong development spell
+F1 (native 0.857005, masked 0.544552, mixed 0.632938). Weak H/A agreement on
+already opened detected-only fixtures is 0.825815 overall / 0.799851 missing-ball.
+These are reused external development results, not independent dense HAD truth.
+Every continuity candidate is reproduced in a separate execution.
+
+The frozen v3 and continuity-v4 bundles each reproduce raw and final CSV bytes
+across three CUDA exports, including original and packaged checkpoints. Both
+199,319-row files pass the official format validator with training/truth reads
+blocked, no unexpected forbidden access, and frozen source/model/input hashes.
+The v4 final CSV hash is
+cbc30311a6c9fdbe8cc7198e3a25f38d444c07c437e491528da5a924ecca408d.
+Original parent source checksums, frozen v11 weights/CSV and official scorer
+sources remain unchanged. The numerical BAR-ATH goal is not verified.
+
+See scripts/research/spatial_memory/REAL_BROADCAST_ADAPTATION.md and the frozen
+models/coreorigin-real-broadcast-v3 / models/coreorigin-continuity-v4 bundles.
+An older-public-Metrica partial-label transfer diagnostic is separately frozen;
+it does not create a fresh independent test or full-spell truth. A fixed further
+30-epoch study is declared in configs/partial_had_memory_adaptation.json before
+its results, using conservative partial HAD from Metrica games 1/2, strong/weak
+replay, fixed decoder and existing development guards. Game 3 and all supplied
+data are blocked from that training study. Preparation is in progress; no gain
+from the additional study is claimed yet.
+
+
+### 14 November follow-up completion
+
+The partial-HAD study completed all 30 epochs and retained the unchanged initial
+fallback (mean strong spell F1 0.678165). Its final trained checkpoint scores
+0.671256 and fails the missing-ball weak guard. A separate execution rehashed
+all inputs, verified normalization/training membership, reproduced the selected
+metrics and confirmed epoch-zero weights exactly equal the initial model.
+The clock-corrected transition-head study likewise retained v4: its best nonzero
+mixture scores 0.675607. All six candidates and guards reproduce independently.
+Neither rejected experiment changes the BAR-ATH CSV.
+
+The frozen v4 bundle now includes its current TECHNICAL.md and updated manifest.
+A local handoff folder, data/research/continuity-calibration-20261114/submission-ready,
+contains CoreOrigin.csv, CoreOrigin.md, checksum metadata and the successful
+exact-file official format check. No submission or publication was performed.
+Eleven relevant training/decoding/weak-supervision tests and three clock-conversion
+tests pass; the nine pre-existing Metrica adapter/partial-label tests also pass.
+No new public possession score or full-match F1 claim is made. The >0.740
+BAR-ATH target remains pending the organisers' permitted evaluation.
+
+
+## 14 November: expanded expert and direct weight repair completed
+
+The fixed 30-epoch expanded-geometry study selects epoch 10, mean external
+spell F1 0.681791 versus 0.678165. All input/source hashes, old normalization,
+training-only added normalization and selected scores reproduce independently.
+Its paired 1,000-draw mean-difference interval is [-0.003650, 0.010709], spanning
+zero. It is not promoted; no new BAR-ATH CSV is generated. The first uncertainty
+attempt failed on relative-path bookkeeping before producing comparison results;
+the corrected audit is retained separately in paired_uncertainty_02.
+
+A diagnosed duplicate-name normalization mismatch motivates a separate bounded
+weight-repair study. Fixed strengths 0, 0.5 and 1 change only one projection
+column and its bias using external checkpoint metadata; no gradient training
+or supplied-match fitting occurs. The nonzero edits change 128 weights and
+128 biases. All three have the same primary spell F1. An independent execution
+rebuilds every edited tensor and reproduces every candidate score and guard.
+Zero repair wins the declared tie rule. Three mathematical repair tests pass;
+five feature-extension/normalization tests pass. V4 and frozen v11 remain intact.
+
+See FULL_GEOMETRY_EXTENSION.md and INPUT_ALIAS_REPAIR.md in the spatial_memory
+research directory. The model/CSV handoff remains continuity-v4, with official
+format validation and three byte-identical exports. The user confirms that no
+organiser full-match score/evaluation endpoint is available yet. The official
+submission guide still provides only public five-minute correctness checks and
+format validation, with no live leaderboard or feedback. The >0.740 BAR-ATH
+target is not established.
+
+
+2026-11-14 resumed external work: regenerated the exact continuity-v4 handoff CSV (199,319 rows; official validator PASS, unchanged cbc30311 SHA prefix) and created/rendered/reviewed the team PDF. Checked actual submission form; no scoring endpoint was linked and nothing was submitted. Occurrence-preserving raw team augmentation finished 30 epochs; selected external mean 0.681009 reproduced, but paired difference interval [-0.004278, 0.009620] spans zero, so no promotion. A separate fixed external known-missing-ball curriculum is in progress; unknown weak targets remain masked. BAR-ATH full-match target remains unverified.
+
+2026-11-14 missing-ball curriculum completed all 30 epochs. No trained checkpoint beats 0.678165 fallback; best trained mean 0.674481 fails missing-ball guard, best eligible 0.672768. Independent verifier rebuilt all 36 train-half center hashes/counts, verified configuration/source/input hashes, train-only normalization and training membership, exact zero-extension fallback tensors and reproduced scores/guards. No supplied-match scoring or new export for rejected model. Updated root CoreOrigin.md to current reviewed technical doc and preserved historical draft locally. Goal remains active; fresh CSV/PDF handoff remains v4, official format PASS, true BAR-ATH F1 unknown.
+
+2026-11-14 continuation: constrained geometry adaptation completed 30 epochs, training only 37,888 added projection coefficients. Three optimizer/resume invariant tests and GPU preflight passed. Selected epoch 1 external mean 0.680517 vs retained 0.678165; independent verifier confirms inherited tensors exact, old optimizer moments zero, train-only normalization, membership and scores. Paired interval [-0.001645, 0.006507] spans zero; no promotion or BAR export. Acquired ELASTIC CC BY 4.0 annotations at e245224aad7450961eca40954ae2bc85e1e6e696 for existing TRAIN matches WMX/WN1 only: 2,359 events, 1,827 player reception anchors after excluding out/goal destinations. Clock/schema/conflict audit complete; labels are not used in the model and provider truth is unchanged. New supervision needs timing/semantics resolution. Exact handoff file hashes and frozen v11/scorer hashes remain unchanged. Goal active; BAR-ATH >0.740 remains unverified.
+
+2026-11-14 continued TRAIN-only ELASTIC timing investigation: fixed radii 1/5/25 frames; 330 of 408 exact anchor/provider disagreements have matching labels within 5 frames (0.2 s), 48 lack agreement within 1 s. No global offset selected, no provider labels overwritten, no model fitted or selected. This rejects treating the new anchors as automatic dense truth corrections and directs the next work to namespace-verified receiver auxiliary supervision with temporal uncertainty. Existing selected CSV/model remain unchanged; BAR-ATH target unverified, goal active.
+
+2026-11-14 receiver identity investigation: inspected pinned ELASTIC source mapping (team role + shirt number), downloaded only two source modules with licence retained. Raw metadata crosschecks General home/guest IDs, rejects duplicate canonical IDs. All 1,827 receivers and 1,789 intentional actors resolve uniquely in TRAIN WMX/WN1; 1,826 receivers have finite tracking at the annotated frame. Median receiver-ball distances 0.425/0.489m; no distance-based identity assignment or threshold fitting. Exact source/raw hashes and isolation receipt saved. Namespace prerequisite resolved; no new labels fitted or selected model/CSV changes. Goal remains active, full BAR-ATH score unverified.
+
+2026-11-14 receiver-choice preparation and auxiliary learner: 1,468 pass/cross releases, 2,936 native/history-masked examples from existing TRAIN WMX/WN1 only; causal two-second geometry, missing masks and explicit unavailable class. Three causality/staleness/permutation tests pass; serialized target IDs and actor exclusion checked. Fixed 100-epoch cross-match auxiliary fit selects epoch 13. Receiver top-1 native 0.3750 / masked 0.3701 vs nearest-teammate 0.2319 / 0.2352; functional verifier exactly reproduces logits and scores, paired release interval for difference [0.10280,0.17270] conditional on selection. Not independent possession evaluation. No model/CSV promotion: actual possession-F1 effect must be tested after integration. Existing v4 CSV hash unchanged; goal active and BAR-ATH >0.740 unverified.
+
+2026-11-14 receiver-context integration: marginalized over coordinate-derived actor priors, no true actor labels supplied. Three vectorization/probability/team-swap/permutation/missing-context tests pass. Prepared and hashed 46 external strong native/masked/mixed and weak-development context caches; raw Sportec pins and original loader/seed dependencies match. Preserved early failed/partial preparations; corrected parsed-versus-used external-label audit metadata in run-03. First smoke failed on obsolete receipt filename before fitting; corrected source in fresh smoke. 803-input zero extension exactly reproduces 0.678164877 development mean, GPU update preserves all inherited tensors. Fixed strong-only 30-epoch adaptation started: train only 1,408 appended coefficients; weak development remains a guard, not normalization/training. No current submission or BAR score change.
+
+2026-11-14 receiver-context possession integration completed: 30 epochs, selected epoch 1 external mean 0.679036 vs v4 0.678165. Independent verifier reproduces scores/guards, TRAIN-only normalization, six-match adaptation membership and exact inherited tensors/zero old optimizer moments. Paired interval [-0.000524, 0.002296] spans zero; not promoted, no BAR export. Synthetic correctness audit reveals entropy normalization depends on never-observed roster slots. Preserved executed v1 sources/receipts; separate v2 normalizes over recently observed candidates and unavailable class, with two passing padding/stale-candidate regression tests. V2 not yet fitted or possession-evaluated. Existing exact CSV and frozen v11/official source hashes unchanged. Goal active; BAR-ATH >0.740 remains unverified.
+
+2026-11-14 v2 receiver-context rerun complete: migrated only entropy, all other columns exactly unchanged, 920 direct snapshot checks across 46 caches; regression tests pass. Same 30-epoch schedule selects epoch 1 external mean 0.679036 vs 0.678165; separate verifier reproduces scores, strong TRAIN-only new normalization and inherited tensor constraints. Paired interval [-0.000524,0.002296] spans zero; no promotion or BAR export. Exact v4 CSV and frozen v11/scorer hashes unchanged. MP4 handler metadata shows one audio track in both supplied feeds, without media decoding. Reviewed PANNs primary sources: code MIT, Zenodo weights CC BY 4.0; no model downloaded or target audio inferred. External validation/provenance remain pending. Asked optional SoccerTrack approved-access status because canonical host shares account info under access conditions; no acceptance or gated download. Goal active; BAR-ATH >0.740 unverified.
+
+2026-11-15 audio pilot completed: pinned public MIT-labelled Volleylitics whistle recordings match1/2/3 (SHA256), PANNs MIT source and CC BY checkpoint (published MD5). About 1.04GB external assets acquired; audio packages added without changing Torch/NumPy. GPU preflight passed, immutable full-recording neural/spectral scores produced without target audio decoding. Raw manual timestamps only; matcher tests and independent maximum bipartite matching verify event counts. Initial threshold grid selects spectral baseline; heldout match3 event F1 0.153153 (34TP/82FP/294FN). Training-only diagnostic shows neural max confidence below initial 0.05 floor. Wider calibration using only match1/2 yields neural development F1 0.231474, precision 0.183862; match3 not reused. No possession integration/promotion. FSD50K competition contact request respected, no messages or data acquired. Fresh audio-representation adaptation needs a new final recording. Exact v4 CSV and frozen v11/scorer hashes unchanged. Goal active; BAR-ATH >0.740 unverified.
+
+
+## 2026-11-15: external frozen-feature whistle adaptation
+
+Trained a 6144-feature linear whistle head on recording 1, selected threshold 0.9 on recording 2, and froze before fresh recording 4. Fresh whistle-event F1 0.779964 (218 TP, 34 FP, 89 FN); precision 0.865079, recall 0.710098. Independent maximum matching confirms counts. Six event/target/mapping tests pass. Float32 functional verification differs by at most 3.58e-7 with unchanged development event metrics. No recording-3 retest, competition data reads, target audio decoding, or possession integration. This is not BAR-ATH spell F1. v4 CSV and frozen v11 hashes unchanged; exact retained 199319-row CSV passes official format validator. Evidence: data/research/whistle-transfer-20261115/. See scripts/research/spatial_memory/WHISTLE_TRANSFER.md. Goal remains active; football audio transfer needs external evidence.
+
+
+## 2026-11-15: equal-run weighting external control
+
+External v4 error audit reproduced all scores and found masked short possessions matched 26/124 at IoU 0.5, versus 126/168 for spells >=5 seconds. Completed fixed 30-epoch equal-run strong TRAIN weighting experiment with all other occurrence-safe geometry control settings unchanged. Selected initial fallback; best trained epoch 25 mean 0.6734248775224577 versus retained 0.6781648771573808. Independent weight/normalization and selected-score verifier passes. Eight focused geometry tests pass. Public football audio metadata review found 327 ASR-only snippets, no explicit whistle/state annotations; no audio downloaded. No supplied-match training/scoring/inspection. Retained CSV, frozen v11 and official source hashes unchanged. See scripts/research/spatial_memory/SPELL_BALANCED_ADAPTATION.md and ignored data/research/spell-balanced-adaptation-20261115/run-01/. Goal active, BAR-ATH target unverified.
+
+
+## 2026-11-15: whole-half frozen boundary classifier
+
+Extracted 46 external full-half recurrent feature files with frozen v3; original heads exactly reproduce ten cached development outputs. Fitted one 384-dimensional balanced logistic boundary classifier on 656928 TRAIN orientation samples, converged in 81 iterations. Known class-weight odds shift is removed. Nonzero boundary blends score 0.677658 (half) and 0.677398 (full), below unchanged v4 0.678165; no promotion or new competition export. Independent verifier reconstructs sampling, TRAIN normalization, prior correction, functional probabilities and all candidate metrics/guards. Maximum float32 probability difference 3.87e-7; two targeted tests pass. Primary SkillCorner release check still has only the same 18 TRAIN and two DEV fixtures, no new untouched matches. No supplied-match data read or scored; retained CSV, frozen v11 and official source hashes unchanged. Evidence: data/research/frozen-boundary-transfer-20261115/. Report: scripts/research/spatial_memory/FROZEN_BOUNDARY_TRANSFER.md. Goal active, BAR-ATH full-match target unverified.
+
+
+## 2026-11-15: new licensed football detector comparison
+
+Rechecked full pose audit: no accepted head directions, not a missed full-data opportunity. Built new Open Images football benchmark with 46 positive plus 138 verified-negative images, explicit CC BY 2.0 metadata, author-separated DEV/TEST, no source-photo overlap with all COCO 2017 TRAIN/VAL records, no duplicate image hashes. Acquired official Apache-2.0 RF-DETR Large safetensors at f62f7dd5252b61097cbace33886045816dadbde9 and verified primary LFS SHA. Local offline inference repeats first image exactly for both models. Fixed-0.05 RF trial improves AP50 0.697195 -> 0.885903 but fails precision guard and is preserved. Separate fair development calibration selects YOLO threshold 0.5, RF threshold 0.8, F1 0.765432 vs 0.880952. Selection frozen before final metrics. On 32-image TEST with six balls, calibrated YOLO has 4 TP/0 FP/2 FN, F1 0.8; RF has 5 TP/0 FP/1 FN, F1 0.909091. RF misses the sole small ball detected by YOLO, so no possession promotion or BAR inference/export. COCO API cross-checks AP; independent greedy matching agrees; two tests pass. Added only pycocotools without dependencies; Torch/NumPy/Transformers unchanged. All source/model/image/metric receipts retained locally; no match uploads/reads or target scoring. Retained CSV, v11 and official source hashes unchanged. Report: scripts/research/video_ball/OPENIMAGES_FOOTBALL.md. Next useful test needs fresh external tiny-ball/ensemble evidence, not reuse of this opened pilot. BAR-ATH goal active and unverified.

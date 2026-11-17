@@ -1,0 +1,64 @@
+{
+  "dataset": "GYdevy/volleyball-whistles",
+  "revision": "5f23e58f6057f82d40fa8a132da09ba70ccf02ce",
+  "calibration": [
+    "match1"
+  ],
+  "development": [
+    "match2"
+  ],
+  "final_test": [
+    "match3"
+  ],
+  "annotation_file": "whistles_all.json",
+  "annotation_time": "t_raw",
+  "anchored_annotations_allowed": false,
+  "model": "Cnn14_DecisionLevelMax",
+  "model_record": 3987831,
+  "model_md5": "70539c43c18b6a289b3199c503a82c5a",
+  "classes": [
+    402,
+    40
+  ],
+  "class_pooling": "maximum of device whistle and human whistling",
+  "sample_rate": 32000,
+  "chunk_seconds": 10.24,
+  "context_seconds": 2,
+  "thresholds": [
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9
+  ],
+  "event_tolerance_seconds": 0.5,
+  "merge_gap_seconds": 0.1,
+  "refractory_seconds": 0.35,
+  "selection": "Calibrate each detector threshold on match1 only. Compare on match2; freeze the chosen detector before evaluating match3 once.",
+  "scope": "Cross-sport whistle-event pilot, not possession labels or football stoppage validation.",
+  "provided_match_used": false,
+  "public_possession_labels_used": false,
+  "batch_size": 4,
+  "dsp_band_hz": [
+    1000,
+    8000
+  ],
+  "dsp_peak_bins": 7,
+  "frontend": {
+    "window_size": 1024,
+    "hop_size": 320,
+    "mel_bins": 64,
+    "fmin": 50,
+    "fmax": 14000
+  },
+  "context_rationale": "Two seconds covers the approximately 3.48-second CNN temporal receptive field around central scored frames; fixed before inference.",
+  "chunk_frames": 1024,
+  "frame_hz": 100,
+  "chunk_rationale": "1024 output frames align successive chunks to the CNN stride of 32 frames; chosen from architecture before inference."
+}

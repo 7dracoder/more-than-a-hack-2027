@@ -1,10 +1,58 @@
 # More than a Hack 2027 — Phase 1: Ball Possession
 
+The current submission technical document is [CoreOrigin.md](CoreOrigin.md).
+The locally prepared team-named CSV and three-page PDF are under
+`data/research/resumed-improvement-20261114/submission-ready/`. The CSV has been
+regenerated and passes the official format validator. The opened submission
+form provides upload fields, without an accuracy checker; nothing has been
+uploaded or submitted. Historical results below retain their original scope.
+
+**14 November research update:** the target is BAR–ATH spell F1 **above 0.740**,
+with external-only training and selection. The [real broadcast adaptation and
+continuity study](scripts/research/spatial_memory/REAL_BROADCAST_ADAPTATION.md)
+reaches mean **0.678165** spell F1 across the reused external native/masked/mixed
+development views, with native performance unchanged. Weak H/A broadcast
+agreement is **0.825815**, or **0.799851** on missing-ball ticks; these are weak
+provider labels, not dense HAD truth or independent test results. The frozen
+[continuity model bundle](models/coreorigin-continuity-v4/README.md) regenerates
+an officially format-valid 199,319-row CSV; three CUDA exports match byte for
+byte with training data and possession truth blocked. No new BAR–ATH possession
+score was computed; the full-match target remains unverified and frozen v11
+is unchanged. The earlier [observation gate](scripts/research/spatial_memory/OBSERVATION_GATE.md)
+and [natural visibility study](scripts/research/spatial_memory/NATURAL_VISIBILITY.md)
+remain preserved.
+Further [occurrence-safe augmentation](scripts/research/spatial_memory/OCCURRENCE_SAFE_AUGMENTATION.md)
+and [missing-ball curriculum](scripts/research/spatial_memory/MISSING_BALL_CURRICULUM.md)
+studies completed and were independently verified. Neither justified replacing
+the current model; the regenerated handoff retains its predictions.
+The subsequent [frozen-projection study](scripts/research/spatial_memory/FROZEN_PROJECTION_ADAPTATION.md)
+also failed the paired gain check. A separate
+[external annotation audit](scripts/research/spatial_memory/ELASTIC_TRAINING_ANNOTATIONS.md)
+acquired and checked additional TRAIN-only event/reception labels; they do not
+enter the selected model.
+The [receiver-context integration](scripts/research/spatial_memory/RECEIVER_CONTEXT_INTEGRATION.md)
+and [corrected normalization rerun](scripts/research/spatial_memory/RECEIVER_CONTEXT_V2.md)
+also completed without a supported possession-F1 gain. The current v4 handoff
+remains selected. [Audio feasibility research](scripts/research/spatial_memory/AUDIO_FEASIBILITY.md)
+is preliminary and has not changed predictions.
+
+**4 November update:** the [participant clarification](RULES_CLARIFICATION.md)
+controls all new work. The original tactical video is now local, and a fixed
+externally pretrained ball-recovery experiment has completed extraction, fusion
+and CPU export twice with matching outputs; [workflow and status](scripts/research/video_ball/README.md).
+The frozen video-input candidate scores **0.5200 spell F1** on the public five-minute
+pipeline check; this does not reach 0.80 there or establish full-match performance.
+No tuning or candidate selection followed this check. No replacement is selected.
+Historical v10/v11
+calibration requires review under the external-only tuning instruction.
+
 ## Our research implementation
 
-**Current state (29 October 2026):** the best verified development score remains **0.85700 spell F1** (macroF1 0.97427, alive/dead F1 0.99943) on the fixed external match J03WPY, versus 0.78675 at the start of this round. The score was reproduced exactly from the saved run probabilities in a rebuilt CPU environment after recovering the full working tree; all 266 tests pass. **The ranking metric is not reachable by better decoding:** a 144-setting transition-cost grid moves it by at most +0.001, and even substituting ground-truth possession boundaries reaches only 0.90064, because the team decision inside brief in-possession touches is wrong. The exported candidate was also corrected against the organisers' published dead-ball window before the second-half kickoff, removing 14 possessions that cannot exist in the ground truth. **A 0.95 spell-F1 result is therefore not claimable with this 960-feature bank**; the measured ceiling is 0.90 and the missing evidence is the ball itself. See [experiment record](LOCAL_V08.md) and [current technical draft](CoreOrigin.md).
+**BAR-ATH pipeline check (3 November 2026):** the previously frozen **v11** pipeline scores **0.54054 spell F1** and **0.74187 macroF1** on the competition match's public five minutes (7,500 graded frames, 17 ground-truth possessions). The complete 199,319-row submission was regenerated on CPU and passes the official validator. Its predictions match the previously recorded v11 SHA256 after standardizing line endings. The unchanged official scorer ran with 1,000 bootstrap draws; the spell-F1 5th–95th percentile interval is 0.38919–0.68162. This is a public-window pipeline check, not a full-match competition score or a tuning result. Evidence and the frozen CSV are under ignored `data/bar-ath-check-20261103/`. See [current technical draft](CoreOrigin.md).
 
-**Earlier record:** fresh scoring agrees with the 0.85700 result and two complete CUDA exports produce identical validated 199,319-row CSVs. Its artificial-gap score is 0.66404; the retained robustness fallback scores 0.68706. Six external matches supply training; J03WPY remains development only. There is no current independent or official BAR-ATH score. The two user-limited attempts retained the 0.85700 control. A subsequently authorized cross-fitted transition-repair study scored 0.85617 and was not promoted. The Metrica data-expansion comparison added two training matches and 94,773 partial labelled frames without moving the score. All training and verification are stopped.
+**Score scope:** BAR-ATH is the competition test match. Its private full-match score remains unknown. The **0.85700 spell F1** result belongs to the external development match **J03WPY**, not BAR-ATH or the v11 public check. The external decoder grid and oracle substitutions diagnose that fixed model on J03WPY; they establish no performance ceiling for BAR-ATH and do not prove that 0.95 is impossible. BAR-ATH public labels are used only after the pipeline is frozen, for correctness checks, never for training, threshold changes or model selection. No such changes were made during this check.
+
+**Earlier external development record:** fresh scoring agrees with the 0.85700 result and two complete CUDA exports produce identical validated 199,319-row CSVs. Its artificial-gap score is 0.66404; the retained robustness fallback scores 0.68706. Six external matches supply training; J03WPY remains development only. The two user-limited attempts retained the 0.85700 control. A subsequently authorized cross-fitted transition-repair study scored 0.85617 and was not promoted. The Metrica data-expansion comparison added two training matches and 94,773 partial labelled frames without moving the score. These historical scores are development evidence, not estimates of BAR-ATH performance. The later v10/v11 pipeline and reproduction instructions are documented in [realistic-gap research](scripts/research/realistic_gaps/README.md).
 
 **Current rules correction (October 24):** the recent organizer pull prohibits training or tuning on the public BAR-ATH labels and any manual annotation of this match for validation. The v0.3–v0.6 supervised candidates below are historical research, not eligible selected submissions. The six-minute annotation plan is disabled. Historical supervised runners now require an explicit reproduction flag.
 

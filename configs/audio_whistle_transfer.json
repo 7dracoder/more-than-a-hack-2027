@@ -1,0 +1,20 @@
+{
+  "calibration": "match1",
+  "development": "match2",
+  "fresh_test": "match4",
+  "previous_test_not_reused": "match3",
+  "feature": "Frozen PANNs post-ReLU fc1 inputs to fc_audioset, 2048 dimensions, native stride 32.",
+  "temporal_offsets": [-1, 0, 1],
+  "positive_radius_seconds": 0.32,
+  "negative_margin_seconds": 2.0,
+  "classifier": "LogisticRegression",
+  "C": 0.01,
+  "class_weight": "balanced",
+  "max_iter": 500,
+  "seed": 20351125,
+  "normalization": "Fit StandardScaler only to included calibration-recording frames.",
+  "thresholds": [0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.975, 0.99],
+  "selection": "Choose threshold by development event F1 at 0.5-second tolerance; higher threshold wins ties. Freeze before fresh-test labels are scored.",
+  "provided_match_used": false,
+  "scope": "External volleyball whistle-event qualification only, not possession F1."
+}

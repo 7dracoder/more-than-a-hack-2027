@@ -1,0 +1,17 @@
+{
+  "status": "Experimental external-only video-input protocol; not a selected competition submission",
+  "files": {
+    "selected.pt": "07b86f226a5898c0db1f681176d7e3d3d4a4dddb07ab827b47bbfe213ef1e2fa",
+    "fixed_protocol.json": "a26b967c2bd6022c2f977cb4eaca5d654baad60fe69dc9e24de519a16129fe5c",
+    "confidence_evidence.json": "d923df225f86d686d1b1f1b88c515de55b1fa111bf47f527faf7a650c18cb5cd",
+    "motion.json": "631fe5e72a4a660cbd709f5f237ab5454ea9e3c94ee09fb16508fe794de52320",
+    "coco_attribution.json": "4a9ad25a5022d96d47f961795101e78920fb2d115d2d9fa38d97b8cc9d96dbae"
+  },
+  "detector_weights": "yolo11m.pt at repository root",
+  "detector_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+  "provided_match_in_fitting": false,
+  "provided_video_fine_tuning": false,
+  "provided_match_data_in_this_bundle": false,
+  "possession_score": null,
+  "target_verified": false
+}

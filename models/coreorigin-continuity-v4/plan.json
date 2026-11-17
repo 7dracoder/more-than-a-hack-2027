@@ -1,0 +1,31 @@
+{
+  "protocol": {
+    "penalties": [
+      0.0,
+      2.0,
+      4.0,
+      8.0
+    ],
+    "gate": "Existing binary observation-loss gate on the expert input clock.",
+    "uncertainty": "1.5*(1-max(H,A,D)), clipped to [0,1].",
+    "extra_cost": "penalty*gate*uncertainty subtracted from each off-diagonal transition log-score.",
+    "objective": "Maximum mean native/masked/mixed strong development spell F1; ties keep penalty zero.",
+    "native_max_decline": 0.0,
+    "weak_ha_max_decline": 0.005,
+    "missing_weak_ha_max_decline": 0.01,
+    "models_retrained": false,
+    "provided_match_used": false,
+    "public_labels_used": false,
+    "limitation": "Exploratory calibration on already opened external development fixtures; not independent or competition performance."
+  },
+  "sources": {
+    "scripts/research/spatial_memory/select_uncertain_decode.py": "38f1e0f22476efe33b9d34f89943d399bfc1206800b85c8e150fcf2ba856d17f",
+    "possession/uncertain_decode.py": "7ec9a53ce18484597dfa74b741d083acf7b2db1b4ca01f9a10ebd9a357ff6b63",
+    "possession/observation_gate.py": "0a59be316216d2dfe10bd4f34d13a179d83a5940f9fc2c130345b699efb1dd93",
+    "scripts/research/spatial_memory/external_guard.py": "7d3ecdd9b2def30b98efbf4c44e535e468e3a05e6f4b5c02ed34781b4e7ac88c",
+    "scripts/research/spatial_memory/train_real_broadcast_memory.py": "eda40b4292c82974180b8a70917cb782f60e170d8e23eb8c0ed6c67f248e708a"
+  },
+  "model_sha256": "9793ed7e76bc4ebf455cc30ace0b7f7114a3bcc0e07abad31d9ebcaa7066c2b8",
+  "model_protocol_sha256": "92c6d94f32071c91e552f019207f41aeb7b73c8a77195bce870f16e865b4ec29",
+  "preceding_selection_sha256": "e0ce0bbca812cad89cf54fabbea6450e8e9be33f1099c1078eae44eb0553dcc2"
+}

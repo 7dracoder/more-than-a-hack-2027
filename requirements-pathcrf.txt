@@ -1,0 +1,3 @@
+-r requirements-memory.txt
+torch-geometric==2.7.0
+einops==0.8.1

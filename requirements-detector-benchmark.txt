@@ -1,0 +1,12 @@
+# Existing CUDA environment; do not replace the retained model's environment.
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.11.0+cu128
+numpy==2.5.3
+ultralytics==8.4.202
+transformers==5.22.0
+safetensors==0.8.0
+huggingface-hub==1.33.0
+Pillow==12.3.0
+opencv-python==5.0.0.93
+requests==2.32.3
+pycocotools==2.0.11

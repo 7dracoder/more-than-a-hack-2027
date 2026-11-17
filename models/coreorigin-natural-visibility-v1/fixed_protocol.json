@@ -1,0 +1,173 @@
+{
+  "config": {
+    "train_matches": [
+      "J03WMX",
+      "J03WN1",
+      "J03WOH",
+      "J03WOY",
+      "J03WQQ",
+      "J03WR9"
+    ],
+    "validation_matches": [
+      "J03WPY"
+    ],
+    "test_matches": [],
+    "development_only": true,
+    "provided_match_used": false,
+    "public_labels_used": false,
+    "sample_step": 2,
+    "fps": 25,
+    "feature_version": "natural_visibility_memory",
+    "architecture": "boundary_hybrid",
+    "hidden_channels": 128,
+    "dropout": 0.2,
+    "boundary_positive_weight": 10.0,
+    "views": [
+      "native",
+      "masked",
+      "mixed"
+    ],
+    "training_view_probability": [
+      0.5,
+      0.25,
+      0.25
+    ],
+    "initialization": "models/coreorigin-robust-v13",
+    "comparison": "models/coreorigin-video-v1",
+    "seed": 20321115,
+    "epochs": 50,
+    "batches_per_epoch": 80,
+    "batch_size": 16,
+    "sequence_length": 512,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.001,
+    "boundary_auxiliary_weight": 0.3,
+    "run_weight_power": 0.5,
+    "validation_interval_epochs": 5,
+    "mixture_weights": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "native_spell_f1_max_decline": 0.01,
+    "decoder": "Frozen comparison decoder on the original 25 Hz frame grid",
+    "selection": "Maximum mean spell F1 of three external development views, with native guard; comparison at strength zero remains eligible.",
+    "head_orientation_used": false,
+    "gaze_measured": false,
+    "limitation": "Repeated external development match; synthetic views are not natural held-out match truth or competition performance."
+  },
+  "fingerprint": "1a407310bf5aafb26b771e719717b2b18cd825233b41a9158eab48ee4aac8ff4",
+  "preparation": {
+    "complete": true,
+    "fingerprint": {
+      "plan": {
+        "train_matches": [
+          "J03WMX",
+          "J03WN1",
+          "J03WOH",
+          "J03WOY",
+          "J03WQQ",
+          "J03WR9"
+        ],
+        "validation_matches": [
+          "J03WPY"
+        ],
+        "test_matches": [],
+        "development_only": true,
+        "provided_match_used": false,
+        "public_labels_used": false,
+        "sample_step": 2,
+        "fps": 25,
+        "feature_version": "natural_visibility_memory",
+        "architecture": "boundary_hybrid",
+        "hidden_channels": 128,
+        "dropout": 0.2,
+        "boundary_positive_weight": 10.0,
+        "views": [
+          "native",
+          "masked",
+          "mixed"
+        ],
+        "training_view_probability": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "initialization": "models/coreorigin-robust-v13",
+        "comparison": "models/coreorigin-video-v1",
+        "seed": 20321115,
+        "epochs": 50,
+        "batches_per_epoch": 80,
+        "batch_size": 16,
+        "sequence_length": 512,
+        "learning_rate": 0.0002,
+        "weight_decay": 0.001,
+        "boundary_auxiliary_weight": 0.3,
+        "run_weight_power": 0.5,
+        "validation_interval_epochs": 5,
+        "mixture_weights": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "native_spell_f1_max_decline": 0.01,
+        "decoder": "Frozen comparison decoder on the original 25 Hz frame grid",
+        "selection": "Maximum mean spell F1 of three external development views, with native guard; comparison at strength zero remains eligible.",
+        "head_orientation_used": false,
+        "gaze_measured": false,
+        "limitation": "Repeated external development match; synthetic views are not natural held-out match truth or competition performance."
+      },
+      "sources": {
+        "scripts/research/spatial_memory/train_natural_visibility.py": "ed1c9262723b673e3dacd9d5f722a9c996b063993ac452f780561e683f4c728f",
+        "possession/external_visibility.py": "ab1ff9c10f8e973937d2b146012b9e1beac6cd1df74eb4e41b7402d0ed508a0c",
+        "possession/features_v08.py": "c196193b49611712c05b178c8fdb5e1ecf0225dd575eb4db20fb93d03f5bf884",
+        "possession/features_v09.py": "f18bd83118481820553f88b94cdcb2ce7f773d0425fc132a0dcbea93519c2aa7",
+        "possession/features_v13.py": "1f69051319454de5c5878b6e785bab24f75ca3d72f8c49402b70e25d907d1104",
+        "possession/features_v25.py": "b32d5baea1ada9b96c78cdc69a9a277395efc7b06c3ff45e73dcf9453c6fa6d1",
+        "possession/spatial_memory.py": "131bf1d4ed281999706ab9ddc484e123c5506d04183fe4ab9935bdd4fcdf7be4",
+        "possession/external.py": "08a0c9a68955ea477daf3a60cad1edf7f32d6951a9644d0023806aca109f100a",
+        "possession/temporal.py": "69d4efdd805ba534370f0602930394802d2d355a7810dc71884493e67599c531",
+        "possession/boundary.py": "739b04499dbae9f6b1d4ebb814ebd7f98cb6cf43077cb54c8339baead77d5afc",
+        "possession/recurrent.py": "d88a193ffce0b5c9594f95bd90a42abe4db323f466b38a145e22cefecea1ada0",
+        "scripts/run_local.py": "05b0328d9d652222bce1df0d18cd0f4a6e654de8bed79324c4c4fe313795f5b8"
+      },
+      "profile_sha256": "11b325915cf141c6d40fda1098f415497366c7f8a4cfad49412bb2049bf51136",
+      "initialization_sha256": "ec72a2bb8ef14f3fee68daed4b4a0944de5f18fc2b86ac07f46b1aa771a0f03c",
+      "comparison_sha256": "07b86f226a5898c0db1f681176d7e3d3d4a4dddb07ab827b47bbfe213ef1e2fa"
+    },
+    "provided_match_used": false,
+    "public_labels_used": false
+  },
+  "baseline": {
+    "native": {
+      "spell_f1_mean": 0.8570048309178743,
+      "macro_f1": 0.9742746076990892,
+      "n_gt_spells": 421,
+      "n_pred_spells": 407
+    },
+    "masked": {
+      "spell_f1_mean": 0.3782101167315175,
+      "macro_f1": 0.7635238822504696,
+      "n_gt_spells": 421,
+      "n_pred_spells": 350
+    },
+    "mixed": {
+      "spell_f1_mean": 0.4018626309662398,
+      "macro_f1": 0.7514333098837837,
+      "n_gt_spells": 421,
+      "n_pred_spells": 438
+    }
+  },
+  "mean_statistics_matches": [
+    "J03WMX",
+    "J03WN1",
+    "J03WOH",
+    "J03WOY",
+    "J03WQQ",
+    "J03WR9"
+  ]
+}

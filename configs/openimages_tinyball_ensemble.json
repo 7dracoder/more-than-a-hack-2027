@@ -1,0 +1,13 @@
+{
+  "tiles": "Four corner crops, each covering ceil(0.6*width) by ceil(0.6*height), with 20% full-image overlap on each axis; use RF-DETR's unchanged 704-square processor.",
+  "tile_nms_iou": 0.5,
+  "confidence_floor": 0.05,
+  "max_detections": 300,
+  "native_thresholds": {"yolo11m": 0.5, "rfdetr_large": 0.8},
+  "tile_thresholds": [0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+  "merge": "Preserve all accepted YOLO boxes. Append nonoverlapping native RF boxes, then nonoverlapping tiled RF boxes, suppressing new boxes at IoU >=0.5 with an already retained box. Never move or replace retained boxes.",
+  "score": "Fit one monotone class-balanced logit-evidence mapping per raw branch on development detections only; sigmoid mapped evidence gives a common nominal balanced prior for ranking. This is not a deployment probability.",
+  "selection": "Compare frozen calibrated YOLO, native RF, their preserving union, and preserving unions with each tile threshold on development. Select maximum point F1; require precision >=calibrated YOLO, recall >=native RF and small-ball recall >=calibrated YOLO. Ties retain fewer branches, then higher tile threshold. No possession promotion from this component test alone.",
+  "fresh_test": "Use Open Images official test split. Exclude all prior pilot photo identities and authors and all COCO 2017 train/validation photo identities. No reuse of the opened six-ball pilot for metrics or candidate selection. Freeze selected method before new test detector metrics.",
+  "provided_match_used": false
+}

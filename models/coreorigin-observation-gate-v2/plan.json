@@ -1,0 +1,43 @@
+{
+  "plan": {
+    "development_matches": [
+      "J03WPY"
+    ],
+    "independent_test_matches": [],
+    "views": [
+      "native",
+      "masked",
+      "mixed"
+    ],
+    "checkpoints": [
+      "selected",
+      "final_epoch"
+    ],
+    "strengths": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "sample_step": 2,
+    "gate": "Ball absent OR fewer than eleven observed players on either team, on the expert input clock.",
+    "boundary": "Unchanged parent calibrated change probabilities on the full 25 Hz clock.",
+    "selection": "Largest mean native/masked/mixed spell F1 with parent native guard; ties retain incumbent.",
+    "native_spell_f1_max_decline": 0.01,
+    "additional_training": false,
+    "provided_match_used": false,
+    "public_labels_used": false,
+    "limitation": "Repeated exploratory development data, not independent-test or competition performance."
+  },
+  "sources": {
+    "possession/observation_gate.py": "0a59be316216d2dfe10bd4f34d13a179d83a5940f9fc2c130345b699efb1dd93",
+    "scripts/research/spatial_memory/external_guard.py": "7d3ecdd9b2def30b98efbf4c44e535e468e3a05e6f4b5c02ed34781b4e7ac88c",
+    "scripts/research/spatial_memory/select_observation_gate.py": "d4d1b85f34853c4dcbe3c449bd167d22ff3e5c462e51647ea6ed091b08fbb64a"
+  },
+  "incumbent_selection_sha256": "d612c475f7a159b1c246675431173a05e5c1aae5d494768f568024329396dc54",
+  "training_plan_sha256": "44b4c4c317511c2d3f4432ecb2949669c7ba7565a82114c8979c3ff77990243d",
+  "checkpoint_sha256": {
+    "selected": "546e18a390f714e699c5803172df5c982453a618488db98eab823c45186d03bf",
+    "final_epoch": "51c63ed63727090664034f10e072946cb7accc81a15c688b8afb31f697f392b6"
+  }
+}

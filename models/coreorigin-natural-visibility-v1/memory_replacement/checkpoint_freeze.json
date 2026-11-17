@@ -1,0 +1,8 @@
+{
+  "checkpoint_sha256": {
+    "development_selected_checkpoint": "546e18a390f714e699c5803172df5c982453a618488db98eab823c45186d03bf",
+    "fixed_final_epoch_checkpoint": "51c63ed63727090664034f10e072946cb7accc81a15c688b8afb31f697f392b6"
+  },
+  "preceding_selection_sha256": "d852c19439c8f64ea0e74642f3a8f0595d4fd776920d4a0cc7d066035a0e980d",
+  "plan_sha256": "fd60f2808d2489e025b58980ac2aaf43e2458d82a64acc4968b8153e34ec8e10"
+}

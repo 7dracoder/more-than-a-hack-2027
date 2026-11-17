@@ -1,0 +1,65 @@
+{
+  "config": {
+    "train_matches": [
+      "J03WMX",
+      "J03WN1",
+      "J03WOH",
+      "J03WOY",
+      "J03WQQ",
+      "J03WR9"
+    ],
+    "validation_matches": [
+      "J03WPY"
+    ],
+    "test_matches": [],
+    "development_only": true,
+    "provided_match_used": false,
+    "public_labels_used": false,
+    "sample_step": 2,
+    "fps": 25,
+    "feature_version": "natural_visibility_memory",
+    "architecture": "boundary_hybrid",
+    "hidden_channels": 128,
+    "dropout": 0.2,
+    "boundary_positive_weight": 10.0,
+    "views": [
+      "native",
+      "masked",
+      "mixed"
+    ],
+    "training_view_probability": [
+      0.5,
+      0.25,
+      0.25
+    ],
+    "initialization": "models/coreorigin-robust-v13",
+    "comparison": "models/coreorigin-video-v1",
+    "seed": 20321115,
+    "epochs": 50,
+    "batches_per_epoch": 80,
+    "batch_size": 16,
+    "sequence_length": 512,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.001,
+    "boundary_auxiliary_weight": 0.3,
+    "run_weight_power": 0.5,
+    "validation_interval_epochs": 5,
+    "mixture_weights": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "native_spell_f1_max_decline": 0.01,
+    "decoder": "Frozen comparison decoder on the original 25 Hz frame grid",
+    "selection": "Maximum mean spell F1 of three external development views, with native guard; comparison at strength zero remains eligible.",
+    "head_orientation_used": false,
+    "gaze_measured": false,
+    "limitation": "Repeated external development match; synthetic views are not natural held-out match truth or competition performance."
+  },
+  "fingerprint": "6ef497a59b4bb2dd42fcb4cc7dddf688a8240c1b16c70a8819b02cfa83b131b9",
+  "external_only": true,
+  "additional_training": false,
+  "source_checkpoint_sha256": "51c63ed63727090664034f10e072946cb7accc81a15c688b8afb31f697f392b6"
+}

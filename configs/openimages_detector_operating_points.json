@@ -1,0 +1,8 @@
+{
+  "thresholds": [0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+  "calibration": "Choose each model's maximum development detection F1 subject to recall at least the unchanged YOLO11m 0.05 control. Higher threshold wins ties. Both models use the same grid and objective.",
+  "selection": "RF-DETR must beat the separately optimized YOLO11m development F1 and its raw AP50, while precision and recall do not decline from the unchanged control. Otherwise retain the unchanged 0.05 YOLO11m control and leave final test unevaluated.",
+  "test": "Freeze model and both calibrated thresholds before computing any final-test detector metric. If the challenger qualifies, compare both calibrated models and the unchanged control once; never tune from that result.",
+  "scope": "Follow-up to the preserved fixed-0.05 development trial. Only detector component validation, not possession promotion.",
+  "provided_match_used": false
+}

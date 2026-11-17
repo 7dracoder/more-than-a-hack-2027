@@ -1,0 +1,11 @@
+{
+  "selection_sha256": "f894f413e5c5eb4f2f8b06e1f51b1bbf81f8037accd5d833867c12b53a71ba61",
+  "files": {
+    "models\\coreorigin-video-v1\\selected.pt": "07b86f226a5898c0db1f681176d7e3d3d4a4dddb07ab827b47bbfe213ef1e2fa",
+    "models\\coreorigin-video-v1\\fixed_protocol.json": "a26b967c2bd6022c2f977cb4eaca5d654baad60fe69dc9e24de519a16129fe5c",
+    "models\\coreorigin-robust-v13\\selected.pt": "ec72a2bb8ef14f3fee68daed4b4a0944de5f18fc2b86ac07f46b1aa771a0f03c",
+    "models\\coreorigin-robust-v13\\fixed_protocol.json": "0368deb27465ad0fdb2bd94357671abb580d91566da408a6f396ae574e313275"
+  },
+  "training_and_selection_external_only": true,
+  "head_gaze_or_peripheral_vision_used": false
+}
